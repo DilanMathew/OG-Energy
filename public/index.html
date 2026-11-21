@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>OG — Original Grind Protein</title>
+  <meta name="description" content="OG. One month. One box. 28 sachets of performance protein engineered to push every rep further." />
+  <meta name="theme-color" content="#07060a" />
+  <meta property="og:title" content="OG — Original Grind Protein" />
+  <meta property="og:description" content="One month. One box. 28 sachets. Fuel the original grind." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307060a'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial Black,Arial' font-weight='900' font-size='30' fill='%23ff5a1f'%3EOG%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="pre-inner">
+      <div class="pre-logo">OG</div>
+      <div class="pre-bar"><span id="preBar"></span></div>
+      <div class="pre-count"><span id="preCount">0</span>%</div>
+    </div>
+  </div>
+
+  <div class="progress" id="progress"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <a href="#top" class="brand" aria-label="OG home">
+      <span class="brand-mark">OG</span>
+      <span class="brand-sub">Original Grind</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#box">The Box</a>
+      <a href="#journey">28 Days</a>
+      <a href="#formula">Formula</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="cart-btn" id="cartOpen" aria-label="Open cart">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <a href="#pricing" class="btn btn-sm btn-fire magnetic">Get OG</a>
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <canvas id="embers" class="embers"></canvas>
+      <div class="hero-bg-word" aria-hidden="true">ORIGINAL</div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow reveal"><span class="dot"></span> Now launching · Batch 001</p>
+          <h1 class="hero-title">
+            <span class="line"><span class="word">Fuel the</span></span>
+            <span class="line"><span class="word fire-text">Original</span></span>
+            <span class="line"><span class="word">Grind.</span></span>
+          </h1>
+          <p class="hero-sub reveal">Performance protein engineered to push every rep further. <strong>One month. One box. 28 sachets.</strong> Zero excuses.</p>
+          <div class="hero-ctas reveal">
+            <a href="#pricing" class="btn btn-fire btn-lg magnetic"><span>Claim your box</span>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a href="#box" class="btn btn-ghost btn-lg">See inside</a>
+          </div>
+          <div class="hero-proof reveal">
+            <div class="stars">★★★★★</div>
+            <span>Built for lifters, athletes &amp; everyday grinders</span>
+          </div>
+        </div>
+
+        <div class="hero-visual" id="heroVisual">
+          <div class="halo"></div>
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="scene" id="scene">
+            <div class="box3d" id="box3d">
+              <div class="face front">
+                <div class="pack-top">
+                  <span>PERFORMANCE PROTEIN</span><span>N° 001</span>
+                </div>
+                <div class="pack-logo">OG</div>
+                <div class="pack-tag">ORIGINAL GRIND</div>
+                <div class="pack-stripe"></div>
+                <div class="pack-meta">
+                  <div><b>28</b><small>sachets</small></div>
+                  <div><b>1</b><small>month</small></div>
+                  <div><b>25g</b><small>protein</small></div>
+                </div>
+                <div class="pack-flavor">Molten Chocolate</div>
+              </div>
+              <div class="face back">
+                <div class="pack-logo sm">OG</div>
+                <p>One sachet. Every day. Twenty-eight days to a stronger you.</p>
+                <div class="barcode"></div>
+              </div>
+              <div class="face right"><span>FUEL THE ORIGINAL GRIND</span></div>
+              <div class="face left"><span>1 MONTH · 1 BOX · 28 SACHETS</span></div>
+              <div class="face top"><span>OG</span></div>
+              <div class="face bottom"></div>
+            </div>
+            <div class="box-shadow"></div>
+          </div>
+          <div class="float-sachet s1"><span>OG</span></div>
+          <div class="float-sachet s2"><span>OG</span></div>
+          <div class="float-sachet s3"><span>OG</span></div>
+          <div class="chip chip-a"><b>25g</b> protein / serve</div>
+          <div class="chip chip-b"><b>0g</b> added sugar</div>
+        </div>
+      </div>
+      <a href="#box" class="scroll-cue" aria-label="Scroll down"><span></span></a>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>1 MONTH</span><i>✦</i><span>1 BOX</span><i>✦</i><span>28 SACHETS</span><i>✦</i><span>ZERO EXCUSES</span><i>✦</i><span>ORIGINAL GRIND</span><i>✦</i>
+        <span>1 MONTH</span><i>✦</i><span>1 BOX</span><i>✦</i><span>28 SACHETS</span><i>✦</i><span>ZERO EXCUSES</span><i>✦</i><span>ORIGINAL GRIND</span><i>✦</i>
+      </div>
+    </div>
+
+    <!-- STATEMENT -->
+    <section class="statement" id="box">
+      <p class="eyebrow center reveal">The OG ritual</p>
+      <h2 class="big-statement" id="statement">
+        Not another tub gathering dust. <em>One sachet a day.</em> Pre-measured, sealed fresh, ready the second you are. Tear. Shake. <em>Dominate.</em>
+      </h2>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat reveal"><div class="stat-num"><span data-count="25">0</span><sup>g</sup></div><div class="stat-label">Protein per sachet</div></div>
+      <div class="stat reveal"><div class="stat-num"><span data-count="28">0</span></div><div class="stat-label">Sachets per box</div></div>
+      <div class="stat reveal"><div class="stat-num"><span data-count="6">0</span><sup>g</sup></div><div class="stat-label">BCAAs per serve</div></div>
+      <div class="stat reveal"><div class="stat-num"><span data-count="0">0</span><sup>g</sup></div><div class="stat-label">Added sugar</div></div>
+    </section>
+
+    <!-- 28 DAY JOURNEY (sticky scroll) -->
+    <section class="journey" id="journey">
+      <div class="journey-sticky">
+        <div class="journey-head">
+          <p class="eyebrow">Your 28-day transformation</p>
+          <h2 class="section-title">Day <span id="dayNum" class="fire-text">01</span><span class="of">/28</span></h2>
+          <div class="phase" id="phase">
+            <h3 id="phaseTitle">Week 1 — Ignite</h3>
+            <p id="phaseText">Your body gets the steady protein supply it's been begging for. Recovery starts to feel different.</p>
+          </div>
+        </div>
+        <div class="sachet-grid" id="sachetGrid" aria-label="28 sachets, one per day"></div>
+        <div class="journey-weeks">
+          <span class="wk" data-w="0">Ignite</span>
+          <span class="wk" data-w="1">Adapt</span>
+          <span class="wk" data-w="2">Build</span>
+          <span class="wk" data-w="3">Own it</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMULA -->
+    <section class="formula" id="formula">
+      <div class="section-head">
+        <p class="eyebrow reveal">Inside every sachet</p>
+        <h2 class="section-title reveal">Engineered.<br /><span class="outline">Not exaggerated.</span></h2>
+      </div>
+      <div class="cards">
+        <article class="card tilt reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M24 4l16 9v22l-16 9-16-9V13z"/><path d="M24 4v40M8 13l32 22M40 13L8 35" opacity=".35"/></svg>
+          </div>
+          <h3>Whey Isolate Blend</h3>
+          <p>25g of fast-absorbing, high-quality protein to rebuild muscle while you're still catching your breath.</p>
+          <span class="card-num">01</span>
+        </article>
+        <article class="card tilt reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M26 4L10 28h12l-2 16 18-26H26z"/></svg>
+          </div>
+          <h3>Performance Matrix</h3>
+          <p>Creatine and BCAAs stacked in to help you go heavier, last longer and bounce back faster between sessions.</p>
+          <span class="card-num">02</span>
+        </article>
+        <article class="card tilt reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="24" cy="24" r="18"/><path d="M16 24l6 6 11-12"/></svg>
+          </div>
+          <h3>Clean Label</h3>
+          <p>No added sugar. No fillers. No mystery blends. Just what your training needs — nothing it doesn't.</p>
+          <span class="card-num">03</span>
+        </article>
+        <article class="card tilt reveal">
+          <div class="card-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="12" y="6" width="24" height="36" rx="3"/><path d="M12 14h24M20 6l-2 8M28 6l2 8"/></svg>
+          </div>
+          <h3>Sealed Daily Sachets</h3>
+          <p>Every serve sealed fresh. Throw one in your gym bag, your desk, your car. No scoops. No mess.</p>
+          <span class="card-num">04</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- HOW -->
+    <section class="how">
+      <div class="section-head">
+        <p class="eyebrow reveal">The ritual</p>
+        <h2 class="section-title reveal">Three moves.<br /><span class="fire-text">Thirty seconds.</span></h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div class="step-n">01</div><h3>Tear</h3><p>Rip open today's sachet. One per day — the box keeps you honest.</p></div>
+        <div class="step-line"></div>
+        <div class="step reveal"><div class="step-n">02</div><h3>Shake</h3><p>Mix with 250ml cold water or milk. Ten seconds. Silky, zero clumps.</p></div>
+        <div class="step-line"></div>
+        <div class="step reveal"><div class="step-n">03</div><h3>Dominate</h3><p>Drink within 30 minutes of training. Then go do it again tomorrow.</p></div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="voices">
+      <div class="section-head">
+        <p class="eyebrow reveal">From the first grinders</p>
+        <h2 class="section-title reveal">They tore the first sachet.<br /><span class="outline">They didn't look back.</span></h2>
+      </div>
+      <div class="voice-rows">
+        <div class="voice-track">
+          <figure class="voice"><blockquote>"The sachets are a game changer. I never miss a day because it's literally sitting in my bag."</blockquote><figcaption><b>Arjun K.</b> · Powerlifter</figcaption></figure>
+          <figure class="voice"><blockquote>"Tastes like a dessert, mixes in seconds. My recovery between sessions feels completely different."</blockquote><figcaption><b>Sara M.</b> · CrossFit</figcaption></figure>
+          <figure class="voice"><blockquote>"One box a month. No tubs, no scoops, no guessing. Finally a protein that fits my life."</blockquote><figcaption><b>Rahul D.</b> · Software engineer &amp; lifter</figcaption></figure>
+          <figure class="voice"><blockquote>"Week three I hit a deadlift PR. I'm not saying it's the sachets. I'm not saying it isn't."</blockquote><figcaption><b>Nikhil P.</b> · Strength athlete</figcaption></figure>
+          <figure class="voice"><blockquote>"The box looks so good on my shelf I almost didn't want to open it. Almost."</blockquote><figcaption><b>Meera S.</b> · Runner</figcaption></figure>
+          <!-- duplicate for loop -->
+          <figure class="voice" aria-hidden="true"><blockquote>"The sachets are a game changer. I never miss a day because it's literally sitting in my bag."</blockquote><figcaption><b>Arjun K.</b> · Powerlifter</figcaption></figure>
+          <figure class="voice" aria-hidden="true"><blockquote>"Tastes like a dessert, mixes in seconds. My recovery between sessions feels completely different."</blockquote><figcaption><b>Sara M.</b> · CrossFit</figcaption></figure>
+          <figure class="voice" aria-hidden="true"><blockquote>"One box a month. No tubs, no scoops, no guessing. Finally a protein that fits my life."</blockquote><figcaption><b>Rahul D.</b> · Software engineer &amp; lifter</figcaption></figure>
+          <figure class="voice" aria-hidden="true"><blockquote>"Week three I hit a deadlift PR. I'm not saying it's the sachets. I'm not saying it isn't."</blockquote><figcaption><b>Nikhil P.</b> · Strength athlete</figcaption></figure>
+          <figure class="voice" aria-hidden="true"><blockquote>"The box looks so good on my shelf I almost didn't want to open it. Almost."</blockquote><figcaption><b>Meera S.</b> · Runner</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="pricing" id="pricing">
+      <div class="section-head">
+        <p class="eyebrow reveal">Choose your commitment</p>
+        <h2 class="section-title reveal">How hard are<br /><span class="fire-text">you going?</span></h2>
+      </div>
+
+      <div class="flavor-pick reveal" role="radiogroup" aria-label="Flavour">
+        <span class="fp-label">Flavour</span>
+        <button class="flavor active" data-flavor="Molten Chocolate" role="radio" aria-checked="true"><i style="--c:#5a2d14"></i>Molten Chocolate</button>
+        <button class="flavor" data-flavor="Vanilla Ice" role="radio" aria-checked="false"><i style="--c:#f3e2b8"></i>Vanilla Ice</button>
+        <button class="flavor" data-flavor="Cold Coffee" role="radio" aria-checked="false"><i style="--c:#8a5a3b"></i>Cold Coffee</button>
+      </div>
+
+      <div class="plans">
+        <article class="plan reveal">
+          <h3>Starter</h3>
+          <p class="plan-desc">1 box · 28 sachets · 1 month</p>
+          <div class="price"><span class="cur"></span><span class="amt" data-price="2499"></span></div>
+          <p class="per">per box</p>
+          <ul>
+            <li>28 sealed daily sachets</li>
+            <li>Free shaker with first box</li>
+            <li>Ships in 48 hours</li>
+          </ul>
+          <button class="btn btn-ghost btn-block add" data-plan="Starter · 1 Box" data-price="2499">Add to cart</button>
+        </article>
+
+        <article class="plan featured reveal">
+          <div class="badge">Most popular</div>
+          <h3>The Grinder</h3>
+          <p class="plan-desc">Monthly subscription · cancel anytime</p>
+          <div class="price"><span class="cur"></span><span class="amt" data-price="2124"></span></div>
+          <p class="per">per month <s class="was"></s> · save 15%</p>
+          <ul>
+            <li>A fresh box every 28 days</li>
+            <li>Free shaker + free shipping</li>
+            <li>Swap flavours monthly</li>
+            <li>Pause or cancel anytime</li>
+          </ul>
+          <button class="btn btn-fire btn-block add magnetic" data-plan="The Grinder · Monthly" data-price="2124">Start the grind</button>
+        </article>
+
+        <article class="plan reveal">
+          <h3>OG Legend</h3>
+          <p class="plan-desc">3 boxes · 84 sachets · 3 months</p>
+          <div class="price"><span class="cur"></span><span class="amt" data-price="6299"></span></div>
+          <p class="per">one-time · save 16%</p>
+          <ul>
+            <li>3 months, 84 sachets</li>
+            <li>Mix flavours across boxes</li>
+            <li>Free shipping + OG gym towel</li>
+          </ul>
+          <button class="btn btn-ghost btn-block add" data-plan="OG Legend · 3 Boxes" data-price="6299">Add to cart</button>
+        </article>
+      </div>
+      <p class="guarantee reveal">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+        28-day promise: not feeling it after your first box? We'll make it right.
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+      <div class="section-head">
+        <p class="eyebrow reveal">Questions</p>
+        <h2 class="section-title reveal">Straight answers.</h2>
+      </div>
+      <div class="faq-list">
+        <details class="reveal"><summary>What exactly is in one box?<i></i></summary><p>Each OG box holds 28 individually sealed sachets — one for every day of a 4-week month. Each sachet is a single, pre-measured serve.</p></details>
+        <details class="reveal"><summary>When should I take it?<i></i></summary><p>Within 30 minutes after training is ideal. On rest days, take it with breakfast or as a mid-day snack to keep your protein intake consistent.</p></details>
+        <details class="reveal"><summary>Is it suitable for beginners?<i></i></summary><p>Absolutely. OG is designed for anyone who trains — from your first month in the gym to your tenth year. Consistency matters more than experience.</p></details>
+        <details class="reveal"><summary>How does the subscription work?<i></i></summary><p>The Grinder plan ships a fresh box every 28 days so you never run out. Pause, skip, swap flavours or cancel any time from your account.</p></details>
+        <details class="reveal"><summary>How fast does it ship?<i></i></summary><p>Orders are dispatched within 48 hours. You'll get tracking the moment your box leaves the warehouse.</p></details>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final" id="final">
+      <div class="final-glow"></div>
+      <p class="eyebrow center reveal">Day 01 starts now</p>
+      <h2 class="final-title reveal"><span>Be the</span><span class="fire-text">OG.</span></h2>
+      <p class="final-sub reveal">28 sachets stand between you and the strongest version of yourself.</p>
+      <a href="#pricing" class="btn btn-fire btn-xl magnetic reveal"><span>Get your box</span>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-big" aria-hidden="true">OG</div>
+    <div class="footer-row">
+      <div class="brand"><span class="brand-mark">OG</span><span class="brand-sub">Original Grind</span></div>
+      <nav>
+        <a href="#box">The Box</a><a href="#formula">Formula</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+      </nav>
+      <p class="legal">© <span id="year"></span> OG Nutrition. All rights reserved.</p>
+    </div>
+    <p class="disclaimer">These statements have not been evaluated by any food or drug authority. This product is not intended to diagnose, treat, cure or prevent any disease. Use as part of a balanced diet and training programme.</p>
+  </footer>
+
+  <!-- MOBILE STICKY BUY BAR -->
+  <div class="buybar" id="buybar">
+    <div><b>OG · 28 Sachets</b><small>from <span id="buybarPrice"></span>/month</small></div>
+    <a href="#pricing" class="btn btn-fire btn-sm">Get OG</a>
+  </div>
+
+  <!-- CART -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart" id="cart" aria-label="Cart" aria-hidden="true">
+    <div class="cart-head">
+      <h3>Your stack</h3>
+      <button class="cart-close" id="cartClose" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-foot">
+      <div class="cart-total"><span>Total</span><b id="cartTotal"></b></div>
+      <button class="btn btn-fire btn-block" id="checkout">Checkout</button>
+      <p class="cart-note">Free shipping on subscriptions &amp; 3-box packs.</p>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
