@@ -29,6 +29,7 @@
       $("#login").hidden = true; $("#app").hidden = false;
       paymentBanner(me);
       showTab(location.hash.slice(1) || "overview");
+      if (location.hash.slice(1) !== "reminders") api("/api/admin/reminders").then((r) => remBadge(r.due.length)).catch(() => {});
     } catch { showLogin(); }
   }
   $("#loginForm").addEventListener("submit", async (e) => {
@@ -52,7 +53,7 @@
   }
 
   // ---------- Tabs ----------
-  const loaders = { overview: loadOverview, orders: loadOrders, products: loadProducts, settings: loadSettings };
+  const loaders = { overview: loadOverview, orders: loadOrders, reminders: loadReminders, products: loadProducts, settings: loadSettings };
   function showTab(name) {
     if (!loaders[name]) name = "overview";
     $$("#tabs button").forEach((b) => b.classList.toggle("on", b.dataset.tab === name));
@@ -252,6 +253,71 @@
   $("#scrim").addEventListener("click", closeDrawer);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
 
+  // ---------- Reminders ----------
+  const dmy = (iso) => new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  const itemsText = (items) => items.map((i) => `${i.qty > 1 ? i.qty + "× " : ""}${i.name} (${i.flavor})`).join(", ");
+  const remBadge = (n) => { $("#remBadge").hidden = !n; $("#remBadge").textContent = n; };
+  function fillTemplate(tpl, c) {
+    const vals = {
+      name: (c.name || "").trim().split(/\s+/)[0] || "there",
+      product: c.items.map((i) => `${i.name} (${i.flavor})`).join(" and "),
+      date: new Date(c.runOutAt).toLocaleDateString("en-IN", { day: "numeric", month: "long" }),
+      link: location.origin,
+    };
+    return tpl.replace(/\{(name|product|date|link)\}/g, (_, k) => vals[k]);
+  }
+  function leftTag(c) {
+    if (c.daysLeft > 1) return `<span class="tag soon">${c.daysLeft} days left</span>`;
+    if (c.daysLeft === 1) return `<span class="tag soon">Runs out tomorrow</span>`;
+    if (c.daysLeft === 0) return `<span class="tag over">Runs out today</span>`;
+    return `<span class="tag over">Ran out ${-c.daysLeft} day${c.daysLeft === -1 ? "" : "s"} ago</span>`;
+  }
+
+  async function loadReminders() {
+    const r = await api("/api/admin/reminders");
+    remBadge(r.due.length);
+    $("#remDueCount").textContent = r.due.length ? `${r.due.length} to review` : "";
+    $("#remDue").innerHTML = r.due.length ? r.due.map((c) => `
+      <div class="rem" data-rem="${esc(c.orderId)}">
+        <div class="rem-top"><div><h3>${esc(c.name)}</h3><small>+91 ${esc(c.phone)} · ${esc(c.city)}</small></div>${leftTag(c)}</div>
+        <p class="rem-items">${esc(itemsText(c.items))}</p>
+        <div class="rem-meter${c.daysLeft <= 0 ? " over" : ""}"><i style="width:${Math.min(100, (c.daysUsed / c.totalDays) * 100)}%"></i></div>
+        <div class="rem-meta">Day ${Math.min(c.daysUsed, c.totalDays)} of ${c.totalDays} since ${c.startedFrom} on ${dmy(c.startedAt)} · runs out ${dmy(c.runOutAt)} · order <button class="link" data-open="${esc(c.orderId)}">${esc(c.orderId)}</button></div>
+        <label class="fld"><span>Message</span><textarea rows="7" maxlength="2000">${esc(fillTemplate(r.template, c))}</textarea></label>
+        <div class="rem-actions">
+          <button class="btn" data-act="skipped">Skip</button>
+          <button class="btn wa" data-act="sent">Approve &amp; send on WhatsApp</button>
+        </div>
+      </div>`).join("") : `<div class="panel"><div class="empty">No reminders due. Customers show up here from day ${28 - r.leadDays} of a 28-sachet box.</div></div>`;
+
+    $("#remUpcoming").innerHTML = r.upcoming.length ? r.upcoming.map((c) => `
+      <div class="rem-row"><div class="who">${esc(c.name)} <span class="muted">+91 ${esc(c.phone)}</span><small>${esc(itemsText(c.items))}</small></div>
+      <div class="when">Reminder due ${dmy(c.dueAt)}<br><small>runs out ${dmy(c.runOutAt)}</small></div></div>`).join("") : `<div class="empty">Nobody else runs out in the next week.</div>`;
+
+    $("#remDone").innerHTML = r.done.length ? r.done.map((c) => `
+      <div class="rem-row" data-rem="${esc(c.orderId)}"><div class="who">${esc(c.name)} <span class="muted">+91 ${esc(c.phone)}</span><small>${esc(itemsText(c.items))}</small></div>
+      <span class="tag ${esc(c.reminder.status)}">${c.reminder.status === "sent" ? "Sent" : "Skipped"} ${dt(c.reminder.at)}</span>
+      <button class="link" data-act="reset">Undo</button></div>`).join("") : `<div class="empty">Nothing yet.</div>`;
+
+    const byId = Object.fromEntries([...r.due, ...r.done].map((c) => [c.orderId, c]));
+    $$("[data-act]", $("#view-reminders")).forEach((b) => b.addEventListener("click", async () => {
+      const box = b.closest("[data-rem]"), c = byId[box.dataset.rem], action = b.dataset.act;
+      let message;
+      if (action === "sent") {
+        message = $("textarea", box).value.trim();
+        if (!message) return toast("Write a message first");
+        // Open WhatsApp synchronously (inside the click) so the browser doesn't block it.
+        window.open(`https://wa.me/91${c.phone}?text=${encodeURIComponent(message)}`, "_blank", "noopener");
+      }
+      b.disabled = true;
+      try {
+        await api("/api/admin/reminders/" + encodeURIComponent(c.orderId), { method: "POST", body: JSON.stringify({ action, message }) });
+        toast(action === "sent" ? `Opened WhatsApp for ${c.name} — marked sent` : action === "skipped" ? "Skipped" : "Moved back to due");
+        loadReminders();
+      } catch (err) { b.disabled = false; toast(err.message); }
+    }));
+  }
+
   // ---------- Products ----------
   async function loadProducts() {
     const { products } = await api("/api/admin/products");
@@ -264,6 +330,7 @@
           <label class="fld"><span>MRP (₹)</span><input name="mrp" type="number" min="1" value="${p.mrp ?? ""}" placeholder="—" /></label>
           <label class="fld"><span>Stock</span><input name="stock" type="number" min="0" value="${p.stock ?? ""}" placeholder="Not tracked" /></label>
         </div>
+        <label class="fld"><span>Days one unit lasts (for WhatsApp reminders)</span><input name="supplyDays" type="number" min="1" max="365" value="${p.supplyDays ?? ""}" placeholder="No reminders" /></label>
         <label class="toggle"><input type="checkbox" name="inStock" ${p.inStockFlag ? "checked" : ""} /> Available to buy</label>
         <label class="toggle"><input type="checkbox" name="active" ${p.active ? "checked" : ""} /> Show on store</label>
         <button class="btn primary">Save</button>
@@ -272,7 +339,7 @@
       e.preventDefault();
       const el = f.elements;
       try {
-        await api("/api/admin/products/" + f.dataset.id, { method: "PATCH", body: JSON.stringify({ price: el.price.value, mrp: el.mrp.value, stock: el.stock.value, inStock: el.inStock.checked, active: el.active.checked }) });
+        await api("/api/admin/products/" + f.dataset.id, { method: "PATCH", body: JSON.stringify({ price: el.price.value, mrp: el.mrp.value, stock: el.stock.value, supplyDays: el.supplyDays.value, inStock: el.inStock.checked, active: el.active.checked }) });
         toast("Product saved");
       } catch (err) { toast(err.message); }
     }));
@@ -282,6 +349,7 @@
   async function loadSettings() {
     const s = await api("/api/admin/settings");
     $("#shipFee").value = s.shippingFee;
+    $("#remTemplate").value = s.reminderTemplate;
     const mode = { razorpay: "Live — Razorpay", demo: "Test mode (simulated)", off: "Not configured" }[me.paymentMode] || "—";
     $("#payInfo").innerHTML = `<h3>Payments</h3><p class="muted">Prepaid only — cash on delivery is not offered.</p>
       <div class="kv"><span class="muted">Gateway</span><b>${mode}</b></div>
@@ -291,6 +359,12 @@
   $("#shipForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     try { await api("/api/admin/settings", { method: "PATCH", body: JSON.stringify({ shippingFee: $("#shipFee").value }) }); toast("Shipping fee saved"); }
+    catch (err) { toast(err.message); }
+  });
+
+  $("#remForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try { await api("/api/admin/settings", { method: "PATCH", body: JSON.stringify({ reminderTemplate: $("#remTemplate").value }) }); toast("Reminder message saved"); }
     catch (err) { toast(err.message); }
   });
 

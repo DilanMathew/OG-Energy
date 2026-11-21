@@ -131,6 +131,12 @@ function passwordMatches(input) {
   return ADMIN_PASSWORD.length > 0 && crypto.timingSafeEqual(a, b);
 }
 
+// ---------------- WhatsApp reorder reminder ----------------
+const DEFAULT_REMINDER =
+  "Hi {name}! 👋 Your {product} sachets are almost over — they run out around {date}.\n\n" +
+  "Reorder now so you don't miss a day: {link}\n\n— Team OG";
+const reminderTemplate = () => db.getSetting("reminder_template", DEFAULT_REMINDER);
+
 // ---------------- Validation ----------------
 const clean = (v, max) => String(v == null ? "" : v).replace(/[\u0000-\u001f\u007f]/g, " ").trim().slice(0, max);
 function validateCustomer(c = {}) {
@@ -376,16 +382,35 @@ async function handleApi(req, res, url) {
       if (!(price >= 1 && price <= 1000000)) return fail(res, 400, "Enter a valid price");
       if (mrp !== null && !(mrp >= price)) return fail(res, 400, "MRP must be blank or at least the price");
       if (stock !== null && !(stock >= 0)) return fail(res, 400, "Stock must be blank (untracked) or 0 or more");
-      return json(res, 200, { product: db.updateProduct(prod.id, { price, mrp, stock, inStock: !!b.inStock, active: !!b.active }) });
+      const supplyDays = b.supplyDays === undefined ? prod.supplyDays : b.supplyDays === null || b.supplyDays === "" ? null : Math.round(Number(b.supplyDays));
+      if (supplyDays !== null && !(supplyDays >= 1 && supplyDays <= 365)) return fail(res, 400, "Days per unit must be blank or 1–365");
+      return json(res, 200, { product: db.updateProduct(prod.id, { price, mrp, stock, inStock: !!b.inStock, active: !!b.active, supplyDays }) });
+    }
+    if (m === "GET" && p === "/api/admin/reminders") {
+      return json(res, 200, { ...db.reorderReminders(), template: reminderTemplate() });
+    }
+    if (m === "POST" && (mm = p.match(/^\/api\/admin\/reminders\/([A-Z0-9-]{6,30})$/))) {
+      if (!db.getOrder(mm[1])) return fail(res, 404, "Not found");
+      const b = await readJson(req);
+      if (!["sent", "skipped", "reset"].includes(b.action)) return fail(res, 400, "Invalid action");
+      db.setReminder(mm[1], b.action, b.action === "sent" ? String(b.message || "").slice(0, 2000) : null);
+      return json(res, 200, { ok: true });
     }
     if (p === "/api/admin/settings") {
       if (m === "PATCH") {
         const b = await readJson(req);
-        const fee = Math.round(Number(b.shippingFee));
-        if (!(fee >= 0 && fee <= 10000)) return fail(res, 400, "Enter a valid shipping fee");
-        db.setSetting("shipping_fee", fee);
+        if (b.shippingFee !== undefined) {
+          const fee = Math.round(Number(b.shippingFee));
+          if (!(fee >= 0 && fee <= 10000)) return fail(res, 400, "Enter a valid shipping fee");
+          db.setSetting("shipping_fee", fee);
+        }
+        if (b.reminderTemplate !== undefined) {
+          const t = String(b.reminderTemplate).replace(/\r/g, "").trim().slice(0, 1000);
+          if (!t) return fail(res, 400, "The reminder message can't be empty");
+          db.setSetting("reminder_template", t);
+        }
       }
-      return json(res, 200, { shippingFee: parseInt(db.getSetting("shipping_fee", "0"), 10) || 0 });
+      return json(res, 200, { shippingFee: parseInt(db.getSetting("shipping_fee", "0"), 10) || 0, reminderTemplate: reminderTemplate() });
     }
   }
 
