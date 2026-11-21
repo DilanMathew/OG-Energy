@@ -16,17 +16,29 @@ if (!ADMIN_PASSWORD) console.warn("[og] ADMIN_PASSWORD not set — admin login i
 console.log(`[og] payment mode: ${pay.mode} · database: ${db.DB_PATH}`);
 
 // ---------------- Delivery rules ----------------
-// Pincode prefixes: Tamil Nadu 60–66, Karnataka 56–59, Kerala 67–69.
-const STATES = {
+// Priority states (2–3 days), identified by pincode prefix: Tamil Nadu 60–66, Karnataka 56–59, Kerala 67–69.
+// Everywhere else in India: within 7 days. Both are subject to availability.
+const PRIORITY = {
   "Tamil Nadu": ["60", "61", "62", "63", "64", "65", "66"],
   Karnataka: ["56", "57", "58", "59"],
   Kerala: ["67", "68", "69"],
 };
-const ETA = "2–3 days";
-function stateForPincode(pin) {
-  if (!/^\d{6}$/.test(pin)) return null;
+const ALL_STATES = [
+  "Tamil Nadu", "Karnataka", "Kerala",
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh", "Chhattisgarh",
+  "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir",
+  "Jharkhand", "Ladakh", "Lakshadweep", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland",
+  "Odisha", "Puducherry", "Punjab", "Rajasthan", "Sikkim", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+];
+// Territories whose pincodes share a priority-state prefix (e.g. Puducherry 605xxx, Lakshadweep 682xxx).
+const PREFIX_EXEMPT = new Set(["Puducherry", "Lakshadweep"]);
+const ETA_FAST = "2–3 days";
+const ETA_STD = "7 days";
+const etaFor = (state) => (PRIORITY[state] ? ETA_FAST : ETA_STD);
+function priorityStateForPincode(pin) {
+  if (!/^[1-9]\d{5}$/.test(pin)) return null;
   const p = pin.slice(0, 2);
-  return Object.keys(STATES).find((s) => STATES[s].includes(p)) || null;
+  return Object.keys(PRIORITY).find((s) => PRIORITY[s].includes(p)) || null;
 }
 
 // ---------------- Helpers ----------------
@@ -138,11 +150,13 @@ function validateCustomer(c = {}) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(out.email)) errors.email = "Enter a valid email";
   if (out.address1.length < 5) errors.address1 = "Enter your house / street address";
   if (out.city.length < 2) errors.city = "Enter your city";
-  if (!STATES[out.state]) errors.state = "We currently deliver only to Tamil Nadu, Karnataka and Kerala";
-  const pinState = stateForPincode(out.pincode);
-  if (!/^\d{6}$/.test(out.pincode)) errors.pincode = "Enter a valid 6-digit pincode";
-  else if (!pinState) errors.pincode = "Sorry, we don't deliver to this pincode yet";
-  else if (STATES[out.state] && pinState !== out.state) errors.pincode = `This pincode is in ${pinState}`;
+  if (!ALL_STATES.includes(out.state)) errors.state = "Select your state";
+  const pinState = priorityStateForPincode(out.pincode);
+  if (!/^[1-9]\d{5}$/.test(out.pincode)) errors.pincode = "Enter a valid 6-digit pincode";
+  else if (!PREFIX_EXEMPT.has(out.state)) {
+    if (PRIORITY[out.state] && pinState !== out.state) errors.pincode = `This pincode is not in ${out.state}`;
+    else if (pinState && pinState !== out.state) errors.pincode = `This pincode is in ${pinState}`;
+  }
   return { customer: out, errors };
 }
 
@@ -185,7 +199,7 @@ function newOrderId() {
 const publicOrder = (o) => ({
   id: o.id, status: o.status, createdAt: o.createdAt, paidAt: o.paidAt, items: o.items,
   subtotal: o.subtotal, shipping: o.shipping, total: o.total, tracking: o.tracking,
-  city: o.customer.city, state: o.customer.state, eta: ETA,
+  city: o.customer.city, state: o.customer.state, eta: etaFor(o.customer.state),
 });
 
 // ---------------- API routes ----------------
@@ -200,8 +214,9 @@ async function handleApi(req, res, url) {
     return json(res, 200, {
       paymentMode: pay.mode,
       razorpayKey: pay.mode === "razorpay" ? pay.keyId : null,
-      states: Object.keys(STATES),
-      eta: ETA,
+      states: ALL_STATES,
+      priorityStates: Object.keys(PRIORITY),
+      eta: { priority: ETA_FAST, standard: ETA_STD },
       shippingFee: parseInt(db.getSetting("shipping_fee", "0"), 10) || 0,
     });
   }
@@ -210,8 +225,9 @@ async function handleApi(req, res, url) {
   }
   if (m === "GET" && p.startsWith("/api/pincode/")) {
     const pin = p.split("/").pop();
-    const state = stateForPincode(pin);
-    return json(res, 200, state ? { ok: true, state, eta: ETA } : { ok: false });
+    if (!/^[1-9]\d{5}$/.test(pin)) return json(res, 200, { ok: false });
+    const state = priorityStateForPincode(pin);
+    return json(res, 200, state ? { ok: true, priority: true, state, eta: ETA_FAST } : { ok: true, priority: false, state: null, eta: ETA_STD });
   }
   if (m === "POST" && p === "/api/track") {
     const b = await readJson(req);

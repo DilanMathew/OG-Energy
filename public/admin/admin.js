@@ -286,7 +286,7 @@
     $("#payInfo").innerHTML = `<h3>Payments</h3><p class="muted">Prepaid only — cash on delivery is not offered.</p>
       <div class="kv"><span class="muted">Gateway</span><b>${mode}</b></div>
       <div class="kv"><span class="muted">Webhook</span><b>${me.webhook ? "Configured" : "Not set"}</b></div>
-      <div class="kv"><span class="muted">Delivery</span><b>TN · KA · KL, 2–3 days</b></div>`;
+      <div class="kv"><span class="muted">Delivery</span><b>TN · KA · KL 2–3 days · rest of India 7 days</b></div>`;
   }
   $("#shipForm").addEventListener("submit", async (e) => {
     e.preventDefault();

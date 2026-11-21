@@ -233,13 +233,14 @@
       card.className = "p-card reveal";
       card.style.setProperty("--accent", p.accent);
       const off = p.mrp && p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
-      const hasSachet = p.flavors.some((f) => f.image !== p.image);
+      const hasSachet = p.flavors.some((f) => f.image && f.image !== p.image);
+      const firstImg = p.flavors[0].image && p.flavors[0].image !== p.image ? p.flavors[0].image : null;
       card.innerHTML = `
         <div class="p-stage">
           <div class="p-beam"></div>
           <div class="p-ghost" style="--chars:${p.shortName.split(" ")[0].length}">${esc(p.shortName.split(" ")[0])}</div>
           <img class="p-img" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" />
-          ${hasSachet ? `<img class="p-sachet" src="${esc(p.flavors[0].image)}" alt="" loading="lazy" />` : ""}
+          ${hasSachet ? `<img class="p-sachet${firstImg ? "" : " gone"}" src="${esc(firstImg || p.flavors.find((f) => f.image && f.image !== p.image).image)}" alt="" loading="lazy" />` : ""}
           ${!p.inStock ? `<span class="p-badge sold">Out of stock</span>` : p.lowStock ? `<span class="p-badge low">Only ${p.lowStock} left</span>` : ""}
         </div>
         <div class="p-body">
@@ -262,7 +263,11 @@
         b.classList.add("active"); b.setAttribute("aria-checked", "true");
         flavor = b.dataset.flavor;
         const f = p.flavors.find((x) => x.name === flavor);
-        if (sachetEl && f) { sachetEl.classList.add("swap"); setTimeout(() => { sachetEl.src = f.image; sachetEl.classList.remove("swap"); }, 250); }
+        if (sachetEl && f) {
+          if (!f.image || f.image === p.image) { sachetEl.classList.add("gone"); return; }
+          sachetEl.classList.add("swap");
+          setTimeout(() => { sachetEl.src = f.image; sachetEl.classList.toggle("swap", false); sachetEl.classList.toggle("gone", false); }, 250);
+        }
       }));
       $$(".qty button", card).forEach((b) => b.addEventListener("click", () => {
         qty = Math.max(1, Math.min(10, qty + Number(b.dataset.q)));
@@ -273,8 +278,31 @@
     });
     observeReveals();
     const min = products.filter((p) => p.inStock).reduce((m, p) => Math.min(m, p.price), Infinity);
-    if (isFinite(min)) $("#buybarPrice").textContent = `from ${inr(min)} · 2–3 day delivery`;
+    if (isFinite(min)) $("#buybarPrice").textContent = `from ${inr(min)} · delivered across India`;
+    renderCreatine();
   }
+
+  // ---------- Creatine spotlight ----------
+  let crFlavor = "Fruit Fusion";
+  function renderCreatine() {
+    const c = productById("og-creatine");
+    const btn = $("#crAdd");
+    if (!c) { $("#creatine").hidden = true; return; }
+    const off = c.mrp && c.mrp > c.price ? Math.round((1 - c.price / c.mrp) * 100) : 0;
+    $("#crPrice").innerHTML = `<b>${inr(c.price)}</b>${off ? `<s>${inr(c.mrp)}</s><span class="off">${off}% off</span>` : ""}`;
+    const names = c.flavors.map((f) => f.name);
+    $$("[data-cr-flavor]").forEach((b) => { b.hidden = !names.includes(b.dataset.crFlavor); });
+    if (!names.includes(crFlavor)) crFlavor = names[0];
+    btn.disabled = !c.inStock;
+    btn.textContent = c.inStock ? "Add creatine to cart" : "Out of stock";
+  }
+  $$("[data-cr-flavor]").forEach((b) => b.addEventListener("click", () => {
+    $$("[data-cr-flavor]").forEach((x) => { x.classList.toggle("active", false); x.setAttribute("aria-checked", "false"); });
+    b.classList.add("active"); b.setAttribute("aria-checked", "true");
+    crFlavor = b.dataset.crFlavor;
+  }));
+  $("#crAdd").addEventListener("click", () => addToCart("og-creatine", crFlavor, 1));
+  const etaText = (eta) => (/^7/.test(eta) ? "within 7 days" : "in " + eta);
 
   // ---------- Cart ----------
   const cartCount = $("#cartCount");
@@ -390,8 +418,11 @@
     if (e.target.value.length === 6) pinTimer = setTimeout(async () => {
       try {
         const r = await api("/api/pincode/" + e.target.value);
-        if (r.ok) { form.elements.state.value = r.state; fieldMsg("state", ""); fieldMsg("pincode", `✓ Delivers to ${r.state} in ${r.eta}`, true); }
-        else fieldMsg("pincode", "Sorry, we deliver only to Tamil Nadu, Karnataka & Kerala for now");
+        if (r.ok && r.priority) { form.elements.state.value = r.state; fieldMsg("state", ""); fieldMsg("pincode", `✓ Delivers to ${r.state} in ${r.eta}`, true); }
+        else if (r.ok) {
+          if (["Tamil Nadu", "Karnataka", "Kerala"].includes(form.elements.state.value)) form.elements.state.value = "";
+          fieldMsg("pincode", "✓ We deliver here within 7 days", true);
+        } else fieldMsg("pincode", "Enter a valid 6-digit pincode");
       } catch {}
     }, 250);
   });
@@ -498,7 +529,7 @@
     openModal(`
       <div class="modal-icon"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
       <h3 id="modalTitle">You're an OG.</h3>
-      <p>Payment received. Your order is confirmed and will reach ${esc(order.city)}, ${esc(order.state)} in ${esc(order.eta)}*.</p>
+      <p>Payment received. Your order is confirmed and will reach ${esc(order.city)}, ${esc(order.state)} ${esc(etaText(order.eta))}*.</p>
       <div class="order-box">
         <div><span>Order ID</span><b class="order-id">${esc(order.id)}</b></div>
         ${order.items.map((i) => `<div><span>${i.qty} × ${esc(i.name.replace(/^OG\s+/, ""))} (${esc(i.flavor)})</span><b>${inr(i.qty * i.price)}</b></div>`).join("")}
@@ -540,8 +571,9 @@
     if (!/^\d{6}$/.test(pin)) { out.textContent = "Enter a 6-digit pincode"; out.classList.add("no"); return; }
     try {
       const r = await api("/api/pincode/" + pin);
-      if (r.ok) { out.textContent = `✓ We deliver to ${pin} (${r.state}) in ${r.eta}, subject to availability.`; out.classList.add("ok"); }
-      else { out.textContent = "Sorry — we currently deliver only to Tamil Nadu, Karnataka and Kerala."; out.classList.add("no"); }
+      if (r.ok && r.priority) { out.textContent = `✓ Express zone — we deliver to ${pin} (${r.state}) in ${r.eta}, subject to availability.`; out.classList.add("ok"); }
+      else if (r.ok) { out.textContent = `✓ We deliver to ${pin} within 7 days, subject to availability.`; out.classList.add("ok"); }
+      else { out.textContent = "That doesn't look like a valid pincode."; out.classList.add("no"); }
     } catch { out.textContent = "Couldn't check right now. Please try again."; out.classList.add("no"); }
   });
 
