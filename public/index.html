@@ -80,17 +80,30 @@
 
         <div class="hero-visual" id="heroVisual">
           <div class="halo"></div>
+          <div class="halo halo-alt" aria-hidden="true"></div>
           <div class="ring ring-1"></div>
           <div class="ring ring-2"></div>
           <div class="beam" aria-hidden="true"></div>
           <div class="hero-product" id="heroProduct">
-            <img src="/img/whey-box.webp" alt="OG Whey Protein Concentrate box" width="757" height="900" />
+            <div class="spinner" id="spinner">
+              <img class="face face-front" src="/img/whey-box.webp" alt="OG Whey Protein Concentrate box" width="757" height="900" draggable="false" />
+              <img class="face face-back" src="/img/yeast-box.webp" alt="OG Fermented Yeast Protein box" width="757" height="900" draggable="false" />
+            </div>
+            <div class="spin-shadow" aria-hidden="true"></div>
+          </div>
+          <div class="spin-ctl" role="group" aria-label="Show product">
+            <button type="button" class="on" data-face="0" aria-pressed="true"><i style="--d:#F7931E"></i>Whey</button>
+            <button type="button" data-face="1" aria-pressed="false"><i style="--d:#8DC63F"></i>Yeast Protein</button>
+          </div>
+          <div class="spin-hint" id="spinHint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 15.5-6.2M21 12a9 9 0 0 1-15.5 6.2"/><path d="M18.5 2v4h-4M5.5 22v-4h4"/></svg>
+            Drag to spin
           </div>
           <img class="float-sachet s1" src="/img/sachet-whey-choco.webp" alt="" width="341" height="700" />
           <img class="float-sachet s2" src="/img/sachet-yeast-vanilla.webp" alt="" width="342" height="700" />
           <img class="float-sachet s3" src="/img/sachet-whey-vanilla.webp" alt="" width="341" height="700" />
           <div class="chip chip-a"><b>24g</b> protein / sachet</div>
-          <div class="chip chip-b"><span class="eu">EU</span> Whey imported from Europe</div>
+          <div class="chip chip-b"><span class="eu">EU</span> <span id="chipOrigin">Whey imported from Europe</span></div>
         </div>
       </div>
       <a href="#shop" class="scroll-cue" aria-label="Scroll down"><span></span></a>

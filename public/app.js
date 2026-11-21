@@ -112,9 +112,8 @@
   const heroProduct = $("#heroProduct"), hero = $("#hero"), lifestyleImg = $("#lifestyleImg");
   let lastY = window.scrollY, mx = 0, my = 0;
   function updateHeroTilt() {
-    if (reduced || !fine) return; // 3D tilt only for mouse users; it softens the image on phones
-    const y = Math.min(window.scrollY, hero.offsetHeight);
-    heroProduct.style.transform = `rotateY(${-14 + mx * 22 + y * 0.03}deg) rotateX(${4 - my * 10}deg)`;
+    if (reduced || !fine) return; // gentle mouse tilt on desktop only; the spin itself works everywhere
+    heroProduct.style.transform = `rotateY(${mx * 10}deg) rotateX(${-my * 6}deg)`;
   }
   function onScroll() {
     const y = window.scrollY;
@@ -148,6 +147,97 @@
   window.addEventListener("scroll", () => { if (!ticking) { requestAnimationFrame(() => { onScroll(); ticking = false; }); ticking = true; } }, { passive: true });
   window.addEventListener("resize", onScroll);
   onScroll();
+
+  // ---------- Hero: two-sided 3D product spin (drag / swipe) ----------
+  (function heroSpin() {
+    const hv = $("#heroVisual"), spinner = $("#spinner"), hint = $("#spinHint");
+    const btns = $$(".spin-ctl button"), origin = $("#chipOrigin");
+    const FACES = [
+      { origin: "Whey imported from Europe" },
+      { origin: "Protein imported from Europe" },
+    ];
+    let angle = 0, vel = 0, target = null, dragging = false, moved = 0;
+    let lastX = 0, lastInteract = 0, raf = null, face = 0;
+
+    const norm = (a) => ((a % 360) + 360) % 360;
+    function setFace(f) {
+      if (f === face) return;
+      face = f;
+      hv.classList.toggle("is-yeast", f === 1);
+      origin.textContent = FACES[f].origin;
+      btns.forEach((b, i) => { b.classList.toggle("on", i === f); b.setAttribute("aria-pressed", String(i === f)); });
+    }
+    function render() {
+      spinner.style.transform = `rotateY(${angle}deg)`;
+      const a = norm(angle);
+      setFace(a > 90 && a < 270 ? 1 : 0);
+    }
+    function loop() {
+      if (!dragging) {
+        if (target !== null) {
+          const d = target - angle;
+          angle += d * 0.1;
+          if (Math.abs(d) < 0.25) { angle = target; target = null; vel = 0; render(); raf = null; return; }
+        } else if (Math.abs(vel) > 0.6) {
+          angle += vel;
+          vel *= 0.94;
+        } else {
+          target = Math.round(angle / 180) * 180; // settle on whichever side faces the viewer
+        }
+      }
+      render();
+      raf = requestAnimationFrame(loop);
+    }
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+    const touched = () => { lastInteract = Date.now(); hint.classList.add("gone"); };
+
+    hv.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0 || e.target.closest(".spin-ctl")) return;
+      dragging = true; moved = 0; vel = 0; target = null; lastX = e.clientX;
+      hv.setPointerCapture(e.pointerId);
+      hv.classList.add("dragging");
+      touched(); kick();
+    });
+    hv.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      moved += Math.abs(dx);
+      angle += dx * 0.55;
+      vel = vel * 0.4 + dx * 0.55 * 0.6;
+      render();
+    });
+    const end = () => {
+      if (!dragging) return;
+      dragging = false;
+      hv.classList.remove("dragging");
+      if (moved < 4) target = Math.round(angle / 180) * 180 + 180; // a tap flips it
+      touched(); kick();
+    };
+    hv.addEventListener("pointerup", end);
+    hv.addEventListener("pointercancel", end);
+    hv.addEventListener("lostpointercapture", end);
+
+    function goTo(f) {
+      const off = f === 1 ? 180 : 0;
+      // nearest angle showing that face, continuing in the current direction
+      let t = Math.round((angle - off) / 360) * 360 + off;
+      if (t === angle) return;
+      target = t; vel = 0; kick();
+    }
+    btns.forEach((b) => b.addEventListener("click", () => { touched(); goTo(Number(b.dataset.face)); }));
+
+    // Idle showcase: flip every few seconds until the visitor interacts.
+    if (!reduced) {
+      let heroOn = true;
+      new IntersectionObserver(([en]) => { heroOn = en.isIntersecting; }).observe(hv);
+      setInterval(() => {
+        if (dragging || !heroOn || document.hidden || Date.now() - lastInteract < 9000) return;
+        target = Math.round(angle / 180) * 180 + 180; kick();
+      }, 4500);
+    }
+    render();
+  })();
 
   if (fine && !reduced) {
     window.addEventListener("pointermove", (e) => {

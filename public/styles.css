@@ -148,7 +148,26 @@ body.ready .hero-title .line:nth-child(2) .word { transition-delay: 0.12s; }
 .ring-2 { display: none; }
 .beam { display: none; }
 .hero-product { position: relative; z-index: 2; width: min(380px, 60cqw, 62cqh); transform-style: preserve-3d; transition: transform 0.2s ease-out; animation: float 6s ease-in-out infinite; }
-.hero-product img { width: 100%; height: auto; filter: drop-shadow(0 40px 40px rgba(60, 30, 0, 0.35)) drop-shadow(0 8px 10px rgba(0, 0, 0, 0.18)); }
+
+/* Two-sided 3D product: drag / swipe to spin (front = Whey, back = Fermented Yeast) */
+.hero-visual { touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
+.hero-visual.dragging { cursor: grabbing; }
+.spinner { position: relative; transform-style: preserve-3d; will-change: transform; }
+.face { display: block; width: 100%; height: auto; backface-visibility: hidden; -webkit-backface-visibility: hidden; pointer-events: none; -webkit-user-drag: none; }
+.face-back { position: absolute; inset: 0; transform: rotateY(180deg); }
+.spin-shadow { position: absolute; left: 12%; right: 12%; bottom: -7%; height: 9%; border-radius: 50%; background: radial-gradient(closest-side, rgba(60, 30, 0, 0.38), transparent); filter: blur(6px); transform: translateZ(-1px); transition: transform 0.2s; }
+.halo { transition: opacity 0.5s ease; }
+.halo-alt { background: radial-gradient(circle at 35% 30%, #f1fae2 0%, #d8efb4 55%, #c3e590 100%); opacity: 0; }
+.hero-visual.is-yeast .halo-alt { opacity: 1; }
+.spin-ctl { position: absolute; z-index: 5; left: 50%; bottom: 0; transform: translateX(-50%); display: inline-flex; padding: 4px; gap: 4px; border-radius: 999px; background: #fff; border: 1.5px solid #111; box-shadow: 3px 3px 0 #111; }
+.spin-ctl button { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; transition: background 0.25s, color 0.25s; }
+.spin-ctl button i { width: 10px; height: 10px; border-radius: 50%; background: var(--d); border: 1.5px solid #111; }
+.spin-ctl button.on { background: #111; color: #fff; }
+.spin-ctl button.on i { border-color: #fff; }
+.spin-hint { position: absolute; z-index: 5; top: 2%; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--text-2); background: rgba(255, 255, 255, 0.85); border: 1px solid var(--line-2); transition: opacity 0.5s; pointer-events: none; }
+.spin-hint svg { animation: hintSpin 2.4s ease-in-out infinite; }
+@keyframes hintSpin { 50% { transform: rotate(180deg); } }
+.spin-hint.gone { opacity: 0; }
 @keyframes float { 50% { translate: 0 -14px; } }
 .float-sachet { position: absolute; z-index: 3; height: auto; filter: drop-shadow(0 22px 22px rgba(0, 0, 0, 0.25)); }
 .s1 { width: min(16cqw, 22cqh); top: 8%; left: 4%; transform: rotate(-16deg); animation: drift 7s ease-in-out infinite; }
@@ -541,7 +560,11 @@ body.cart-open .cart-overlay { opacity: 1; visibility: visible; }
   .hero-visual { height: min(340px, 42svh); }
   .chip { font-size: 11.5px; padding: 7px 11px; box-shadow: 3px 3px 0 #111; }
   .chip b { font-size: 14px; }
-  .chip-a { bottom: 4%; left: 0; }
+  .chip-a { display: none; }
+  .hero-product { width: min(380px, 60cqw, 54cqh); }
+  .hero-visual { margin-bottom: 8px; }
+  .spin-ctl button { padding: 6px 11px; font-size: 12px; }
+  .spin-hint { top: 0; }
   .chip-b { display: none; }
   .s1 { top: 20%; left: 1%; }
   .s2 { bottom: 14%; right: 1%; }
