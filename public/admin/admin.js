@@ -350,6 +350,7 @@
     const s = await api("/api/admin/settings");
     $("#shipFee").value = s.shippingFee;
     $("#remTemplate").value = s.reminderTemplate;
+    api("/api/admin/demo-orders").then((r) => { $("#demoCount").textContent = r.count ? `${r.count} orders` : "None"; }).catch(() => {});
     const mode = { razorpay: "Live — Razorpay", demo: "Test mode (simulated)", off: "Not configured" }[me.paymentMode] || "—";
     $("#payInfo").innerHTML = `<h3>Payments</h3><p class="muted">Prepaid only — cash on delivery is not offered.</p>
       <div class="kv"><span class="muted">Gateway</span><b>${mode}</b></div>
@@ -365,6 +366,21 @@
   $("#remForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     try { await api("/api/admin/settings", { method: "PATCH", body: JSON.stringify({ reminderTemplate: $("#remTemplate").value }) }); toast("Reminder message saved"); }
+    catch (err) { toast(err.message); }
+  });
+
+  async function demo(method) {
+    const r = await api("/api/admin/demo-orders", { method });
+    $("#demoCount").textContent = r.count ? `${r.count} orders` : "None";
+    return r;
+  }
+  $("#demoLoad").addEventListener("click", async () => {
+    try { await demo("POST"); toast("Demo orders loaded — see Orders and Reminders"); api("/api/admin/reminders").then((r) => remBadge(r.due.length)).catch(() => {}); }
+    catch (err) { toast(err.message); }
+  });
+  $("#demoClear").addEventListener("click", async () => {
+    if (!confirm("Remove all demo orders?")) return;
+    try { await demo("DELETE"); toast("Demo orders removed"); api("/api/admin/reminders").then((r) => remBadge(r.due.length)).catch(() => {}); }
     catch (err) { toast(err.message); }
   });
 
