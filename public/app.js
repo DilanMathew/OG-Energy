@@ -70,7 +70,7 @@
 
   // ---------- 28-day grid ----------
   const grid = $("#sachetGrid");
-  const sachetImgs = ["/img/sachet-whey-choco.webp", "/img/sachet-whey-vanilla.webp", "/img/sachet-yeast-vanilla.webp"];
+  const sachetImgs = ["/img/sachet-whey-choco-green.webp", "/img/sachet-whey-vanilla-green.webp", "/img/sachet-yeast-vanilla.webp"]; // all green-topped
   for (let i = 1; i <= 28; i++) {
     const s = document.createElement("div");
     s.className = "sachet";
