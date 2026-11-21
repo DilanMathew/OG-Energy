@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Track Order — OG</title>
+  <meta name="theme-color" content="#07060a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .page { min-height: 100svh; display: grid; place-items: center; padding: 110px 16px 60px; background: radial-gradient(60% 50% at 50% 30%, rgba(247,147,30,.16), transparent 70%), var(--bg); }
+    .panel { width: min(520px, 100%); padding: 34px 28px; border-radius: 28px; background: var(--bg-2); border: 1px solid var(--line-2); }
+    .panel h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(46px, 10vw, 64px); line-height: .95; margin: 0 0 8px; }
+    .panel > p { color: var(--muted); margin: 0 0 18px; }
+    .timeline { list-style: none; padding: 0; margin: 20px 0 6px; }
+    .timeline li { position: relative; padding: 0 0 20px 34px; color: var(--muted); }
+    .timeline li::before { content: ""; position: absolute; left: 6px; top: 6px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line-2); background: var(--bg-2); }
+    .timeline li::after { content: ""; position: absolute; left: 12px; top: 22px; bottom: 0; width: 2px; background: var(--line); }
+    .timeline li:last-child::after { display: none; }
+    .timeline li.done { color: var(--text); }
+    .timeline li.done::before { background: var(--fire); border-color: var(--fire); box-shadow: 0 0 14px rgba(247,147,30,.7); }
+    .timeline li.done::after { background: var(--fire); }
+    .timeline small { display: block; color: var(--muted); font-size: 12px; }
+    .status-x { padding: 12px 16px; border-radius: 14px; background: rgba(255,107,107,.1); border: 1px solid rgba(255,107,107,.35); color: #ffc2c2; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <header class="nav scrolled">
+    <a href="/" class="brand" aria-label="OG home"><img src="/img/logo-white.png" alt="OG" width="712" height="297" /></a>
+    <div class="nav-actions"><a href="/#shop" class="btn btn-sm btn-fire" style="display:inline-flex">Shop</a></div>
+  </header>
+  <main class="page">
+    <div class="panel">
+      <h1>Track your <span class="fire-text">order</span></h1>
+      <p>Enter the order ID from your confirmation and the mobile number you used at checkout.</p>
+      <form id="trackForm" novalidate>
+        <div class="field"><label for="t-id">Order ID</label><input id="t-id" name="id" placeholder="OG-261121-XXXXXX" autocapitalize="characters" required /></div>
+        <div class="field"><label for="t-phone">Mobile number</label><input id="t-phone" name="phone" inputmode="tel" placeholder="10-digit mobile" required /></div>
+        <p class="form-error" id="err" role="alert" style="margin-top:12px"></p>
+        <button class="btn btn-fire btn-block" id="go" style="margin-top:16px">Track order</button>
+      </form>
+      <div id="result"></div>
+    </div>
+  </main>
+  <script>
+  (() => {
+    const $ = (s) => document.querySelector(s);
+    const inr = (n) => "₹" + Number(n).toLocaleString("en-IN");
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const fmt = (d) => d ? new Date(d).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "";
+    const q = new URLSearchParams(location.search);
+    if (q.get("id")) $("#t-id").value = q.get("id");
+    try { const c = JSON.parse(localStorage.getItem("og-customer") || "{}"); if (c.phone) $("#t-phone").value = c.phone; } catch {}
+
+    const STEPS = [["paid", "Payment received"], ["packed", "Packed"], ["shipped", "Shipped"], ["delivered", "Delivered"]];
+    $("#trackForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("#err").textContent = ""; $("#result").innerHTML = "";
+      const btn = $("#go"); btn.classList.add("loading");
+      try {
+        const res = await fetch("/api/orders/lookup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: $("#t-id").value.trim(), phone: $("#t-phone").value }) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Not found");
+        const o = data.order;
+        const idx = STEPS.findIndex((s) => s[0] === o.status);
+        let body = "";
+        if (o.status === "pending_payment") body = `<div class="status-x">Payment for this order was not completed, so it has not been confirmed. Please place the order again from the shop.</div>`;
+        else if (o.status === "cancelled" || o.status === "refunded") body = `<div class="status-x">This order was ${esc(o.status)}. ${o.status === "refunded" ? "The refund goes back to your original payment method." : ""}</div>`;
+        else body = `<ol class="timeline">${STEPS.map((s, i) => `<li class="${i <= idx ? "done" : ""}">${s[1]}${i === 0 ? `<small>${fmt(o.paidAt)}</small>` : ""}${s[0] === "shipped" && o.tracking && idx >= 2 ? `<small>Tracking: ${esc(o.tracking)}</small>` : ""}</li>`).join("")}</ol>
+          ${o.status !== "delivered" ? `<p style="color:var(--muted);font-size:14px">Expected delivery to ${esc(o.city)}, ${esc(o.state)} within ${esc(o.eta)} of payment, subject to availability.</p>` : ""}`;
+        $("#result").innerHTML = `
+          <div class="order-box" style="margin-top:22px">
+            <div><span>Order</span><b class="order-id">${esc(o.id)}</b></div>
+            ${o.items.map((i) => `<div><span>${i.qty} × ${esc(i.name)} (${esc(i.flavor)})</span><b>${inr(i.qty * i.price)}</b></div>`).join("")}
+            <div><span>Total</span><b>${inr(o.total)}</b></div>
+          </div>${body}`;
+      } catch (err) { $("#err").textContent = err.message; }
+      finally { btn.classList.remove("loading"); }
+    });
+    if (q.get("id") && $("#t-phone").value) $("#trackForm").requestSubmit();
+  })();
+  </script>
+</body>
+</html>

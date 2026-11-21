@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>OG Admin</title>
+  <meta name="theme-color" content="#0b0a0e" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body>
+  <!-- LOGIN -->
+  <section class="login" id="login" hidden>
+    <form class="login-card" id="loginForm">
+      <img src="/img/logo-white.png" alt="OG" class="login-logo" width="712" height="297" />
+      <h1>Admin</h1>
+      <p>Sign in to manage orders and see sales.</p>
+      <label for="pw">Password</label>
+      <input id="pw" type="password" autocomplete="current-password" required />
+      <p class="err" id="loginErr" role="alert"></p>
+      <button class="btn primary block" id="loginBtn">Sign in</button>
+    </form>
+  </section>
+
+  <!-- APP -->
+  <div class="app" id="app" hidden>
+    <aside class="side">
+      <img src="/img/logo-white.png" alt="OG" class="side-logo" width="712" height="297" />
+      <nav class="tabs" id="tabs">
+        <button data-tab="overview" class="on"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 4v4h6V4z"/></svg><span>Overview</span></button>
+        <button data-tab="orders"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>Orders</span><i class="badge" id="openBadge" hidden></i></button>
+        <button data-tab="products"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg><span>Products</span></button>
+        <button data-tab="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span></button>
+      </nav>
+      <div class="side-foot">
+        <a href="/" target="_blank" rel="noopener">View store ↗</a>
+        <button id="logout">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="banner" id="payBanner" hidden></div>
+
+      <!-- OVERVIEW -->
+      <section class="view" id="view-overview">
+        <header class="vhead">
+          <div><h1>Overview</h1><p class="sub" id="rangeLabel"></p></div>
+          <div class="seg" id="range" role="tablist" aria-label="Date range">
+            <button data-days="7">7D</button><button data-days="30" class="on">30D</button><button data-days="90">90D</button><button data-days="0">All</button>
+          </div>
+        </header>
+
+        <div class="kpis" id="kpis"></div>
+
+        <h2 class="h2">Fulfilment queue</h2>
+        <div class="queue" id="queue"></div>
+
+        <div class="grid2">
+          <div class="panel wide">
+            <div class="panel-head"><h3>Revenue per day</h3><span class="muted" id="revTotal"></span></div>
+            <div class="chart" id="revChart"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Conversion funnel</h3><span class="muted">unique visitors</span></div>
+            <div id="funnel"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Revenue by state</h3></div>
+            <div id="states"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Best sellers</h3><span class="muted">paid orders</span></div>
+            <div id="mix"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Recent orders</h3><button class="link" data-goto="orders">View all →</button></div>
+            <div id="recent"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ORDERS -->
+      <section class="view" id="view-orders" hidden>
+        <header class="vhead">
+          <div><h1>Orders</h1><p class="sub" id="ordersCount"></p></div>
+          <a class="btn" id="exportCsv" href="/api/admin/orders.csv">Export CSV</a>
+        </header>
+        <div class="filters">
+          <div class="chips" id="statusChips">
+            <button data-status="open" class="on">Open</button>
+            <button data-status="paid">To pack</button>
+            <button data-status="packed">To ship</button>
+            <button data-status="shipped">Shipped</button>
+            <button data-status="delivered">Delivered</button>
+            <button data-status="pending_payment">Unpaid</button>
+            <button data-status="cancelled">Cancelled</button>
+            <button data-status="refunded">Refunded</button>
+            <button data-status="all">All</button>
+          </div>
+          <input type="search" id="search" placeholder="Search ID, name, phone, pincode…" />
+        </div>
+        <div class="table-wrap">
+          <table class="orders">
+            <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Ship to</th><th class="r">Total</th><th>Status</th></tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- PRODUCTS -->
+      <section class="view" id="view-products" hidden>
+        <header class="vhead"><div><h1>Products</h1><p class="sub">Prices, stock and availability shown on the store.</p></div></header>
+        <div class="prod-grid" id="prodGrid"></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="view" id="view-settings" hidden>
+        <header class="vhead"><div><h1>Settings</h1></div></header>
+        <div class="settings">
+          <form class="panel" id="shipForm">
+            <h3>Shipping fee</h3>
+            <p class="muted">Flat fee added to every order. Use 0 for free shipping.</p>
+            <label class="fld"><span>Fee (₹)</span><input type="number" min="0" step="1" id="shipFee" /></label>
+            <button class="btn primary">Save</button>
+          </form>
+          <div class="panel" id="payInfo"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ORDER DRAWER -->
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true"></aside>
+
+  <div class="tip" id="tip" role="tooltip"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>

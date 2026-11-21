@@ -1,13 +1,13 @@
 {
   "name": "og-energy",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "OG — Original Grind protein. Launch website.",
+  "description": "OG — Only Gods. Storefront, prepaid checkout and admin dashboard.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node --disable-warning=ExperimentalWarning server.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.13"
   }
 }
