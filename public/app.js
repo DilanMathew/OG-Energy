@@ -225,13 +225,20 @@
   function showToast(msg, ms = 2800) { toast.textContent = msg; toast.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove("show"), ms); }
 
   // ---------- Products ----------
+  const safeColor = (c) => (/^#[0-9a-fA-F]{3,8}$/.test(c || "") ? c : null);
+  const flavorStyle = (f) => {
+    const c = safeColor(f.color), t = safeColor(f.text);
+    return c ? ` style="--fc:${c};--fct:${t || "#111"}"` : "";
+  };
+  const flavorOf = (p, name) => p.flavors.find((f) => f.name === name) || p.flavors[0];
   function renderProducts() {
     const wrap = $("#products");
     wrap.innerHTML = "";
     products.forEach((p) => {
       const card = document.createElement("article");
       card.className = "p-card reveal";
-      card.style.setProperty("--accent", p.accent);
+      const f0 = p.flavors[0];
+      card.style.setProperty("--accent", f0.color || p.accent);
       const off = p.mrp && p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0;
       const hasSachet = p.flavors.some((f) => f.image && f.image !== p.image);
       const firstImg = p.flavors[0].image && p.flavors[0].image !== p.image ? p.flavors[0].image : null;
@@ -239,7 +246,7 @@
         <div class="p-stage">
           <div class="p-beam"></div>
           <div class="p-ghost" style="--chars:${p.shortName.split(" ")[0].length}">${esc(p.shortName.split(" ")[0])}</div>
-          <img class="p-img" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" />
+          <img class="p-img" src="${esc(f0.main || p.image)}" alt="${esc(p.name)} — ${esc(f0.name)}" loading="lazy" />
           ${hasSachet ? `<img class="p-sachet${firstImg ? "" : " gone"}" src="${esc(firstImg || p.flavors.find((f) => f.image && f.image !== p.image).image)}" alt="" loading="lazy" />` : ""}
           ${!p.inStock ? `<span class="p-badge sold">Out of stock</span>` : p.lowStock ? `<span class="p-badge low">Only ${p.lowStock} left</span>` : ""}
         </div>
@@ -248,7 +255,7 @@
           <p class="p-sub">${esc(p.subtitle)}</p>
           <p class="p-desc">${esc(p.description)}</p>
           <div class="p-flavors" role="radiogroup" aria-label="Flavour">
-            ${p.flavors.map((f, i) => `<button class="p-flavor${i === 0 ? " active" : ""}" role="radio" aria-checked="${i === 0}" data-flavor="${esc(f.name)}">${esc(f.name)}</button>`).join("")}
+            ${p.flavors.map((f, i) => `<button class="p-flavor${i === 0 ? " active" : ""}${f.color ? " has-color" : ""}" role="radio" aria-checked="${i === 0}" data-flavor="${esc(f.name)}"${flavorStyle(f)}>${esc(f.name)}</button>`).join("")}
           </div>
           <div class="p-buy">
             <div class="p-price"><b>${inr(p.price)}</b>${off ? `<s>${inr(p.mrp)}</s><span class="off">${off}% off</span>` : ""}</div>
@@ -263,6 +270,14 @@
         b.classList.add("active"); b.setAttribute("aria-checked", "true");
         flavor = b.dataset.flavor;
         const f = p.flavors.find((x) => x.name === flavor);
+        if (f) card.style.setProperty("--accent", f.color || p.accent);
+        if (f && f.main) {
+          const img = $(".p-img", card);
+          if (!img.src.endsWith(f.main)) {
+            img.classList.add("swapping");
+            setTimeout(() => { img.src = f.main; img.alt = `${p.name} — ${f.name}`; img.classList.remove("swapping"); }, 220);
+          }
+        }
         if (sachetEl && f) {
           if (!f.image || f.image === p.image) { sachetEl.classList.add("gone"); return; }
           sachetEl.classList.add("swap");
@@ -291,8 +306,13 @@
     const off = c.mrp && c.mrp > c.price ? Math.round((1 - c.price / c.mrp) * 100) : 0;
     $("#crPrice").innerHTML = `<b>${inr(c.price)}</b>${off ? `<s>${inr(c.mrp)}</s><span class="off">${off}% off</span>` : ""}`;
     const names = c.flavors.map((f) => f.name);
-    $$("[data-cr-flavor]").forEach((b) => { b.hidden = !names.includes(b.dataset.crFlavor); });
+    $$("[data-cr-flavor]").forEach((b) => {
+      b.hidden = !names.includes(b.dataset.crFlavor);
+      const f = c.flavors.find((x) => x.name === b.dataset.crFlavor);
+      if (f && safeColor(f.color)) { b.classList.add("has-color"); b.style.setProperty("--fc", f.color); b.style.setProperty("--fct", safeColor(f.text) || "#111"); }
+    });
     if (!names.includes(crFlavor)) crFlavor = names[0];
+    applyCrFlavor();
     btn.disabled = !c.inStock;
     btn.textContent = c.inStock ? "Add creatine to cart" : "Out of stock";
   }
@@ -300,7 +320,21 @@
     $$("[data-cr-flavor]").forEach((x) => { x.classList.toggle("active", false); x.setAttribute("aria-checked", "false"); });
     b.classList.add("active"); b.setAttribute("aria-checked", "true");
     crFlavor = b.dataset.crFlavor;
+    applyCrFlavor();
   }));
+  function applyCrFlavor() {
+    const c = productById("og-creatine");
+    if (!c) return;
+    const f = flavorOf(c, crFlavor);
+    const sec = $("#creatine"), img = $("#crImg");
+    sec.style.setProperty("--cr", safeColor(f.color) || c.accent);
+    sec.style.setProperty("--crt", safeColor(f.text) || "#111");
+    if (f.main && !img.src.endsWith(f.main)) {
+      img.classList.add("swapping");
+      setTimeout(() => { img.src = f.main; img.alt = `${c.name} — ${f.name}`; img.classList.remove("swapping"); }, 220);
+    }
+    $("#crTag").textContent = `120g · ${f.name}`;
+  }
   $("#crAdd").addEventListener("click", () => addToCart("og-creatine", crFlavor, 1));
   const etaText = (eta) => (/^7/.test(eta) ? "within 7 days" : "in " + eta);
 
@@ -346,7 +380,7 @@
       const row = document.createElement("div");
       row.className = "ci";
       row.innerHTML = `
-        <div class="ci-thumb" style="--accent:${esc(p.accent)}"><img src="${esc(p.image)}" alt="" /></div>
+        <div class="ci-thumb" style="--accent:${esc((f && f.color) || p.accent)}"><img src="${esc((f && f.main) || p.image)}" alt="" /></div>
         <div><h4>${esc(p.name)}</h4><small>${esc(f ? f.name : l.flavor)}${p.inStock ? "" : " · <b style='color:var(--danger)'>Out of stock</b>"}</small>
           <div class="qty"><button aria-label="Decrease">−</button><span>${l.qty}</span><button aria-label="Increase">+</button></div></div>
         <div class="ci-price">${inr(p.price * l.qty)}<button class="ci-remove">Remove</button></div>`;
