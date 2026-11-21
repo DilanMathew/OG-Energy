@@ -4,36 +4,36 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Track Order — OG</title>
-  <meta name="theme-color" content="#07060a" />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/styles.css?v=__V__" />
   <style>
-    .page { min-height: 100svh; display: grid; place-items: center; padding: 110px 16px 60px; background: radial-gradient(60% 50% at 50% 30%, rgba(247,147,30,.16), transparent 70%), var(--bg); }
-    .panel { width: min(520px, 100%); padding: 34px 28px; border-radius: 28px; background: var(--bg-2); border: 1px solid var(--line-2); }
+    .page { min-height: 100svh; display: grid; place-items: center; padding: 110px 16px 60px; background: radial-gradient(60% 50% at 50% 20%, rgba(247,147,30,.16), transparent 70%), var(--bg-2); }
+    .panel { width: min(520px, 100%); padding: 34px 28px; border-radius: 28px; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow-lg); }
     .panel h1 { font-family: var(--display); font-weight: 400; text-transform: uppercase; font-size: clamp(46px, 10vw, 64px); line-height: .95; margin: 0 0 8px; }
     .panel > p { color: var(--muted); margin: 0 0 18px; }
     .timeline { list-style: none; padding: 0; margin: 20px 0 6px; }
     .timeline li { position: relative; padding: 0 0 20px 34px; color: var(--muted); }
-    .timeline li::before { content: ""; position: absolute; left: 6px; top: 6px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line-2); background: var(--bg-2); }
+    .timeline li::before { content: ""; position: absolute; left: 6px; top: 6px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line-2); background: #fff; }
     .timeline li::after { content: ""; position: absolute; left: 12px; top: 22px; bottom: 0; width: 2px; background: var(--line); }
     .timeline li:last-child::after { display: none; }
     .timeline li.done { color: var(--text); }
-    .timeline li.done::before { background: var(--fire); border-color: var(--fire); box-shadow: 0 0 14px rgba(247,147,30,.7); }
+    .timeline li.done::before { background: var(--fire); border-color: var(--fire); box-shadow: 0 0 0 4px rgba(247,147,30,.2); }
     .timeline li.done::after { background: var(--fire); }
     .timeline small { display: block; color: var(--muted); font-size: 12px; }
-    .status-x { padding: 12px 16px; border-radius: 14px; background: rgba(255,107,107,.1); border: 1px solid rgba(255,107,107,.35); color: #ffc2c2; margin-top: 16px; }
+    .status-x { padding: 12px 16px; border-radius: 14px; background: #fdecec; border: 1px solid #f3b9b9; color: #8a1f1f; margin-top: 16px; }
   </style>
 </head>
 <body>
   <header class="nav scrolled">
-    <a href="/" class="brand" aria-label="OG home"><img src="/img/logo-white.png" alt="OG" width="712" height="297" /></a>
+    <a href="/" class="brand" aria-label="OG home"><img src="/img/logo-dark.png" alt="OG" width="712" height="297" /></a>
     <div class="nav-actions"><a href="/#shop" class="btn btn-sm btn-fire" style="display:inline-flex">Shop</a></div>
   </header>
   <main class="page">
     <div class="panel">
-      <h1>Track your <span class="fire-text">order</span></h1>
+      <h1>Track your <span class="hl">order</span></h1>
       <p>Enter the order ID from your confirmation and the mobile number you used at checkout.</p>
       <form id="trackForm" novalidate>
         <div class="field"><label for="t-id">Order ID</label><input id="t-id" name="id" placeholder="OG-261121-XXXXXX" autocapitalize="characters" required /></div>

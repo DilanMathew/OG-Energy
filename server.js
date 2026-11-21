@@ -35,6 +35,14 @@ const TYPES = {
   ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg", ".webp": "image/webp", ".ico": "image/x-icon", ".txt": "text/plain; charset=utf-8",
 };
+// Version tag for CSS/JS URLs, derived from their contents at startup.
+const ASSET_VERSION = (() => {
+  const h = crypto.createHash("sha1");
+  for (const f of ["styles.css", "app.js", "admin/admin.css", "admin/admin.js"]) {
+    try { h.update(fs.readFileSync(path.join(ROOT, f))); } catch {}
+  }
+  return h.digest("hex").slice(0, 10);
+})();
 const COMPRESSIBLE = new Set([".html", ".css", ".js", ".json", ".svg", ".txt"]);
 
 const BASE_HEADERS = {
@@ -390,15 +398,21 @@ function serveStatic(req, res, url) {
     const ext = path.extname(target).toLowerCase();
     fs.readFile(target, (readErr, data) => {
       if (readErr) { res.writeHead(500); return res.end("Server Error"); }
+      // Stamp asset URLs in HTML with the build version so browsers never mix old CSS/JS with new pages.
+      if (ext === ".html") data = Buffer.from(data.toString("utf8").replace(/__V__/g, ASSET_VERSION));
+      const etag = '"' + crypto.createHash("sha1").update(data).digest("base64url").slice(0, 20) + '"';
       const headers = {
         ...BASE_HEADERS,
         "Content-Type": TYPES[ext] || "application/octet-stream",
-        "Cache-Control": ext === ".html" ? "no-cache" : ext === ".webp" || ext === ".png" ? "public, max-age=604800" : "public, max-age=3600",
+        // HTML/CSS/JS: always revalidate (cheap 304s). Images: cache for a day.
+        "Cache-Control": ext === ".webp" || ext === ".png" || ext === ".jpg" ? "public, max-age=86400" : "no-cache",
+        ETag: etag,
       };
       if (target.includes(path.sep + "admin" + path.sep)) {
         headers["X-Frame-Options"] = "DENY";
         headers["X-Robots-Tag"] = "noindex, nofollow";
       }
+      if (req.headers["if-none-match"] === etag) { res.writeHead(304, headers); return res.end(); }
       if (COMPRESSIBLE.has(ext) && /\bgzip\b/.test(req.headers["accept-encoding"] || "")) {
         headers["Content-Encoding"] = "gzip";
         headers["Vary"] = "Accept-Encoding";

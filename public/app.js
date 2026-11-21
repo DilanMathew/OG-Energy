@@ -112,7 +112,7 @@
   const heroProduct = $("#heroProduct"), hero = $("#hero"), lifestyleImg = $("#lifestyleImg");
   let lastY = window.scrollY, mx = 0, my = 0;
   function updateHeroTilt() {
-    if (reduced) return;
+    if (reduced || !fine) return; // 3D tilt only for mouse users; it softens the image on phones
     const y = Math.min(window.scrollY, hero.offsetHeight);
     heroProduct.style.transform = `rotateY(${-14 + mx * 22 + y * 0.03}deg) rotateX(${4 - my * 10}deg)`;
   }
@@ -150,9 +150,7 @@
   onScroll();
 
   if (fine && !reduced) {
-    const glow = $("#cursorGlow");
     window.addEventListener("pointermove", (e) => {
-      glow.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
       mx = e.clientX / window.innerWidth - 0.5;
       my = e.clientY / window.innerHeight - 0.5;
       updateHeroTilt();
@@ -199,16 +197,15 @@
   let W, H, embers = [], heroVisible = true;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const spawn = (any) => ({ x: Math.random() * W, y: any ? Math.random() * H : H + 10, r: Math.random() * 2.2 + 0.4, vy: Math.random() * 0.7 + 0.25, vx: (Math.random() - 0.5) * 0.3, life: Math.random() * 0.6 + 0.4, hue: 22 + Math.random() * 18, t: Math.random() * 100 });
-  function resize() { W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); embers = Array.from({ length: Math.round(Math.min(90, (W * H) / 16000)) }, () => spawn(true)); }
+  function resize() { W = canvas.clientWidth; H = canvas.clientHeight; canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); embers = Array.from({ length: Math.round(Math.min(60, (W * H) / 22000)) }, () => spawn(true)); }
   function draw() {
     if (heroVisible) {
-      ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = "lighter";
+      ctx.clearRect(0, 0, W, H);
       for (const e of embers) {
         e.t += 0.02; e.y -= e.vy; e.x += e.vx + Math.sin(e.t) * 0.3;
-        const a = Math.min(1, e.y / H) * e.life;
-        const g = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 4);
-        g.addColorStop(0, `hsla(${e.hue},100%,62%,${a})`); g.addColorStop(1, `hsla(${e.hue},100%,50%,0)`);
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(e.x, e.y, e.r * 4, 0, Math.PI * 2); ctx.fill();
+        const a = Math.min(1, e.y / H) * e.life * 0.75;
+        ctx.fillStyle = `hsla(${e.hue},95%,52%,${a})`;
+        ctx.beginPath(); ctx.arc(e.x, e.y, e.r * 1.6, 0, Math.PI * 2); ctx.fill();
         if (e.y < -10) Object.assign(e, spawn(false));
       }
     }
@@ -311,7 +308,7 @@
     $("#toDetails").disabled = !lines.length;
     const box = $("#cartItems");
     if (!lines.length) {
-      box.innerHTML = `<div class="cart-empty"><img src="/img/logo-white.png" alt="" />Your stack is empty.<br/>Day 01 is waiting.<br/><br/><a href="#shop" class="btn btn-ghost btn-sm" id="emptyShop">Shop the lineup</a></div>`;
+      box.innerHTML = `<div class="cart-empty"><img src="/img/logo-dark.png" alt="" />Your stack is empty.<br/>Day 01 is waiting.<br/><br/><a href="#shop" class="btn btn-ghost btn-sm" id="emptyShop">Shop the lineup</a></div>`;
       $("#emptyShop").addEventListener("click", () => openCart(false));
       return;
     }
@@ -524,7 +521,7 @@
     if (reduced) return;
     const c = document.createElement("canvas"); c.className = "confetti"; document.body.appendChild(c);
     const x = c.getContext("2d"); c.width = innerWidth * dpr; c.height = innerHeight * dpr; x.scale(dpr, dpr);
-    const colors = ["#F7931E", "#FFB547", "#8DC63F", "#ffffff", "#F25C1F"];
+    const colors = ["#F7931E", "#111111", "#8DC63F", "#FFB547", "#F7931E"];
     const bits = Array.from({ length: 160 }, () => ({ x: innerWidth / 2, y: innerHeight / 2, vx: (Math.random() - 0.5) * 16, vy: Math.random() * -16 - 4, s: Math.random() * 6 + 4, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3, c: colors[(Math.random() * colors.length) | 0] }));
     const t0 = performance.now();
     (function frame(t) {
