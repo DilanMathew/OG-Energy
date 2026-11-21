@@ -147,6 +147,13 @@
             <label class="fld"><span>Message</span><textarea id="remTemplate" rows="6" maxlength="1000"></textarea></label>
             <button class="btn primary">Save</button>
           </form>
+          <div class="panel" id="demoPanel">
+            <h3>Demo orders</h3>
+            <p class="muted">Load 50 sample orders spread over the last ~2½ months — including old ones whose reorder reminders are due — to try the dashboard. Their ids contain <code>DEMO</code> and phone numbers are fake (90000…), so don't send those WhatsApp messages.</p>
+            <div class="kv"><span class="muted">Loaded</span><b id="demoCount">—</b></div>
+            <button class="btn primary" id="demoLoad" type="button">Load demo orders</button>
+            <button class="btn" id="demoClear" type="button">Remove demo orders</button>
+          </div>
         </div>
       </section>
     </main>

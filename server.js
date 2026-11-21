@@ -6,6 +6,7 @@ const zlib = require("zlib");
 const crypto = require("crypto");
 const db = require("./lib/db");
 const pay = require("./lib/payments");
+const { buildDemoOrders } = require("./lib/demo");
 
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, "public");
@@ -395,6 +396,11 @@ async function handleApi(req, res, url) {
       if (!["sent", "skipped", "reset"].includes(b.action)) return fail(res, 400, "Invalid action");
       db.setReminder(mm[1], b.action, b.action === "sent" ? String(b.message || "").slice(0, 2000) : null);
       return json(res, 200, { ok: true });
+    }
+    if (p === "/api/admin/demo-orders") {
+      if (m === "POST") db.insertDemoOrders(buildDemoOrders(db.listProducts({ includeInactive: true })));
+      else if (m === "DELETE") db.clearDemoOrders();
+      return json(res, 200, { count: db.countDemoOrders() });
     }
     if (p === "/api/admin/settings") {
       if (m === "PATCH") {
