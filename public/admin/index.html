@@ -32,6 +32,7 @@
       <nav class="tabs" id="tabs">
         <button data-tab="overview" class="on"><svg viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 4v4h6V4z"/></svg><span>Overview</span></button>
         <button data-tab="orders"><svg viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>Orders</span><i class="badge" id="openBadge" hidden></i></button>
+        <button data-tab="reminders"><svg viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5z"/><path d="M12 8v4l2.5 1.5"/></svg><span>Reminders</span><i class="badge" id="remBadge" hidden></i></button>
         <button data-tab="products"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg><span>Products</span></button>
         <button data-tab="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span></button>
       </nav>
@@ -110,6 +111,19 @@
         </div>
       </section>
 
+      <!-- REMINDERS -->
+      <section class="view" id="view-reminders" hidden>
+        <header class="vhead">
+          <div><h1>Reminders</h1><p class="sub">WhatsApp reorder reminders for customers whose sachets are running out. Nothing is sent until you approve it.</p></div>
+        </header>
+        <h2 class="h2">Due now <span class="muted" id="remDueCount"></span></h2>
+        <div class="rem-list" id="remDue"></div>
+        <h2 class="h2">Coming up <span class="muted">next 7 days</span></h2>
+        <div class="panel" id="remUpcoming"></div>
+        <h2 class="h2">Sent &amp; skipped <span class="muted">last 30 days</span></h2>
+        <div class="panel" id="remDone"></div>
+      </section>
+
       <!-- PRODUCTS -->
       <section class="view" id="view-products" hidden>
         <header class="vhead"><div><h1>Products</h1><p class="sub">Prices, stock and availability shown on the store.</p></div></header>
@@ -127,6 +141,12 @@
             <button class="btn primary">Save</button>
           </form>
           <div class="panel" id="payInfo"></div>
+          <form class="panel" id="remForm">
+            <h3>WhatsApp reminder message</h3>
+            <p class="muted">Used for every reorder reminder; you can still edit each one before sending. Placeholders: <code>{name}</code> first name, <code>{product}</code> what they bought, <code>{date}</code> run-out date, <code>{link}</code> your store.</p>
+            <label class="fld"><span>Message</span><textarea id="remTemplate" rows="6" maxlength="1000"></textarea></label>
+            <button class="btn primary">Save</button>
+          </form>
         </div>
       </section>
     </main>
