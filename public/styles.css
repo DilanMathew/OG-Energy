@@ -406,6 +406,7 @@ body.ready .hero-title .line:nth-child(2) .word { transition-delay: 0.12s; }
 .certs-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 16px; }
 .cert { --r: -4deg; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 104px; height: 104px; border-radius: 50%; background: #fff; color: #111; border: 3px dashed var(--fire); box-shadow: 0 0 0 4px #fff, 4px 6px 0 4px var(--fire); transform: rotate(var(--r)); transition: transform 0.3s var(--ease); text-align: center; }
 .cert:nth-child(2n) { --r: 5deg; } .cert:nth-child(3n) { --r: -2deg; } .cert:nth-child(5n) { --r: 7deg; }
+.cert small.pre { margin: 0 0 2px; }
 .cert:hover { transform: rotate(0) scale(1.06); }
 .cert b { font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1; letter-spacing: 0.02em; }
 .cert small { margin-top: 4px; max-width: 84px; font-size: 10.5px; font-weight: 800; line-height: 1.15; text-transform: uppercase; letter-spacing: 0.03em; }
