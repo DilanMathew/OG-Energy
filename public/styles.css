@@ -415,6 +415,13 @@ body.ready .hero-title .line:nth-child(2) .word { transition-delay: 0.12s; }
 .footer-row nav { display: flex; flex-wrap: wrap; gap: 22px; font-size: 14px; font-weight: 600; color: #e8e4de; }
 .footer-row nav a:hover { color: var(--fire); }
 .legal { font-size: 13px; color: #9c968f; margin: 0; }
+.maker { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px 48px; margin-top: 36px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.12); font-size: 13px; line-height: 1.6; color: #bdb7af; }
+.maker p { margin: 0 0 8px; }
+.maker b { color: #fff; }
+.maker a { color: #e8e4de; text-decoration: underline; text-decoration-color: var(--fire); }
+.maker-h { font-size: 11px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #8a847d; }
+.maker-fssai { display: flex; align-items: center; gap: 10px; font-weight: 700; color: #fff; }
+.fssai-tag { padding: 2px 8px; border-radius: 5px; background: #fff; color: #1a3a8a; font: italic 700 14px/1.2 Georgia, serif; }
 .disclaimer { font-size: 11.5px; color: #8a847d; margin: 28px 0 0; max-width: 820px; }
 
 /* ============ Buy bar ============ */
