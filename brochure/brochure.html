@@ -121,26 +121,35 @@
   .order .day { position: absolute; right: 64px; top: 120px; width: 230px; height: 230px; border-radius: 50%; border: 4px solid var(--ink); display: grid; place-items: center; text-align: center; transform: rotate(10deg); background: #fff; }
   .order .day b { font-family: var(--display); font-weight: 400; font-size: 110px; line-height: .85; display: block; }
   .order .day small { font: 900 18px/1 var(--body); letter-spacing: 3px; text-transform: uppercase; }
-  .zones { position: absolute; left: 64px; right: 64px; top: 600px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .zones { position: absolute; left: 64px; right: 64px; top: 560px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
   .zone { border: 3px solid var(--ink); border-radius: 24px; padding: 20px 18px; background: #fff; }
   .zone b { font-family: var(--display); font-weight: 400; font-size: 56px; line-height: 1; }
   .zone span { display: block; font: 700 18px/1.2 var(--body); margin-top: 6px; }
   .zone em { display: inline-block; margin-top: 14px; font: 900 17px/1 var(--body); font-style: normal; letter-spacing: 1px; text-transform: uppercase; padding: 9px 12px; border-radius: 10px; background: var(--ink); color: var(--fire); }
   .zone.fast { background: var(--cream); }
   .zone.rest em { background: #e9e6e1; color: var(--ink); }
-  .pay { position: absolute; left: 64px; right: 64px; top: 830px; display: flex; align-items: center; gap: 22px; padding: 22px 26px; border-radius: 24px; background: var(--cream); }
+  .pay { position: absolute; left: 64px; right: 64px; top: 738px; display: flex; align-items: center; gap: 22px; padding: 22px 26px; border-radius: 24px; background: var(--cream); }
   .pay .r { width: 64px; height: 64px; border-radius: 16px; background: var(--ink); color: var(--fire); display: grid; place-items: center; font: 900 34px/1 var(--body); flex: none; }
   .pay b { display: block; font: 900 26px/1.1 var(--body); }
   .pay span { display: block; font: 500 20px/1.35 var(--body); color: var(--muted); margin-top: 4px; }
-  .cta { position: absolute; left: 64px; right: 64px; top: 990px; height: 190px; border-radius: 34px; background: var(--ink); color: #fff; display: flex; align-items: center; padding: 0 44px; gap: 34px; box-shadow: 10px 10px 0 var(--fire); }
+  .cta { position: absolute; left: 64px; right: 64px; top: 872px; height: 170px; border-radius: 34px; background: var(--ink); color: #fff; display: flex; align-items: center; padding: 0 44px; gap: 34px; box-shadow: 10px 10px 0 var(--fire); }
   .cta .wa { width: 108px; height: 108px; border-radius: 50%; background: #25d366; display: grid; place-items: center; flex: none; }
   .cta .wa svg { width: 62px; height: 62px; }
-  .cta h3 { font-family: var(--display); font-weight: 400; font-size: 74px; line-height: .95; text-transform: uppercase; }
+  .cta h3 { font-family: var(--display); font-weight: 400; font-size: 70px; line-height: .95; text-transform: uppercase; }
   .cta h3 span { color: var(--fire); }
   .cta p { font: 600 22px/1.3 var(--body); color: rgba(255,255,255,.7); margin-top: 8px; }
-  .order .legal { position: absolute; left: 64px; right: 64px; top: 1214px; font: 500 14px/1.45 var(--body); color: var(--muted); }
+  .order .legal { position: absolute; left: 64px; right: 64px; top: 1222px; font: 500 14px/1.45 var(--body); color: var(--muted); }
   .order .foot { color: var(--ink); bottom: 30px; }
   .order .foot img { height: 40px; }
+  .contacts { position: absolute; left: 64px; right: 64px; top: 1072px; display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 14px; }
+  .contact { display: flex; align-items: center; gap: 14px; padding: 18px 18px; border: 3px solid var(--ink); border-radius: 22px; color: var(--ink); text-decoration: none; background: #fff; }
+  .contact .ic { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; flex: none; }
+  .contact .ic svg { width: 32px; height: 32px; }
+  .contact.wa .ic { background: #25d366; }
+  .contact.ig .ic { background: linear-gradient(45deg, #f9a03f, #e1306c 50%, #833ab4); }
+  .contact.em .ic { background: var(--fire); }
+  .contact small { display: block; font: 800 14px/1 var(--body); letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .contact b { display: block; margin-top: 7px; font: 800 21px/1.1 var(--body); white-space: nowrap; }
 
   /* ---------- 5. FOUNDER / WHY OG ---------- */
   .founder { background: var(--ink); color: #fff; }
@@ -290,7 +299,12 @@
   <div class="pay"><div class="r">₹</div><div><b>100% prepaid &amp; secure</b><span>UPI · Debit/Credit cards · Netbanking. No cash on delivery.</span></div></div>
   <div class="cta">
     <div class="wa"><svg viewBox="0 0 24 24" fill="#fff"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4C2.7 15.6 2.2 13.8 2.2 12 2.2 6.6 6.6 2.2 12 2.2S21.8 6.6 21.8 12 17.4 21.8 12 21.8zM12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6c1.8 1 3.8 1.5 5.8 1.5 6.6 0 12-5.4 12-12S18.6 0 12 0z"/></svg></div>
-    <div><h3>Reply “<span>OG</span>” to order</h3><p>Tell us your pick &amp; flavour — we'll send your secure payment link.</p></div>
+    <div><h3>Reply “<span>OG</span>” to order</h3><p>WhatsApp <b style="color:#fff">+91 98421 21163</b> with your pick &amp; flavour — we'll send a secure payment link.</p></div>
+  </div>
+  <div class="contacts">
+    <a class="contact wa" href="https://wa.me/919842121163"><span class="ic"><svg viewBox="0 0 24 24" fill="#fff"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4C2.7 15.6 2.2 13.8 2.2 12 2.2 6.6 6.6 2.2 12 2.2S21.8 6.6 21.8 12 17.4 21.8 12 21.8zM12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6c1.8 1 3.8 1.5 5.8 1.5 6.6 0 12-5.4 12-12S18.6 0 12 0z"/></svg></span><span><small>Call / WhatsApp</small><b>+91 98421 21163</b></span></a>
+    <a class="contact ig" href="https://www.instagram.com/og__energy"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="#fff" stroke="none"/></svg></span><span><small>Instagram</small><b>@og__energy</b></span></a>
+    <a class="contact em" href="mailto:oonlygods@outlook.com"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0d0d0d" stroke-width="2.2" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M3.5 7l8.5 6.2L20.5 7"/></svg></span><span><small>Email</small><b>oonlygods@outlook.com</b></span></a>
   </div>
   <p class="legal">Delivery times subject to availability. Nutraceutical product. Not for medicinal use. Not intended to diagnose, treat, cure or prevent any disease. Use as part of a balanced diet and exercise routine. Keep out of reach of children.</p>
   <div class="foot"><img src="../public/img/logo-dark.png" alt="OG" /><span class="pg">06/06</span></div>
