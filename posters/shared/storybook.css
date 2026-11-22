@@ -1,0 +1,33 @@
+/* Storybook poster system: outlined card, sticker products, outlined offer cards. Themed via CSS vars. */
+:root{--ink:#141414;--frame:#141414;--card-bg:#fff;--card-ink:#141414;--card-shadow:#141414;--muted:#555;
+  --combo-bg:#0d5c2c;--combo-ink:#fff;--combo-tag:#e2372b;--btn-bg:#e2372b;--btn-ink:#fff;--foot-ink:#141414;--foot-accent:#0d5c2c}
+html,body{background:#fff}
+.sb-frame{position:absolute;inset:26px;border:4px solid var(--frame);border-radius:56px;overflow:hidden}
+.sb-frame.double{box-shadow:inset 0 0 0 6px rgba(0,0,0,0),inset 0 0 0 8px var(--frame2,transparent)}
+svg.sb-scene{position:absolute;left:-30px;top:-30px;width:1080px;height:1350px}
+.sb-logo{position:absolute;top:58px;left:62px;height:40px;z-index:8}
+.sb-script{position:absolute;left:0;right:0;text-align:center;font-family:Yellowtail,cursive;z-index:6}
+.sb-head{position:absolute;left:0;right:0;text-align:center;font-family:"Baloo 2",sans-serif;font-weight:800;line-height:.86;letter-spacing:-.02em;z-index:6}
+.sb-sub{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:25px;line-height:1.3;z-index:6}
+.sticker{filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+  drop-shadow(2px 0 0 var(--ink)) drop-shadow(-2px 0 0 var(--ink)) drop-shadow(0 2px 0 var(--ink)) drop-shadow(0 -2px 0 var(--ink))
+  drop-shadow(8px 12px 10px rgba(0,0,0,.28))}
+.abs{position:absolute;z-index:5}
+.hatted.sticker>img.s{filter:none}
+
+.sb-offers{position:absolute;left:74px;right:74px;z-index:7}
+.sb-row{display:grid;gap:18px}.sb-r3{grid-template-columns:repeat(3,1fr)}.sb-r2{grid-template-columns:repeat(2,1fr);margin-top:18px}
+.sb-o{background:var(--card-bg);color:var(--card-ink);border:3px solid var(--card-ink);border-radius:24px;box-shadow:6px 6px 0 var(--card-shadow);padding:14px 16px;text-align:center}
+.sb-o .t{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--a);border:2px solid var(--card-ink);border-radius:99px;padding:3px 10px}
+.sb-o .n{margin-top:6px;font-size:16px;font-weight:700;opacity:.8}
+.sb-o .pr{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:50px;line-height:1;margin-top:2px}
+.sb-o .pr sup{font-size:22px;vertical-align:top;position:relative;top:8px;margin-right:1px}
+.was{display:block;font-family:Inter,sans-serif;font-weight:700;font-size:17px;line-height:1.2;opacity:.6;text-decoration:line-through;text-decoration-thickness:2px}
+.sb-o.c{display:flex;align-items:center;justify-content:space-between;text-align:left;background:var(--combo-bg);color:var(--combo-ink);padding:12px 22px}
+.sb-o.c .t{background:var(--combo-tag);color:var(--combo-tag-ink,#fff)}
+.sb-o.c .n{font-size:21px;font-weight:800;opacity:1;margin-top:6px}
+.sb-o.c .pr{font-size:54px;text-align:right}
+.sb-foot{position:absolute;left:74px;right:74px;bottom:66px;z-index:7;display:flex;justify-content:space-between;align-items:center;color:var(--foot-ink)}
+.sb-foot .l{font-size:19px;font-weight:800}.sb-foot .l span{color:var(--foot-accent)}
+.sb-btn{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:24px;color:var(--btn-ink);background:var(--btn-bg);border:3px solid var(--card-ink);border-radius:99px;padding:6px 26px 4px;box-shadow:5px 5px 0 var(--card-shadow)}
+.sb-fine{position:absolute;left:0;right:0;bottom:32px;text-align:center;font-size:12.5px;letter-spacing:.04em;color:var(--foot-ink);opacity:.65;z-index:7}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>OG Dusk Winter Sale</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Inter:wght@500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared/common.css" />
+<link rel="stylesheet" href="shared/storybook.css" />
+<style>
+  :root{--ink:#2a1b33;--frame:#2a1b33;--card-bg:#fff;--card-ink:#2a1b33;--card-shadow:#2a1b33;--combo-bg:#0d5c2c;--combo-tag:#c8102e;
+    --btn-bg:#c8102e;--btn-ink:#fff;--foot-ink:#2a1b33;--foot-accent:#0d5c2c}
+  .sb-script{top:96px;font-size:62px;color:#FFE3B0;text-shadow:0 0 16px rgba(255,200,140,.5)}
+  .sb-head{top:160px;font-size:118px;color:#fff;text-shadow:0 6px 0 #2a1b33,0 14px 30px rgba(42,27,51,.4)}
+  .sb-sub{top:394px;color:#fff;text-shadow:0 2px 10px rgba(42,27,51,.45)}
+  .sb-offers{top:878px}
+</style></head>
+<body><div class="poster"><div class="sb-frame">
+  <svg class="sb-scene" id="scene" viewBox="0 0 1080 1350">
+    <defs>
+      <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f2a57"/><stop offset=".22" stop-color="#4b3f7e"/><stop offset=".38" stop-color="#a45a8a"/><stop offset=".5" stop-color="#e98a7f"/><stop offset=".6" stop-color="#f8bd85"/></linearGradient>
+      <linearGradient id="ped" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e9d2b2"/><stop offset=".5" stop-color="#fff4e2"/><stop offset="1" stop-color="#e3c9a5"/></linearGradient>
+    </defs>
+    <rect width="1080" height="1350" fill="url(#dusk)"/>
+    <g id="sk"></g><g id="ld"></g><g id="lt"></g>
+  </svg>
+
+  <img class="sb-logo" src="../public/img/logo-white.png" alt="OG" style="top:64px" />
+  <div class="sb-script">Season's Finest</div>
+  <div class="sb-head">The Merriest<br/>Winter Sale</div>
+  <p class="sb-sub">Cold evenings, warm wins.<br/>The OG stack, merrier than ever.</p>
+
+  <img class="abs sticker" src="../public/img/yeast-box.webp" style="left:268px;top:604px;height:214px;transform:rotate(-8deg)" alt="" />
+  <img class="abs sticker" src="../public/img/whey-box.webp" style="left:574px;top:604px;height:214px;transform:rotate(8deg)" alt="" />
+  <div class="abs hatted sticker" style="--w:120px;left:450px;top:586px;transform:rotate(3deg);z-index:6"><img class="s" src="../public/img/sachet-whey-vanilla-green.webp" alt="" /><img class="hat" src="shared/santa-hat.svg" alt="" /></div>
+  <img class="abs sticker" src="../public/img/creatine-fruit-fusion.webp" style="left:350px;top:752px;height:100px;z-index:7" alt="" />
+  <img class="abs sticker" src="../public/img/creatine.webp" style="left:578px;top:752px;height:100px;z-index:7" alt="" />
+
+  <div class="sb-offers" id="offers"></div>
+  <div class="sb-foot"><div class="l">onlygodsnutrition.com &nbsp;·&nbsp; <span>@og__energy</span></div><span class="sb-btn">Shop the sale →</span></div>
+  <p class="sb-fine">24g protein per sachet · 28 sachets a box · 100% prepaid · Delivered across India · While stocks last</p>
+</div></div>
+<script src="shared/common.js"></script>
+<script src="shared/storybook.js"></script>
+<script>
+  const svg = document.getElementById('scene'); wobbleDefs(svg, 3);
+  const SK = document.getElementById('sk'), LD = document.getElementById('ld'), INK = '#2a1b33';
+  for (let i = 0; i < 60; i++) { const x = rnd() * 1080, y = rnd() * 330; SK.append(el('circle', { cx: x, cy: y, r: .7 + rnd() * 1.4, fill: '#fff', opacity: .3 + rnd() * .6 })); }
+  [[150, 330, 10], [930, 300, 12], [880, 170, 8], [200, 210, 7]].forEach(([x, y, r]) => twinkle(SK, x, y, r, '#FFE9C2'));
+  const sg = el('g', { filter: 'url(#wobble)' }); SK.append(sg);
+  star(sg, 960, 420, 22, '#FFD66E', 10, INK); star(sg, 118, 470, 18, '#FFD66E', -12, INK);
+
+  const L = el('g', { filter: 'url(#wobble)' }); LD.append(L);
+  // distant mountains
+  L.append(el('path', { d: 'M0 640 L120 560 L210 610 L320 530 L430 615 L540 570 L640 620 L760 540 L870 605 L980 555 L1080 600 L1080 700 L0 700 Z', fill: '#7b5a8f', stroke: INK, 'stroke-width': 3, 'stroke-linejoin': 'round' }));
+  [[120, 560], [320, 530], [760, 540], [980, 555]].forEach(([x, y]) => L.append(el('path', { d: `M${x - 26} ${y + 18} L${x} ${y} L${x + 26} ${y + 18} L${x + 12} ${y + 14} L${x} ${y + 22} L${x - 12} ${y + 14} Z`, fill: '#fff', stroke: INK, 'stroke-width': 2 })));
+  for (let i = 0; i < 22; i++) { const x = 20 + i * 50; if (x > 250 && x < 830) continue; pine(L, x, 690, 60 + rnd() * 40, '#2f4f4a', INK, '#ffe9d8'); }
+  L.append(el('path', { d: 'M0 700 C 220 670, 420 720, 600 712 C 800 704, 920 676, 1080 690 L1080 1350 L0 1350 Z', fill: '#fff6ef', stroke: INK, 'stroke-width': 4 }));
+  // lamp posts
+  [[118, 860], [962, 860]].forEach(([x, y]) => {
+    L.append(el('circle', { cx: x, cy: y - 250, r: 70, fill: '#FFD58A', opacity: .45, filter: 'url(#soft)' }));
+    L.append(el('rect', { x: x - 5, y: y - 230, width: 10, height: 230, fill: '#2a1b33' }));
+    L.append(el('path', { d: `M${x - 22} ${y} h44 l-8 -16 h-28 z`, fill: '#2a1b33' }));
+    L.append(el('path', { d: `M${x - 22} ${y - 232} h44 l-6 -46 h-32 z`, fill: '#FFE2A0', stroke: INK, 'stroke-width': 3 }));
+    L.append(el('path', { d: `M${x - 26} ${y - 278} h52 l-26 -22 z`, fill: '#2a1b33', stroke: INK, 'stroke-width': 2, 'stroke-linejoin': 'round' }));
+    L.append(el('path', { d: `M${x} ${y - 180} c 30 -10 40 20 70 10`, fill: 'none', stroke: '#c8102e', 'stroke-width': 7, 'stroke-linecap': 'round' }));
+    L.append(el('path', { d: `M${x - 14} ${y - 200} q 14 -18 28 0 q -14 14 -28 0z`, fill: '#c8102e', stroke: INK, 'stroke-width': 2 }));
+  });
+  // pedestal
+  L.append(el('ellipse', { cx: 540, cy: 870, rx: 300, ry: 30, fill: 'rgba(42,27,51,.15)' }));
+  L.append(el('path', { d: 'M260 812 L260 846 A280 34 0 0 0 820 846 L820 812 Z', fill: 'url(#ped)', stroke: INK, 'stroke-width': 3.5 }));
+  L.append(el('ellipse', { cx: 540, cy: 812, rx: 280, ry: 34, fill: '#fffaf2', stroke: INK, 'stroke-width': 3.5 }));
+  L.append(el('path', { d: 'M262 828 A280 34 0 0 0 818 828', fill: 'none', stroke: '#D9A94E', 'stroke-width': 4 }));
+
+  fairyLights(document.getElementById('lt'), 'M20 40 Q 270 120 540 54 T 1060 40', { count: 22, wire: '#2a1b33', colors: ['#9BFF6A', '#56E39F', '#C9FF8A', '#3FCB86', '#FFE08A'] });
+  renderOffers(document.getElementById('offers'));
+</script>
+</body></html>

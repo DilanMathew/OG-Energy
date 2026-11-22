@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>OG Grand Winter Sale</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Inter:wght@500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared/common.css" />
+<link rel="stylesheet" href="shared/storybook.css" />
+<style>
+  :root{--ink:#0b2a1f;--frame:#0b2a1f;--card-bg:#fffaf0;--card-ink:#0b2a1f;--card-shadow:#D9A94E;--combo-bg:#a3121c;--combo-tag:#F2C46D;--combo-tag-ink:#0b2a1f;
+    --btn-bg:#F2C46D;--btn-ink:#0b2a1f;--foot-ink:#0b2a1f;--foot-accent:#a3121c}
+  .gold{position:absolute;inset:12px;border:2px solid #D9A94E;border-radius:46px;z-index:9;pointer-events:none}
+  .sb-script{top:84px;font-size:78px;color:#F2C46D;text-shadow:0 3px 0 #0b2a1f}
+  .ribtext{position:absolute;top:204px;left:0;right:0;text-align:center;font-family:"Baloo 2",sans-serif;font-weight:800;font-size:100px;line-height:1;color:#FFF1CF;letter-spacing:-.01em;z-index:6;text-shadow:0 4px 0 #6d0b12}
+  .sb-sub{top:378px;color:#f3ecd8}
+  .sb-sub b{color:#F2C46D}
+  .sb-o.c .t{border-color:#0b2a1f}
+  .sb-offers{top:878px}
+</style></head>
+<body><div class="poster"><div class="sb-frame">
+  <svg class="sb-scene" id="scene" viewBox="0 0 1080 1350">
+    <defs>
+      <radialGradient id="em" cx=".5" cy=".35" r=".8"><stop offset="0" stop-color="#1d6b49"/><stop offset=".6" stop-color="#0f4a33"/><stop offset="1" stop-color="#08301f"/></radialGradient>
+      <linearGradient id="rib" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0303a"/><stop offset=".55" stop-color="#b5161e"/><stop offset="1" stop-color="#8a0f16"/></linearGradient>
+      <radialGradient id="bg1" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE7A8"/><stop offset="1" stop-color="#C9962F"/></radialGradient>
+      <radialGradient id="br1" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ff6b6b"/><stop offset="1" stop-color="#8a0f16"/></radialGradient>
+    </defs>
+    <rect width="1080" height="1350" fill="url(#em)"/>
+    <g id="fx"></g><g id="ld"></g><g id="rb"></g>
+  </svg>
+  <div class="gold"></div>
+
+  <img class="sb-logo" src="../public/img/logo-white.png" alt="OG" />
+  <div class="sb-script">The Grand</div>
+  <div class="ribtext">Winter Sale</div>
+  <p class="sb-sub">Wrapped, ribboned and ready.<br/><b>The finest stack of the season.</b></p>
+
+  <img class="abs sticker" src="../public/img/whey-box.webp" style="left:248px;top:576px;height:240px;transform:rotate(-6deg)" alt="" />
+  <img class="abs sticker" src="../public/img/yeast-box.webp" style="left:584px;top:576px;height:240px;transform:rotate(6deg)" alt="" />
+  <div class="abs hatted sticker" style="--w:126px;left:447px;top:560px;transform:rotate(-2deg);z-index:6"><img class="s" src="../public/img/sachet-whey-choco.webp" alt="" /><img class="hat" src="shared/santa-hat.svg" alt="" /></div>
+  <img class="abs sticker" src="../public/img/creatine-fruit-fusion.webp" style="left:352px;top:740px;height:108px;transform:rotate(-4deg);z-index:7" alt="" />
+  <img class="abs sticker" src="../public/img/creatine.webp" style="left:574px;top:744px;height:104px;transform:rotate(4deg);z-index:7" alt="" />
+
+  <div class="sb-offers" id="offers"></div>
+  <div class="sb-foot"><div class="l">onlygodsnutrition.com &nbsp;·&nbsp; <span>@og__energy</span></div><span class="sb-btn">Shop the sale →</span></div>
+  <p class="sb-fine">24g protein per sachet · 28 sachets a box · 100% prepaid · Delivered across India · While stocks last</p>
+</div></div>
+<script src="shared/common.js"></script>
+<script src="shared/storybook.js"></script>
+<script>
+  const svg = document.getElementById('scene'); wobbleDefs(svg, 3);
+  const FX = document.getElementById('fx'), LD = document.getElementById('ld'), RB = document.getElementById('rb'), INK = '#0b2a1f';
+  // gold snowflakes + dots
+  [[140, 380, 22], [945, 400, 26], [880, 130, 14], [210, 520, 14], [1000, 560, 16], [90, 600, 12], [760, 520, 10], [330, 470, 9]].forEach(([x, y, r]) => snowflake(FX, x, y, r, '#E2B45A', 2.2));
+  for (let i = 0; i < 70; i++) FX.append(el('circle', { cx: rnd() * 1080, cy: rnd() * 690, r: 1 + rnd() * 1.8, fill: '#F2C46D', opacity: .25 + rnd() * .5 }));
+  // hanging baubles
+  const H = el('g', { filter: 'url(#wobble)' }); FX.append(H);
+  [[70, 230, 'bg1', 24], [960, 210, 'br1', 22], [1012, 290, 'bg1', 26]].forEach(([x, y, f, r]) => {
+    H.append(el('line', { x1: x, y1: 30, x2: x, y2: y - r - 8, stroke: '#E2B45A', 'stroke-width': 2 }));
+    H.append(el('rect', { x: x - 7, y: y - r - 10, width: 14, height: 10, rx: 2, fill: '#E2B45A', stroke: INK, 'stroke-width': 2 }));
+    H.append(el('circle', { cx: x, cy: y, r, fill: `url(#${f})`, stroke: INK, 'stroke-width': 3 }));
+    H.append(el('path', { d: `M${x - r * .7} ${y - r * .1} Q ${x} ${y + r * .3} ${x + r * .7} ${y - r * .1}`, fill: 'none', stroke: '#fff', 'stroke-width': 2, opacity: .6 }));
+  });
+  // ribbon banner
+  const R = el('g', { filter: 'url(#wobble)' }); RB.append(R);
+  R.append(el('path', { d: 'M70 250 L170 250 L170 350 L70 350 L110 300 Z', fill: '#8a0f16', stroke: INK, 'stroke-width': 3.5, 'stroke-linejoin': 'round' }));
+  R.append(el('path', { d: 'M1010 250 L910 250 L910 350 L1010 350 L970 300 Z', fill: '#8a0f16', stroke: INK, 'stroke-width': 3.5, 'stroke-linejoin': 'round' }));
+  R.append(el('path', { d: 'M170 350 L200 372 L200 330 Z M910 350 L880 372 L880 330 Z', fill: '#5e0a10', stroke: INK, 'stroke-width': 3, 'stroke-linejoin': 'round' }));
+  R.append(el('path', { d: 'M150 226 Q 540 196 930 226 L930 352 Q 540 322 150 352 Z', fill: 'url(#rib)', stroke: INK, 'stroke-width': 4 }));
+  R.append(el('path', { d: 'M160 240 Q 540 210 920 240', fill: 'none', stroke: '#F2C46D', 'stroke-width': 2.5, 'stroke-dasharray': '10 7' }));
+  R.append(el('path', { d: 'M160 338 Q 540 308 920 338', fill: 'none', stroke: '#F2C46D', 'stroke-width': 2.5, 'stroke-dasharray': '10 7' }));
+  // land
+  const L = el('g', { filter: 'url(#wobble)' }); LD.append(L);
+  L.append(el('path', { d: 'M0 720 C 200 680, 400 740, 560 730 C 760 718, 900 690, 1080 710 L1080 1350 L0 1350 Z', fill: '#fbf7ee', stroke: INK, 'stroke-width': 4 }));
+  pine(L, 118, 760, 230, '#2e8a52', INK, '#fff');
+  pine(L, 962, 760, 240, '#2e8a52', INK, '#fff');
+  [[100, 640, '#F2C46D'], [140, 690, '#c8102e'], [85, 712, '#F2C46D'], [945, 630, '#c8102e'], [985, 680, '#F2C46D'], [950, 712, '#c8102e']].forEach(([x, y, c]) => L.append(el('circle', { cx: x, cy: y, r: 8, fill: c, stroke: INK, 'stroke-width': 2.5 })));
+  star(L, 118, 524, 20, '#F2C46D', 0, INK, false); star(L, 962, 514, 20, '#F2C46D', 0, INK, false);
+  gift(L, 40, 790, 70, 64, '#a3121c', '#F2C46D', INK, -5); gift(L, 120, 808, 54, 46, '#fffaf0', '#c8102e', INK, 6); gift(L, 180, 780, 46, 74, '#0f4a33', '#F2C46D', INK, -3);
+  gift(L, 960, 790, 72, 64, '#fffaf0', '#a3121c', INK, 5); gift(L, 900, 808, 52, 46, '#a3121c', '#F2C46D', INK, -6); gift(L, 850, 784, 44, 70, '#F2C46D', '#0f4a33', INK, 3);
+  renderOffers(document.getElementById('offers'));
+</script>
+</body></html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>OG Starlit Winter Sale</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Inter:wght@500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared/common.css" />
+<link rel="stylesheet" href="shared/storybook.css" />
+<style>
+  :root{--ink:#0b1d3a;--frame:#0b1d3a;--card-bg:#fffaf0;--card-ink:#0b1d3a;--card-shadow:#D9A94E;--combo-bg:#0f3d2e;--combo-tag:#c8102e;
+    --btn-bg:#F2C46D;--btn-ink:#0b1d3a;--foot-ink:#0b1d3a;--foot-accent:#a3121c}
+  .poster{background:#fff}
+  .gold{position:absolute;inset:12px;border:2px solid #D9A94E;border-radius:46px;z-index:9;pointer-events:none}
+  .sb-script{top:58px;font-size:66px;color:#F2C46D;text-shadow:0 0 18px rgba(242,196,109,.45)}
+  .sb-head{top:134px;font-size:118px;color:#FFF1CF;text-shadow:0 6px 0 #b98327,0 14px 26px rgba(0,0,0,.45)}
+  .sb-sub{top:368px;color:#e9eefb}
+  .sb-sub b{color:#F2C46D}
+  .sb-offers{top:868px}
+</style></head>
+<body><div class="poster"><div class="sb-frame">
+  <svg class="sb-scene" id="scene" viewBox="0 0 1080 1350">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#081631"/><stop offset=".45" stop-color="#16305e"/><stop offset=".62" stop-color="#2d4f8a"/><stop offset="1" stop-color="#2d4f8a"/></linearGradient>
+      <radialGradient id="moon" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#FFF8E1"/><stop offset="1" stop-color="#F5D98E"/></radialGradient>
+    </defs>
+    <rect width="1080" height="1350" fill="url(#sky)"/>
+    <g id="skyg"></g>
+    <g id="land"></g>
+  </svg>
+  <div class="gold"></div>
+
+  <img class="sb-logo" src="../public/img/logo-white.png" alt="OG" />
+  <div class="sb-script">Limited Edition</div>
+  <div class="sb-head">Starlit<br/>Winter Sale</div>
+  <p class="sb-sub">Wish upon <b>24g of protein.</b><br/>Gifts for the Gods, priced for mortals.</p>
+
+  <img class="abs sticker" src="../public/img/whey-box.webp" style="left:214px;top:588px;height:236px;transform:rotate(-7deg)" alt="" />
+  <img class="abs sticker" src="../public/img/yeast-box.webp" style="left:612px;top:588px;height:236px;transform:rotate(7deg)" alt="" />
+  <div class="abs hatted sticker" style="--w:124px;left:448px;top:560px;transform:rotate(-3deg);z-index:6"><img class="s" src="../public/img/sachet-whey-choco.webp" alt="" /><img class="hat" src="shared/santa-hat.svg" alt="" /></div>
+  <img class="abs sticker" src="../public/img/creatine-fruit-fusion.webp" style="left:338px;top:742px;height:112px;transform:rotate(-5deg);z-index:7" alt="" />
+  <img class="abs sticker" src="../public/img/creatine.webp" style="left:590px;top:748px;height:106px;transform:rotate(5deg);z-index:7" alt="" />
+
+  <div class="sb-offers" id="offers"></div>
+  <div class="sb-foot"><div class="l">onlygodsnutrition.com &nbsp;·&nbsp; <span>@og__energy</span></div><span class="sb-btn">Shop the sale →</span></div>
+  <p class="sb-fine">24g protein per sachet · 28 sachets a box · 100% prepaid · Delivered across India · While stocks last</p>
+</div></div>
+<script src="shared/common.js"></script>
+<script src="shared/storybook.js"></script>
+<script>
+  const svg = document.getElementById('scene'); wobbleDefs(svg, 3);
+  const sky = document.getElementById("skyg"), land = document.getElementById('land'), INK = '#0b1d3a';
+  // moon
+  sky.append(el('circle', { cx: 905, cy: 205, r: 110, fill: '#F5D98E', opacity: .25, filter: 'url(#soft)' }));
+  sky.append(el('circle', { cx: 905, cy: 205, r: 62, fill: 'url(#moon)', stroke: INK, 'stroke-width': 3 }));
+  [[885, 190, 9], [925, 222, 6], [915, 180, 4], [890, 232, 5]].forEach(([x, y, r]) => sky.append(el('circle', { cx: x, cy: y, r, fill: 'none', stroke: '#d8b766', 'stroke-width': 2 })));
+  // star field
+  for (let i = 0; i < 90; i++) { const x = rnd() * 1080, y = rnd() * 620; if (y < 130 && x < 260) continue; sky.append(el('circle', { cx: x, cy: y, r: .8 + rnd() * 1.6, fill: '#fff', opacity: .35 + rnd() * .6 })); }
+  [[170, 300, 13], [140, 520, 9], [960, 420, 11], [820, 110, 8], [70, 410, 7], [1010, 560, 8], [300, 120, 7]].forEach(([x, y, r]) => twinkle(sky, x, y, r, '#FFE7A8'));
+  const sg = el('g', { filter: 'url(#wobble)' }); sky.append(sg);
+  star(sg, 135, 380, 30, '#F2C46D', 12, INK); star(sg, 965, 330, 24, '#F2C46D', -14, INK);
+  // land
+  const L = el('g', { filter: 'url(#wobble)' }); land.append(L);
+  L.append(el('path', { d: 'M0 650 C 180 600, 330 630, 470 680 C 600 720, 760 640, 1080 630 L1080 1350 L0 1350 Z', fill: '#cfdcf2', stroke: INK, 'stroke-width': 3.5 }));
+  for (let i = 0; i < 16; i++) { const x = 30 + i * 66 + rnd() * 20; if (x > 300 && x < 800) continue; const base = x < 500 ? 655 + Math.sin(x / 160) * 20 : 660; pine(L, x, base + 10, 80 + rnd() * 50, '#14513a', INK, '#eef4ff'); }
+  L.append(el('path', { d: 'M0 760 C 200 720, 380 790, 560 800 C 760 810, 900 750, 1080 770 L1080 1350 L0 1350 Z', fill: '#f4f8ff', stroke: INK, 'stroke-width': 4 }));
+  pine(L, 90, 800, 190, '#0f4a33', INK, '#ffffff'); pine(L, 170, 815, 140, '#14573c', INK, '#ffffff');
+  pine(L, 990, 800, 200, '#0f4a33', INK, '#ffffff'); pine(L, 905, 820, 130, '#14573c', INK, '#ffffff');
+  L.append(el('path', { d: 'M40 1000 C 300 980, 700 1010, 1040 990', fill: 'none', stroke: '#c9d6ec', 'stroke-width': 3 }));
+  renderOffers(document.getElementById('offers'));
+</script>
+</body></html>
