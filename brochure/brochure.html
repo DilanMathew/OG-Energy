@@ -104,7 +104,7 @@
   .steps { position: absolute; left: 64px; right: 64px; top: 890px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .step { border: 2px solid rgba(255,255,255,.18); border-radius: 28px; padding: 26px 24px; min-height: 260px; }
   .step .n { font-family: var(--display); font-size: 30px; color: var(--fire); }
-  .step h4 { font-family: var(--display); font-weight: 400; font-size: 64px; line-height: .95; text-transform: uppercase; margin-top: 10px; }
+  .step h4 { font-family: var(--display); font-weight: 400; font-size: 50px; hyphens: manual; line-height: .95; text-transform: uppercase; margin-top: 10px; }
   .step p { margin-top: 14px; font: 500 20px/1.4 var(--body); color: rgba(255,255,255,.72); }
   .step.hot { background: var(--fire); border-color: var(--fire); color: var(--ink); }
   .step.hot .n { color: var(--ink); } .step.hot p { color: rgba(0,0,0,.75); }
@@ -170,6 +170,30 @@
   .founder .sign b { display: block; font-family: var(--display); font-weight: 400; font-size: 44px; letter-spacing: 1px; text-transform: uppercase; }
   .founder .sign span { display: block; margin-top: 6px; font: 800 18px/1 var(--body); letter-spacing: 3px; text-transform: uppercase; color: var(--fire); }
   .founder .foot { color: rgba(255,255,255,.6); z-index: 3; }
+
+  /* ---------- KNOW YOUR PROTEIN ---------- */
+  .know { background: var(--ink); color: #fff; }
+  .know .kicker { position: absolute; left: 64px; top: 64px; background: #fff; color: var(--ink); }
+  .know h2 { position: absolute; left: 60px; top: 150px; font-size: 150px; }
+  .know h2 em { font-style: normal; font-size: .55em; vertical-align: .45em; color: rgba(255,255,255,.45); margin: 0 6px; }
+  .know .intro { position: absolute; left: 64px; top: 300px; width: 900px; font: 500 24px/1.45 var(--body); color: rgba(255,255,255,.75); }
+  .know .intro b { color: #fff; }
+  .pcols { position: absolute; left: 64px; right: 64px; top: 370px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .pcol { border-radius: 32px; padding: 28px 26px 26px; position: relative; overflow: hidden; }
+  .pcol.whey { background: var(--fire); color: var(--ink); }
+  .pcol.yeast { background: var(--lime); color: var(--ink); }
+  .pcol .sachet { position: absolute; right: -18px; top: 14px; width: 118px; transform: rotate(12deg); filter: drop-shadow(0 18px 22px rgba(0,0,0,.35)); }
+  .pcol .lbl { display: inline-block; font: 900 15px/1 var(--body); letter-spacing: 2px; text-transform: uppercase; padding: 9px 12px; border-radius: 999px; background: var(--ink); color: #fff; }
+  .pcol h3 { font-family: var(--display); font-weight: 400; font-size: 58px; line-height: .92; text-transform: uppercase; margin-top: 18px; }
+  .pcol .what { margin-top: 12px; width: 300px; font: 600 20px/1.4 var(--body); color: rgba(0,0,0,.78); }
+  .pcol ul { list-style: none; margin-top: 22px; display: grid; gap: 12px; }
+  .pcol li { background: rgba(255,255,255,.92); border-radius: 18px; padding: 14px 14px 14px 58px; position: relative; }
+  .pcol li::before { content: "✓"; position: absolute; left: 15px; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font: 900 16px/1 var(--body); }
+  .pcol li b { display: block; font: 800 21px/1.15 var(--body); }
+  .pcol li span { display: block; margin-top: 4px; font: 500 17px/1.35 var(--body); color: var(--muted); }
+  .know .both { position: absolute; left: 64px; right: 64px; top: 1212px; text-align: center; font: 800 21px/1 var(--body); letter-spacing: 1px; }
+  .know .both span { color: var(--fire); }
+  .know .foot { color: rgba(255,255,255,.6); }
 </style>
 </head>
 <body>
@@ -213,10 +237,45 @@
   <div class="foot"><span>Tear · Shake · Keep moving</span><span class="pg">02/06</span></div>
 </section>
 
+<!-- KNOW YOUR PROTEIN -->
+<section class="page know">
+  <span class="tag kicker"><span class="bolt o"></span> Know your protein</span>
+  <h2 class="d">Whey <em>vs</em> <span class="g">Yeast.</span></h2>
+  <p class="intro">Two proteins. <b>Same 24g in every sachet.</b> Here's what sets them apart.</p>
+  <div class="pcols">
+    <div class="pcol whey">
+      <img class="sachet" src="../public/img/sachet-whey-choco.webp" alt="" />
+      <span class="lbl">The classic</span>
+      <h3>Whey<br/>Protein</h3>
+      <p class="what">Protein from milk — the gym-floor gold standard, imported from Europe.</p>
+      <ul>
+        <li><b>Complete protein</b><span>All 9 essential amino acids your body can't make.</span></li>
+        <li><b>Rich in BCAAs &amp; leucine</b><span>The amino acids that switch on muscle building.</span></li>
+        <li><b>Fast-absorbing</b><span>Gets to work quickly — ideal right after training.</span></li>
+        <li><b>Creamy &amp; indulgent</b><span>Swiss Choco &amp; Vanilla. Tastes like a treat.</span></li>
+      </ul>
+    </div>
+    <div class="pcol yeast">
+      <img class="sachet" src="../public/img/sachet-yeast-vanilla.webp" alt="" />
+      <span class="lbl">The new-gen</span>
+      <h3>Yeast<br/>Protein</h3>
+      <p class="what">Protein made by fermentation — clean, modern and completely dairy-free.</p>
+      <ul>
+        <li><b>100% dairy-free</b><span>No milk, no lactose — easy on sensitive stomachs.</span></li>
+        <li><b>Complete protein</b><span>All 9 essential amino acids, just like whey.</span></li>
+        <li><b>Light on the gut</b><span>No bloat, no heaviness — fuel you barely feel.</span></li>
+        <li><b>Kinder to the planet</b><span>Fermentation needs far less land and water than dairy.</span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="both">Can't decide? <span>Both</span> pack 24g protein + papain in every 34g sachet.</p>
+  <div class="foot"><span>Tear · Shake · Keep moving</span><span class="pg"></span></div>
+</section>
+
 <!-- 3 · LINEUP -->
 <section class="page lineup" id="p3">
   <span class="tag kicker"><span class="bolt o"></span> The lineup</span>
-  <h2 class="d">Choose your<br/>weapon<span class="o">.</span></h2>
+  <h2 class="d">Choose your<br/>nectar<span class="o">.</span></h2>
   <div class="cards">
     <div class="card whey">
       <div class="pic"><span class="badge">Bestseller</span><img src="../public/img/whey-box.webp" alt="" /></div>
@@ -257,17 +316,17 @@
   <div class="cprice"><b>₹799</b><del>₹999</del><span>120g tub<br/>Fruit Fusion · Orange</span></div>
   <p class="fine">^Benefit claims as printed on the pack. Refer to the label for serving size and directions.</p>
   <div class="divider"></div>
-  <div class="ritual-h">The ritual · 3 moves · 30 seconds</div>
+  <div class="ritual-h">Why it hits different</div>
   <div class="steps">
-    <div class="step"><span class="n">01</span><h4>Tear</h4><p>Rip open today's sachet. One a day — the box keeps you honest.</p></div>
-    <div class="step"><span class="n">02</span><h4>Shake</h4><p>Mix with 200–250ml of cold water or milk until smooth.</p></div>
-    <div class="step hot"><span class="n">03</span><h4>Keep moving</h4><p>After training, or whenever you need a protein hit. Repeat tomorrow.</p></div>
+    <div class="step"><span class="n">01</span><h4>Ultra&shy;micronized</h4><p>Ultra-fine creatine particles that mix clean into water. No grit, no clumps.</p></div>
+    <div class="step"><span class="n">02</span><h4>Tastes like<br/>never before</h4><p>Fruit Fusion &amp; Orange. Creatine you'll actually look forward to.</p></div>
+    <div class="step hot"><span class="n">03</span><h4>+ Taurine</h4><p>Added specifically for that instant punch — every single session.</p></div>
   </div>
   <div class="foot"><span>#KEEPMOVING</span><span class="pg">04/06</span></div>
 </section>
 
 <!-- 5 · FOUNDER -->
-<section class="page founder" id="p5">
+<section class="page founder">
   <div class="glow"></div>
   <div class="ghost">OG</div>
   <div class="floor"></div>
