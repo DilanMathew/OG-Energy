@@ -247,6 +247,27 @@
     }, { passive: true });
   }
 
+  // ---------- Testimonials (scrolling strip) ----------
+  {
+    const list = (Array.isArray(window.OG_TESTIMONIALS) ? window.OG_TESTIMONIALS : []).filter((t) => t && t.name && t.text);
+    if (list.length) {
+      const star = '<svg viewBox="0 0 24 24"><path d="m12 2 3 6.9 7.5.7-5.7 5 1.7 7.4L12 18.1 5.5 22l1.7-7.4-5.7-5 7.5-.7z"/></svg>';
+      const card = (t, hidden) => {
+        const r = Math.max(1, Math.min(5, Math.round(Number(t.rating) || 5)));
+        return `<figure class="review"${hidden ? ' aria-hidden="true"' : ""}>
+          <div class="review-stars" aria-label="${r} out of 5 stars">${star.repeat(r)}</div>
+          <blockquote>${esc(t.text)}</blockquote>
+          <figcaption><span class="review-av">${esc(t.name.trim()[0].toUpperCase())}</span><span><b>${esc(t.name)}</b><small>${esc([t.city, t.product].filter(Boolean).join(" · "))}</small></span></figcaption>
+        </figure>`;
+      };
+      const track = $("#reviewsTrack");
+      // Two copies side by side; the CSS animation slides by exactly one copy for a seamless loop.
+      track.innerHTML = list.map((t) => card(t)).join("") + list.map((t) => card(t, true)).join("");
+      track.style.setProperty("--dur", Math.max(30, list.length * 7) + "s");
+      $("#reviews").hidden = false;
+    }
+  }
+
   // ---------- Reveal + counters ----------
   const io = new IntersectionObserver((entries) => {
     entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });

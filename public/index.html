@@ -340,6 +340,17 @@
       </div>
     </section>
 
+    <!-- TESTIMONIALS (filled from /testimonials.js; hidden while empty) -->
+    <section class="reviews" id="reviews" hidden>
+      <div class="section-head">
+        <p class="eyebrow reveal">Reviews</p>
+        <h2 class="section-title reveal">Loved by<br /><span class="hl">mortals.</span></h2>
+      </div>
+      <div class="reviews-marquee" aria-label="Customer reviews">
+        <div class="reviews-track" id="reviewsTrack"></div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="footer">
@@ -422,6 +433,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <script src="/testimonials.js?v=__V__" defer></script>
   <script src="/app.js?v=__V__" defer></script>
 </body>
 </html>
