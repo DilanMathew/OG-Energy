@@ -401,6 +401,15 @@ body.ready .hero-title .line:nth-child(2) .word { transition-delay: 0.12s; }
 }
 .footer { position: relative; padding: 0 var(--gutter) 40px; background: #111; color: #fff; overflow: hidden; }
 .footer-big { width: 100%; max-width: 1400px; height: auto; margin: 0 auto; padding-top: 50px; filter: invert(1); opacity: 0.12; }
+.certs { margin-top: 30px; text-align: center; }
+.certs-title { margin: 0 0 18px; font-size: 12px; font-weight: 800; letter-spacing: 0.26em; text-transform: uppercase; color: #bdb7af; }
+.certs-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 16px; }
+.cert { --r: -4deg; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 104px; height: 104px; border-radius: 50%; background: #fff; color: #111; border: 3px dashed var(--fire); box-shadow: 0 0 0 4px #fff, 4px 6px 0 4px var(--fire); transform: rotate(var(--r)); transition: transform 0.3s var(--ease); text-align: center; }
+.cert:nth-child(2n) { --r: 5deg; } .cert:nth-child(3n) { --r: -2deg; } .cert:nth-child(5n) { --r: 7deg; }
+.cert:hover { transform: rotate(0) scale(1.06); }
+.cert b { font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1; letter-spacing: 0.02em; }
+.cert small { margin-top: 4px; max-width: 84px; font-size: 10.5px; font-weight: 800; line-height: 1.15; text-transform: uppercase; letter-spacing: 0.03em; }
+@media (max-width: 600px) { .certs-list { gap: 14px 12px; } .cert { width: 82px; height: 82px; } .cert b { font-size: 23px; } .cert small { font-size: 8.5px; max-width: 68px; } }
 .footer-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; margin-top: 40px; }
 .footer-tag { margin: 0; max-width: 380px; color: #bdb7af; font-size: 14px; }
 .footer-row nav { display: flex; flex-wrap: wrap; gap: 22px; font-size: 14px; font-weight: 600; color: #e8e4de; }
