@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>OG Very Merry Sale</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Inter:wght@500;600;700;800&family=Yellowtail&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared/common.css" />
+<style>
+  :root{--g:#0d5c2c;--ink:#141414;--rd:#e2372b}
+  html,body{background:#fff}
+  body{color:var(--ink)}
+  .poster{background:#fff}
+  .card{position:absolute;inset:26px;border:4px solid var(--ink);border-radius:56px;overflow:hidden;
+    background:linear-gradient(180deg,#86c0ea 0%,#a9d3f2 38%,#d8ecfb 62%,#eef7ff 100%)}
+  svg.scene{position:absolute;left:-26px;top:-26px;width:1080px;height:1350px}
+  .sketch{filter:url(#wobble)}
+
+  .le{position:absolute;top:70px;left:0;right:0;text-align:center;font-family:Yellowtail,cursive;font-size:70px;color:var(--rd);z-index:5;transform:rotate(-2deg)}
+  .h{position:absolute;top:142px;left:0;right:0;text-align:center;font-family:"Baloo 2",sans-serif;font-weight:800;font-size:124px;line-height:.86;letter-spacing:-.02em;color:var(--g);z-index:5}
+  .sub{position:absolute;top:378px;left:0;right:0;text-align:center;font-weight:800;font-size:27px;line-height:1.25;z-index:5}
+  .logo{position:absolute;top:58px;left:62px;height:40px;z-index:6}
+
+  .stk{filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+               drop-shadow(2px 0 0 var(--ink)) drop-shadow(-2px 0 0 var(--ink)) drop-shadow(0 2px 0 var(--ink)) drop-shadow(0 -2px 0 var(--ink))
+               drop-shadow(6px 10px 0 rgba(20,20,20,.18))}
+  .p{position:absolute;z-index:5}
+  .hero{position:absolute;left:330px;top:596px;z-index:6;transform:rotate(8deg)}
+  .hero .s{filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(2px 0 0 #141414) drop-shadow(-2px 0 0 #141414) drop-shadow(0 2px 0 #141414) drop-shadow(0 -2px 0 #141414)}
+
+  .offers{position:absolute;left:74px;right:74px;top:862px;z-index:7}
+  .row{display:grid;gap:18px}
+  .r3{grid-template-columns:repeat(3,1fr)}
+  .r2{grid-template-columns:repeat(2,1fr);margin-top:18px}
+  .o{background:#fff;border:3px solid var(--ink);border-radius:24px;box-shadow:6px 6px 0 var(--ink);padding:14px 18px 14px;text-align:center}
+  .o .t{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:var(--a);border:2px solid var(--ink);border-radius:99px;padding:3px 10px}
+  .o .n{margin-top:6px;font-size:17px;font-weight:700;color:#333}
+  .o .pr{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:52px;line-height:1;margin-top:4px;color:var(--ink)}
+  .o .pr sup{font-size:24px;vertical-align:top;position:relative;top:8px;margin-right:1px}
+  .o.c{display:flex;align-items:center;justify-content:space-between;text-align:left;background:var(--g);color:#fff;padding:14px 22px}
+  .o.c .n{color:#fff;font-size:21px;font-weight:800;margin-top:6px}
+  .o.c .pr{color:#fff;font-size:56px}
+  .o.c .t{background:var(--rd)}
+
+  .foot{position:absolute;left:74px;right:74px;bottom:66px;z-index:7;display:flex;justify-content:space-between;align-items:center}
+  .foot .l{font-size:19px;font-weight:800}.foot .l span{color:var(--g)}
+  .btn{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:24px;color:#fff;background:var(--rd);border:3px solid var(--ink);border-radius:99px;padding:6px 26px 4px;box-shadow:5px 5px 0 var(--ink)}
+  .fine{position:absolute;left:0;right:0;bottom:30px;text-align:center;color:#555;z-index:7}
+</style></head>
+<body><div class="poster">
+<div class="card">
+  <svg class="scene" id="scene" viewBox="0 0 1080 1350">
+    <defs>
+      <filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter>
+    </defs>
+    <!-- snow hills -->
+    <g class="sketch" transform="translate(0,-44)">
+      <path d="M0 640 C 160 560, 300 600, 420 700 C 520 790, 640 760, 760 690 C 880 620, 980 640, 1080 690 L1080 1420 L0 1420 Z" fill="#fff" stroke="#141414" stroke-width="4"/>
+      <path d="M0 800 C 200 760, 360 840, 560 830 C 760 820, 900 780, 1080 800" fill="none" stroke="#141414" stroke-width="3"/>
+      <path d="M0 805 C 200 765, 360 845, 560 835 C 760 825, 900 785, 1080 805 L1080 1420 L0 1420 Z" fill="#f2f8fd"/>
+    </g>
+    <g id="stars" class="sketch"></g>
+    <g transform="translate(0,-44)"><g id="tree" class="sketch"></g>
+    <g id="gifts" class="sketch"></g></g>
+  </svg>
+
+  <img class="logo" src="../public/img/logo-dark.png" alt="OG" />
+  <div class="le">Limited Edition</div>
+  <div class="h">Very Merry<br/>Winter Sale</div>
+  <p class="sub">24g protein, sealed fresh with a festive finish.<br/>Even the Gods couldn't resist.</p>
+
+  <div class="hero hatted" style="--w:104px"><img class="s" src="../public/img/sachet-whey-choco.webp" alt="" /><img class="hat" src="shared/santa-hat.svg" alt="" /></div>
+  <img class="p stk" src="../public/img/whey-box.webp" style="left:690px;top:516px;height:250px;transform:rotate(-7deg)" alt="" />
+  <img class="p stk" src="../public/img/sachet-yeast-vanilla.webp" style="left:880px;top:576px;height:200px;transform:rotate(12deg)" alt="" />
+  <img class="p stk" src="../public/img/creatine-fruit-fusion.webp" style="left:600px;top:676px;height:130px;transform:rotate(-4deg);z-index:6" alt="" />
+  <img class="p stk" src="../public/img/creatine.webp" style="left:880px;top:726px;height:105px;transform:rotate(6deg);z-index:6" alt="" />
+
+  <div class="offers">
+    <div class="row r3">
+      <div class="o" style="--a:#F7931E"><span class="t">Buy 2 Whey</span><div class="n">56 sachets</div><div class="pr"><sup>₹</sup>6,999</div></div>
+      <div class="o" style="--a:#6aa630"><span class="t">Buy 2 Yeast</span><div class="n">56 sachets</div><div class="pr"><sup>₹</sup>4,999</div></div>
+      <div class="o" style="--a:#e2372b"><span class="t">Buy 2 Creatine</span><div class="n">2 × 120g tubs</div><div class="pr"><sup>₹</sup>1,399</div></div>
+    </div>
+    <div class="row r2">
+      <div class="o c"><div><span class="t">Combo</span><div class="n">Whey + Creatine</div></div><div class="pr"><sup>₹</sup>3,999</div></div>
+      <div class="o c"><div><span class="t">Combo</span><div class="n">Yeast + Creatine</div></div><div class="pr"><sup>₹</sup>2,999</div></div>
+    </div>
+  </div>
+
+  <div class="foot"><div class="l">onlygodsnutrition.com &nbsp;·&nbsp; <span>@og__energy</span></div><span class="btn">Shop the sale →</span></div>
+  <p class="fine">24g protein per sachet · 28 sachets a box · 100% prepaid · Delivered across India · While stocks last</p>
+</div>
+</div>
+<script src="shared/common.js"></script>
+<script>
+  const S = (p, a) => { const e = el(p, a); return e; };
+  // hand-drawn stars
+  const st = document.getElementById('stars');
+  function star(cx, cy, r, fill, rot) {
+    let d = ''; for (let i = 0; i < 10; i++) { const a = (i * 36 + rot - 90) * Math.PI / 180, rr = i % 2 ? r * .45 : r; d += (i ? 'L' : 'M') + (cx + Math.cos(a) * rr).toFixed(1) + ' ' + (cy + Math.sin(a) * rr).toFixed(1); }
+    st.append(S('path', { d: d + 'Z', fill, stroke: '#141414', 'stroke-width': 3, 'stroke-linejoin': 'round' }));
+    if (r > 26) st.append(S('path', { d: `M${cx - r * .15} ${cy} q ${r * .15} ${-r * .2} ${r * .3} 0 q ${-r * .1} ${r * .2} ${-r * .3} 0`, fill: 'none', stroke: '#141414', 'stroke-width': 2 }));
+    for (let i = 0; i < 4; i++) { const a = (i * 90 + rot + 18) * Math.PI / 180; st.append(S('circle', { cx: cx + Math.cos(a) * r * 1.35, cy: cy + Math.sin(a) * r * 1.35, r: 3, fill: '#141414' })); }
+  }
+  star(150, 300, 44, '#FFD94A', 12); star(930, 250, 50, '#FFD94A', -10); star(210, 480, 22, '#F7931E', 20);
+  star(870, 450, 24, '#F7931E', -8); star(990, 120, 20, '#FFD94A', 30); star(70, 150, 18, '#F7931E', 0);
+
+  // sketchy droopy tree
+  const T = document.getElementById('tree');
+  const base = [210, 880], tip = [246, 572];
+  T.append(S('path', { d: `M${base[0]} ${base[1]} Q 236 700 ${tip[0]} ${tip[1]}`, stroke: '#4a2f17', 'stroke-width': 7, fill: 'none', 'stroke-linecap': 'round' }));
+  for (let i = 0; i < 12; i++) {
+    const t = i / 11, y = tip[1] + 20 + t * 250, x = tip[0] - t * 34, L = (18 + t * 110) * (0.85 + rnd() * .3);
+    for (const side of [-1, 1]) {
+      const ex = x + side * L, ey = y + 30 + t * 40;
+      T.append(S('path', { d: `M${x} ${y} Q ${x + side * L * .55} ${y - 6} ${ex} ${ey}`, stroke: '#1e5a2a', 'stroke-width': 3, fill: 'none' }));
+      for (let k = 0; k < 9; k++) {
+        const u = .12 + k / 10, nx = x + (ex - x) * u, ny = y + (ey - y) * u * u + (-6) * (1 - u) * u * 4;
+        const len = 12 + rnd() * 12;
+        for (const dir of [-1, 1]) T.append(S('line', { x1: nx, y1: ny, x2: nx + side * (8 + rnd() * 6), y2: ny + dir * len * .5 + len * .6, stroke: rnd() < .6 ? '#245f2f' : '#86b85e', 'stroke-width': 2, 'stroke-linecap': 'round' }));
+      }
+    }
+  }
+  [['#e2372b', 140, 700], ['#5aa9e6', 300, 670], ['#d65db1', 190, 650], ['#FFD94A', 320, 760], ['#e2372b', 262, 630], ['#5aa9e6', 110, 790]].forEach(([c, x, y]) => {
+    T.append(S('line', { x1: x, y1: y - 18, x2: x, y2: y - 6, stroke: '#141414', 'stroke-width': 1.5 }));
+    T.append(S('circle', { cx: x, cy: y, r: 9, fill: c, stroke: '#141414', 'stroke-width': 2.5 }));
+  });
+  // star on top
+  (function () { const cx = 248, cy = 550, r = 30; let d = ''; for (let i = 0; i < 10; i++) { const a = (i * 36 - 80) * Math.PI / 180, rr = i % 2 ? r * .45 : r; d += (i ? 'L' : 'M') + (cx + Math.cos(a) * rr) + ' ' + (cy + Math.sin(a) * rr); } T.append(S('path', { d: d + 'Z', fill: '#FFE27A', stroke: '#141414', 'stroke-width': 3, 'stroke-linejoin': 'round' })); })();
+
+  // gifts
+  const G = document.getElementById('gifts');
+  function gift(x, y, w, h, c, rib, rot) {
+    const g = S('g', { transform: `rotate(${rot} ${x + w / 2} ${y + h})` });
+    g.append(S('rect', { x, y, width: w, height: h, fill: c, stroke: '#141414', 'stroke-width': 3, rx: 3 }));
+    g.append(S('rect', { x: x + w / 2 - 6, y, width: 12, height: h, fill: rib, stroke: '#141414', 'stroke-width': 2 }));
+    g.append(S('rect', { x: x - 4, y: y - 12, width: w + 8, height: 16, fill: c, stroke: '#141414', 'stroke-width': 3, rx: 3 }));
+    g.append(S('path', { d: `M${x + w / 2} ${y - 12} c -18 -22 -34 -6 -18 2 z M${x + w / 2} ${y - 12} c 18 -22 34 -6 18 2 z`, fill: rib, stroke: '#141414', 'stroke-width': 2.5 }));
+    G.append(g);
+  }
+  // red sack
+  G.append(S('path', { d: 'M40 880 C 30 820, 70 780, 120 790 C 150 760, 190 790, 200 820 C 220 860, 200 900, 160 905 L 70 905 C 50 902, 42 895, 40 880 Z', fill: '#d8322a', stroke: '#141414', 'stroke-width': 3.5 }));
+  G.append(S('path', { d: 'M80 800 C 100 820, 140 818, 170 800', fill: 'none', stroke: '#141414', 'stroke-width': 2.5 }));
+  gift(170, 830, 70, 70, '#5cc7c0', '#e2372b', -6);
+  gift(250, 850, 58, 52, '#f4a9c9', '#FFD94A', 5);
+  gift(60, 760, 60, 50, '#FFD94A', '#2f7a3a', -12);
+  gift(300, 818, 44, 84, '#7ec3f0', '#d65db1', 3);
+</script>
+</body></html>
