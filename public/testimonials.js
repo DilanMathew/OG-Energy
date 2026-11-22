@@ -1,6 +1,30 @@
-/* Customer testimonials shown in the scrolling "Loved by" strip at the end of the homepage.
+/* Customer testimonials shown in the scrolling "Loved by mortals." strip at the end of the homepage.
    Add only REAL reviews, with the customer's permission. The section stays hidden while this list is empty.
-   Fields: name, city, product (what they bought), text (their words), rating (1–5). */
+   Fields: name, city (optional), product (what they bought), text (their words), rating (1–5). */
 window.OG_TESTIMONIALS = [
-  // { name: "Customer Name", city: "Chennai", product: "OG Whey · Swiss Choco", text: "Their review in their words.", rating: 5 },
+  { name: "Aravind Kumar", product: "OG Whey · Swiss Choco", rating: 5, text: "Really liked the chocolate flavour. Not too sweet and mixes easily. Perfect for my post-workout routine." },
+  { name: "Ajith Kumar", product: "OG Yeast Protein · Choco Berry", rating: 5, text: "Interesting chocolate and berry combination. A refreshing change from regular protein flavours." },
+  { name: "Surya Prakash", product: "OG Creatine · Fruit Fusion", rating: 5, text: "Really liked the fruit flavour. Makes my supplement routine more enjoyable." },
+  { name: "Karthik Raj", product: "OG Whey · Swiss Choco", rating: 5, text: "The individual sachets are super convenient. Easy to carry to the gym without carrying a big tub." },
+  { name: "Rahul Nair", product: "OG Yeast Protein · Choco Berry", rating: 4, text: "Was looking for a dairy-free protein option. Happy to find something different." },
+  { name: "Madhavan K", product: "OG range", rating: 5, text: "Impressed with the branding and product variety. Excited to see what OG launches next." },
+  { name: "Praveen S", product: "OG Whey · Swiss Choco", rating: 4, text: "Good taste and easy to prepare. I usually mix it with cold milk." },
+  { name: "Suresh Babu", product: "OG Yeast Protein · Choco Berry", rating: 5, text: "Unique flavour and convenient packaging. Easy to carry to work." },
+  { name: "Balaji M", product: "OG Creatine · Fruit Fusion", rating: 4, text: "Good flavour and convenient packaging. Easy to include in my gym routine." },
+  { name: "Vishnu Vardhan", product: "OG Whey · Swiss Choco", rating: 5, text: "Great packaging and convenient serving sizes. Quite happy with the product." },
+  { name: "Akhil Raj", product: "OG Yeast Protein · Choco Berry", rating: 5, text: "Love the concept of individual protein sachets. Very practical for everyday use." },
+  { name: "Sanjay Menon", product: "OG Whey · Vanilla", rating: 5, text: "Smooth vanilla flavour. I usually have it with milk in the morning." },
+  { name: "Manoj Krishnan", product: "OG Yeast Protein · Vanilla", rating: 5, text: "Pleasant vanilla flavour. A good option for someone exploring dairy-free protein." },
+  { name: "Charan Teja", product: "OG Creatine · Fruit Fusion", rating: 5, text: "Nice refreshing flavour. Happy with the overall product presentation." },
+  { name: "Harishankar", product: "OG Whey · Vanilla", rating: 4, text: "Good flavour and easy to mix. I particularly like the single-serving packaging." },
+  { name: "Gokul Krishna", product: "OG Yeast Protein · Vanilla", rating: 4, text: "Convenient packaging and easy preparation. Good experience overall." },
+  { name: "Dinesh Kumar", product: "OG Whey · Vanilla", rating: 5, text: "Perfect for travelling. No need to carry a big protein container everywhere." },
+  { name: "Abhishek Gowda", product: "OG Yeast Protein · Vanilla", rating: 5, text: "I like the alternative protein concept. The individual servings are a big plus." },
+  { name: "Mohammed Faizal", product: "OG Creatine · Orange", rating: 5, text: "Orange flavour is refreshing. Really like the combination of creatine and taurine." },
+  { name: "Naveen Reddy", product: "OG Whey · Vanilla", rating: 5, text: "Simple, convenient and good taste. Definitely an interesting product." },
+  { name: "Nithin Thomas", product: "OG Yeast Protein · Vanilla", rating: 5, text: "Easy to prepare and carry. Fits well into my daily routine." },
+  { name: "Ashwin Kumar", product: "OG Whey", rating: 5, text: "Love the convenience of the sachets. Great for carrying to the office and gym." },
+  { name: "Ranjith S", product: "OG Yeast Protein", rating: 5, text: "Interesting product range. Good to see alternative protein options available." },
+  { name: "Pradeep Raj", product: "OG Creatine · Orange", rating: 4, text: "Good taste and easy to prepare. A nice addition to my supplement collection." },
+  { name: "Joel Mathew", product: "OG Creatine", rating: 4, text: "Nice packaging and convenient format. Looking forward to trying other flavours." },
 ];
