@@ -48,7 +48,7 @@
   .sub b{color:#fff}
 
   /* hero products */
-  .stage{position:absolute;top:540px;left:0;right:0;height:330px;z-index:4}
+  .stage{position:absolute;top:508px;left:0;right:0;height:330px;z-index:4}
   .glow{position:absolute;left:50%;top:40%;width:520px;height:300px;transform:translate(-50%,-50%);
     background:radial-gradient(closest-side,rgba(141,198,63,.55),rgba(141,198,63,.12) 60%,rgba(0,0,0,0));filter:blur(10px)}
   .floor{position:absolute;left:50%;bottom:-18px;width:760px;height:70px;transform:translateX(-50%);
@@ -56,19 +56,19 @@
   .prod{position:absolute;bottom:0;filter:drop-shadow(0 22px 26px rgba(0,0,0,.55))}
   .p-yeast{left:170px;height:265px;transform:rotate(-13deg);transform-origin:bottom center}
   .p-cre{right:130px;height:220px;transform:rotate(7deg);transform-origin:bottom center}
-  .hero{position:absolute;left:50%;bottom:-4px;width:172px;transform:translateX(-50%) rotate(-4deg);transform-origin:bottom center}
-  .hero img.s{width:172px;display:block;filter:drop-shadow(0 24px 28px rgba(0,0,0,.6))}
-  .hat{position:absolute;left:-30px;top:-92px;width:238px;transform:rotate(9deg)}
+  .hero{position:absolute;left:50%;bottom:-4px;width:154px;transform:translateX(-50%) rotate(-4deg);transform-origin:bottom center}
+  .hero img.s{width:154px;display:block;filter:drop-shadow(0 24px 28px rgba(0,0,0,.6))}
+  .hat{position:absolute;left:-27px;top:-82px;width:213px;transform:rotate(9deg)}
 
   /* offers */
-  .offers{position:absolute;top:900px;left:56px;right:56px;z-index:5}
+  .offers{position:absolute;top:852px;left:56px;right:56px;z-index:5}
   .sec{display:flex;align-items:center;gap:16px;margin:0 0 14px}
   .sec h3{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:26px;letter-spacing:.08em;color:var(--gold)}
   .sec small{font-size:14px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(234,245,236,.6)}
   .sec .rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(244,213,141,.5),rgba(244,213,141,0))}
   .row{display:grid;gap:16px}
   .row.three{grid-template-columns:repeat(3,1fr)}
-  .row.two{grid-template-columns:repeat(2,1fr);margin-top:18px}
+  .row.two{grid-template-columns:repeat(2,1fr);margin-top:14px}
   .card{position:relative;border-radius:22px;padding:16px 22px 16px;overflow:hidden;
     background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
     border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 18px 40px rgba(0,0,0,.28)}
@@ -79,7 +79,7 @@
   .price{margin-top:8px;font-family:Anton,Impact,sans-serif;font-size:46px;line-height:1;color:#fff;letter-spacing:.01em}
   .price sup{font-family:Inter;font-weight:700;font-size:22px;vertical-align:top;position:relative;top:6px;margin-right:2px;color:rgba(255,255,255,.8)}
   .save{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:#06251a;background:var(--a);padding:5px 10px;border-radius:99px}
-  .card.combo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 26px;
+  .card.combo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 26px;
     background:linear-gradient(135deg,rgba(247,147,30,.20),rgba(141,198,63,.14));border-color:rgba(244,213,141,.35)}
   .card.combo::before{background:linear-gradient(180deg,var(--orange),var(--lime))}
   .combo .price{margin-top:0;font-size:54px}
@@ -93,6 +93,8 @@
   .foot .r{margin-top:14px;text-align:center;font-size:12.5px;letter-spacing:.04em;color:rgba(234,245,236,.55)}
   .foot .cta{display:inline-block;font-weight:800;font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:#06251a;
     background:linear-gradient(180deg,#FFC46B,#F7931E);padding:13px 22px;border-radius:99px;box-shadow:0 8px 24px rgba(247,147,30,.4)}
+  .was{display:block;font-family:Inter,system-ui,sans-serif;font-style:normal;font-weight:600;font-size:18px;line-height:1.1;letter-spacing:0;
+    color:inherit;opacity:.62;text-decoration:line-through;text-decoration-thickness:2px;margin-bottom:4px;text-shadow:none;-webkit-text-fill-color:currentColor}
 </style>
 </head>
 <body>
@@ -156,31 +158,31 @@
       <div class="card" style="--a:var(--orange)">
         <div class="tag">Whey Protein</div>
         <div class="name">2 Boxes <span class="x">×</span> 56 sachets</div>
-        <div class="price"><sup>₹</sup>6,999</div>
-        <span class="save">Save ₹599</span>
+        <div class="price"><s class="was">₹7,600</s><sup>₹</sup>6,999</div>
+        <span class="save">Save ₹601</span>
       </div>
       <div class="card" style="--a:var(--lime)">
         <div class="tag">Yeast Protein</div>
         <div class="name">2 Boxes <span class="x">×</span> 56 sachets</div>
-        <div class="price"><sup>₹</sup>4,999</div>
-        <span class="save">Save ₹599</span>
+        <div class="price"><s class="was">₹5,600</s><sup>₹</sup>4,999</div>
+        <span class="save">Save ₹601</span>
       </div>
       <div class="card" style="--a:#FF6B5E">
         <div class="tag">Creatine + Taurine</div>
         <div class="name">2 Tubs <span class="x">×</span> 120g</div>
-        <div class="price"><sup>₹</sup>1,399</div>
-        <span class="save">Save ₹199</span>
+        <div class="price"><s class="was">₹1,600</s><sup>₹</sup>1,399</div>
+        <span class="save">Save ₹201</span>
       </div>
     </div>
 
     <div class="row two">
       <div class="card combo">
         <div><div class="tag" style="--a:var(--gold)">Combo</div><div class="name">Whey <span class="plus">+</span> Creatine</div></div>
-        <div class="price"><sup>₹</sup>3,999</div>
+        <div class="price"><s class="was">₹4,600</s><sup>₹</sup>3,999</div>
       </div>
       <div class="card combo">
         <div><div class="tag" style="--a:var(--gold)">Combo</div><div class="name">Yeast <span class="plus">+</span> Creatine</div></div>
-        <div class="price"><sup>₹</sup>2,999</div>
+        <div class="price"><s class="was">₹3,600</s><sup>₹</sup>2,999</div>
       </div>
     </div>
   </div>
