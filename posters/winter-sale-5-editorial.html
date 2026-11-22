@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>OG Winter Sale Editorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600;1,700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared/common.css" />
+<style>
+  :root{--cream:#f7f0e3;--pine:#0b3a29;--berry:#a3121c}
+  body{color:#1b1410}
+  .poster{background:
+    radial-gradient(600px 420px at 50% 52%, rgba(141,198,63,.22), rgba(0,0,0,0) 70%),
+    radial-gradient(800px 600px at 50% 40%, #fffaf1 0%, #f4ead8 70%, #eadbc0 100%)}
+  .frame{position:absolute;inset:28px;border:2px solid #c9a463;z-index:3}
+  .frame::after{content:"";position:absolute;inset:8px;border:1px solid rgba(201,164,99,.6)}
+  .snow i{background:#c9a463 !important}
+
+  .logo{position:absolute;top:92px;left:50%;transform:translateX(-50%);height:46px;z-index:5}
+  .kick{position:absolute;top:160px;left:0;right:0;text-align:center;font-size:14px;font-weight:700;letter-spacing:.42em;text-transform:uppercase;color:var(--pine);z-index:5}
+  .kick span{display:inline-block;width:46px;height:1px;background:#c9a463;vertical-align:middle;margin:0 14px}
+  .title{position:absolute;top:186px;left:0;right:0;text-align:center;z-index:5}
+  .title .w{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-weight:700;font-size:150px;line-height:1;color:var(--pine)}
+  .title .s{display:block;margin-top:-14px;font-family:Anton,Impact,sans-serif;font-size:58px;letter-spacing:.62em;padding-left:.62em;color:var(--berry)}
+
+  .stage{position:absolute;top:448px;left:0;right:0;height:390px;z-index:4}
+  .stage .ring{position:absolute;left:50%;top:50%;width:370px;height:370px;margin:-185px 0 0 -185px;border-radius:50%;
+    background:radial-gradient(circle,#0f4a33 0%,#0b3a29 60%,#072a1d 100%);box-shadow:0 30px 60px rgba(11,58,41,.35),inset 0 0 0 6px #c9a463,inset 0 0 0 9px #0b3a29,inset 0 0 0 10px rgba(201,164,99,.6)}
+  .stage .hero{position:absolute;left:50%;top:86px;transform:translateX(-50%) rotate(-4deg)}
+  .holly{position:absolute;width:150px;z-index:6}
+  .h1{left:292px;top:730px;transform:rotate(-20deg)}
+  .h2{right:292px;top:730px;transform:scaleX(-1) rotate(-20deg)}
+  .stage .side{position:absolute;bottom:14px;height:220px}
+  .sl{left:120px;transform:rotate(-6deg)} .sr{right:120px;transform:rotate(6deg)}
+
+  .menu{position:absolute;top:900px;left:76px;right:76px;z-index:5}
+  .mh{display:flex;align-items:center;gap:18px;font-size:13px;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:var(--berry);margin-bottom:14px}
+  .mh::before,.mh::after{content:"";flex:1;height:1px;background:#c9a463}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+  .three>div{padding:4px 10px}
+  .three>div+div{border-left:1px solid rgba(201,164,99,.7)}
+  .lbl{font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--a)}
+  .q{font-size:15px;color:#5c4d3f;margin-top:4px}
+  .pr{font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:52px;line-height:1.05;color:#1b1410;margin-top:6px}
+  .pr sup{font-family:Inter,sans-serif;font-weight:700;font-size:22px;vertical-align:top;position:relative;top:8px;margin-right:2px;color:var(--berry)}
+  .band{margin-top:30px;background:var(--pine);color:#fff;border-radius:4px;display:grid;grid-template-columns:auto 1fr 1fr;align-items:center;
+    box-shadow:0 16px 30px rgba(11,58,41,.25);outline:1px solid #c9a463;outline-offset:-7px}
+  .band .tagc{padding:22px 26px;font-family:Anton,Impact,sans-serif;font-size:26px;letter-spacing:.12em;color:var(--gold);border-right:1px solid rgba(201,164,99,.6)}
+  .band .cb{display:flex;justify-content:space-between;align-items:center;padding:16px 28px}
+  .band .cb+.cb{border-left:1px solid rgba(201,164,99,.6)}
+  .band .cb b{font-size:19px;font-weight:600}
+  .band .cb b small{display:block;font-size:12px;font-weight:700;letter-spacing:.18em;color:var(--lime);text-transform:uppercase;margin-bottom:3px}
+  .band .pr{color:#fff;font-size:44px;margin:0}.band .pr sup{color:var(--gold)}
+
+  .foot{position:absolute;left:76px;right:76px;bottom:96px;z-index:5;display:flex;justify-content:space-between;align-items:center}
+  .foot .l{font-size:17px;font-weight:700;color:var(--pine)}.foot .l span{color:var(--berry)}
+  .cta{background:var(--berry);color:#fff;box-shadow:0 8px 20px rgba(163,18,28,.3)}
+  .fine{position:absolute;left:0;right:0;bottom:62px;text-align:center;color:#7a6a58;z-index:5}
+</style></head>
+<body><div class="poster">
+  <svg class="layer" id="lights" viewBox="0 0 1080 1350" style="z-index:4"></svg>
+  <div class="layer snow" id="snow"></div>
+  <div class="frame"></div>
+
+  <img class="logo" src="../public/img/logo-dark.png" alt="OG" />
+  <p class="kick"><span></span>The season of gods<span></span></p>
+  <div class="title"><div class="w">Winter</div><span class="s">SALE</span></div>
+
+  <div class="stage">
+    <img class="side sl prod" src="../public/img/whey-box.webp" alt="" />
+    <img class="side sr prod" src="../public/img/yeast-box.webp" alt="" />
+    <div class="ring"></div>
+    <div class="hero hatted" style="--w:134px"><img class="s" src="../public/img/sachet-whey-choco.webp" alt="" /><img class="hat" src="shared/santa-hat.svg" alt="" /></div>
+  </div>
+  <svg class="holly h1" viewBox="0 0 150 90"><g fill="#0b3a29"><path d="M10 50 C 20 30, 40 22, 70 40 C 60 42, 62 50, 56 54 C 50 50, 44 58, 36 54 C 34 62, 22 60, 10 50 Z"/><path d="M66 46 C 80 20, 104 10, 132 22 C 122 28, 126 34, 120 40 C 112 36, 108 46, 100 44 C 98 52, 84 54, 66 46 Z" fill="#14573b"/></g><g fill="#c81d25"><circle cx="66" cy="54" r="9"/><circle cx="80" cy="60" r="8"/><circle cx="62" cy="68" r="7"/></g><g fill="#fff" opacity=".6"><circle cx="63" cy="51" r="2.2"/><circle cx="77" cy="57" r="2"/></g></svg>
+  <svg class="holly h2" viewBox="0 0 150 90"><g fill="#0b3a29"><path d="M10 50 C 20 30, 40 22, 70 40 C 60 42, 62 50, 56 54 C 50 50, 44 58, 36 54 C 34 62, 22 60, 10 50 Z"/><path d="M66 46 C 80 20, 104 10, 132 22 C 122 28, 126 34, 120 40 C 112 36, 108 46, 100 44 C 98 52, 84 54, 66 46 Z" fill="#14573b"/></g><g fill="#c81d25"><circle cx="66" cy="54" r="9"/><circle cx="80" cy="60" r="8"/><circle cx="62" cy="68" r="7"/></g><g fill="#fff" opacity=".6"><circle cx="63" cy="51" r="2.2"/><circle cx="77" cy="57" r="2"/></g></svg>
+
+  <div class="menu">
+    <p class="mh">Buy any two</p>
+    <div class="three">
+      <div style="--a:#d9740b"><div class="lbl">Whey Protein</div><div class="q">2 boxes · 56 sachets</div><div class="pr"><sup>₹</sup>6,999</div></div>
+      <div style="--a:#4f8a17"><div class="lbl">Yeast Protein</div><div class="q">2 boxes · 56 sachets</div><div class="pr"><sup>₹</sup>4,999</div></div>
+      <div style="--a:var(--berry)"><div class="lbl">Creatine + Taurine</div><div class="q">2 tubs · 120g each</div><div class="pr"><sup>₹</sup>1,399</div></div>
+    </div>
+    <div class="band">
+      <div class="tagc">COMBOS</div>
+      <div class="cb"><b><small>1 + 1</small>Whey + Creatine</b><span class="pr"><sup>₹</sup>3,999</span></div>
+      <div class="cb"><b><small>1 + 1</small>Yeast + Creatine</b><span class="pr"><sup>₹</sup>2,999</span></div>
+    </div>
+  </div>
+
+  <div class="foot"><div class="l">onlygodsnutrition.com &nbsp;·&nbsp; <span>@og__energy</span></div><span class="cta">Shop the sale →</span></div>
+  <p class="fine">24g protein per sachet · 28 sachets a box · 100% prepaid · Delivered across India · Offers valid while stocks last</p>
+</div>
+<script src="shared/common.js"></script>
+<script>
+  const L = document.getElementById('lights');
+  fairyLights(L, 'M30 30 Q 140 150 300 60', { count: 7, wire: '#6b5a3a', glow: .55, colors: ['#6FD94A', '#F7931E', '#3FCB86', '#E8B84A'] });
+  fairyLights(L, 'M780 60 Q 940 150 1050 30', { count: 7, wire: '#6b5a3a', glow: .55, colors: ['#6FD94A', '#F7931E', '#3FCB86', '#E8B84A'] });
+  snow(document.getElementById('snow'), 60, [40, 40, 1000, 780]);
+</script>
+</body></html>

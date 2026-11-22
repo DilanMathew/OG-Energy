@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>OG Winter Sale Tree</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared/common.css" />
+<style>
+  .poster{background:
+    radial-gradient(520px 640px at 790px 740px, rgba(181,22,30,.45) 0%, rgba(0,0,0,0) 70%),
+    radial-gradient(620px 520px at 790px 720px, #1a5a3c 0%, rgba(0,0,0,0) 75%),
+    linear-gradient(160deg,#062a1d 0%,#04190f 60%,#030f09 100%)}
+  .poster::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 60% 45%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55))}
+  .drift{position:absolute;left:-60px;right:-60px;bottom:-140px;height:330px;border-radius:50% 50% 0 0;z-index:2;
+    background:radial-gradient(ellipse at 65% 0%,#ffffff 0%,#e7efea 40%,#b9c9bf 100%);box-shadow:0 -10px 60px rgba(255,255,255,.18)}
+
+  .logo{position:absolute;top:100px;left:56px;height:48px;z-index:5}
+  .head{position:absolute;top:172px;left:56px;z-index:5}
+  .head .serif{font-size:70px;line-height:1;display:block}
+  .head .anton{font-size:104px;line-height:.95;display:block;letter-spacing:.01em}
+  .head p{margin-top:12px;font-size:17px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--lime)}
+
+  .offers{position:absolute;top:478px;left:56px;width:440px;z-index:5}
+  .grp{font-family:Anton,Impact,sans-serif;font-size:22px;letter-spacing:.1em;color:var(--gold);margin:0 0 10px;display:flex;align-items:center;gap:12px}
+  .grp::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(244,213,141,.5),rgba(244,213,141,0))}
+  .o{display:flex;justify-content:space-between;align-items:center;padding:12px 18px 12px 20px;margin-bottom:10px;border-radius:16px;position:relative;overflow:hidden;
+    background:linear-gradient(120deg,rgba(255,255,255,.10),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.12)}
+  .o::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--a)}
+  .o .n{font-size:19px;font-weight:700;color:#fff}
+  .o .n small{display:block;font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--a);margin-bottom:3px}
+  .o .p{font-family:Anton,Impact,sans-serif;font-size:42px;line-height:1;color:#fff}
+  .o .p sup{font-family:Inter;font-weight:700;font-size:17px;vertical-align:top;position:relative;top:4px;color:rgba(255,255,255,.75)}
+  .o.c{background:linear-gradient(120deg,rgba(247,147,30,.22),rgba(141,198,63,.12));border-color:rgba(244,213,141,.35)}
+  .o.c::before{background:linear-gradient(180deg,var(--orange),var(--lime))}
+  .grp.g2{margin-top:22px}
+
+  /* tree */
+  .tree{position:absolute;left:0;top:0;width:1080px;height:1350px;z-index:4}
+  .tree img.sa{position:absolute;width:86px;filter:drop-shadow(0 12px 14px rgba(0,0,0,.5))}
+  .tree .top{position:absolute;left:747px;top:496px}
+  .trunk{position:absolute;left:720px;top:1030px;height:150px;filter:drop-shadow(0 16px 18px rgba(0,0,0,.5))}
+  .star{position:absolute;left:770px;top:392px;width:44px;z-index:6;filter:drop-shadow(0 0 14px rgba(255,214,120,.9))}
+  #garland{z-index:6}
+
+  .foot{position:absolute;left:56px;right:56px;bottom:52px;z-index:5;display:flex;justify-content:space-between;align-items:center;color:#0b2a1f}
+  .foot .l{font-size:18px;font-weight:700}.foot .l span{color:#2f6f12}
+  .fine{position:absolute;left:0;right:0;bottom:22px;text-align:center;color:rgba(11,42,31,.6);z-index:5}
+</style></head>
+<body><div class="poster">
+  <div class="layer bokeh" id="bokeh"></div>
+  <svg class="layer" id="lights" viewBox="0 0 1080 1350"></svg>
+  <div class="layer snow" id="snow" style="z-index:3"></div>
+  <div class="drift"></div>
+
+  <img class="logo" src="../public/img/logo-white.png" alt="OG" />
+  <div class="head">
+    <span class="serif glowlime">Merry</span>
+    <span class="anton goldtext">STACK-MAS</span>
+    <p>The OG Winter Sale</p>
+  </div>
+
+  <div class="offers">
+    <div class="grp">DOUBLE UP · BUY 2</div>
+    <div class="o" style="--a:var(--orange)"><div class="n"><small>Whey Protein</small>2 boxes · 56 sachets</div><div class="p"><sup>₹</sup>6,999</div></div>
+    <div class="o" style="--a:var(--lime)"><div class="n"><small>Yeast Protein</small>2 boxes · 56 sachets</div><div class="p"><sup>₹</sup>4,999</div></div>
+    <div class="o" style="--a:#FF7A6B"><div class="n"><small>Creatine + Taurine</small>2 tubs · 120g each</div><div class="p"><sup>₹</sup>1,399</div></div>
+    <div class="grp g2">COMBOS · 1 + 1</div>
+    <div class="o c" style="--a:var(--gold)"><div class="n"><small>Combo</small>Whey + Creatine</div><div class="p"><sup>₹</sup>3,999</div></div>
+    <div class="o c" style="--a:var(--gold)"><div class="n"><small>Combo</small>Yeast + Creatine</div><div class="p"><sup>₹</sup>2,999</div></div>
+  </div>
+
+  <div class="tree" id="tree">
+    <img class="trunk" src="../public/img/creatine-fruit-fusion.webp" alt="" />
+  </div>
+  <svg class="star" viewBox="0 0 24 24"><path d="M12 1.5l3.1 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.3 5.6 20.9l1.5-7.1L1.7 8.9l7.2-.8z" fill="#FFD66E" stroke="#fff3c4" stroke-width=".8"/></svg>
+  <svg class="layer" id="garland" viewBox="0 0 1080 1350"></svg>
+
+  <div class="foot"><div class="l">onlygodsnutrition.com &nbsp;·&nbsp; <span>@og__energy</span></div><span class="cta">Shop the sale →</span></div>
+  <p class="fine">24g protein per sachet · 28 sachets a box · 100% prepaid · Delivered across India · Offers valid while stocks last</p>
+</div>
+<script src="shared/common.js"></script>
+<script>
+  // build the tree: rows of sachets, hatted sachet on top
+  const tree = document.getElementById('tree'), cx = 790, imgs = ['sachet-whey-choco', 'sachet-yeast-vanilla', 'sachet-whey-vanilla-green', 'sachet-whey-vanilla', 'sachet-whey-choco-green'];
+  const rows = [[2, 624], [3, 744], [4, 864]]; let k = 0;
+  rows.forEach(([n, y]) => {
+    for (let i = 0; i < n; i++) {
+      const im = document.createElement('img'); im.className = 'sa';
+      im.src = '../public/img/' + imgs[k++ % imgs.length] + '.webp';
+      const x = cx - 43 + (i - (n - 1) / 2) * 96, rot = (i - (n - 1) / 2) * 5;
+      Object.assign(im.style, { left: x + 'px', top: y + 'px', transform: `rotate(${rot}deg)` });
+      tree.append(im);
+    }
+  });
+  const tip = document.createElement('div'); tip.className = 'top hatted'; tip.style.setProperty('--w', '86px');
+  tip.innerHTML = '<img class="s" src="../public/img/sachet-whey-choco.webp" alt=""><img class="hat" src="shared/santa-hat.svg" alt="">';
+  tree.querySelector('.trunk').before(tip);
+
+  const G = document.getElementById('garland');
+  fairyLights(G, 'M745 574 Q 800 624 850 604', { count: 4, size: .8, wire: '#14301f' });
+  fairyLights(G, 'M690 704 Q 800 764 900 714', { count: 6, size: .8, wire: '#14301f' });
+  fairyLights(G, 'M640 834 Q 800 904 945 829', { count: 8, size: .8, wire: '#14301f' });
+  fairyLights(G, 'M600 974 Q 800 1044 990 964', { count: 10, size: .8, wire: '#14301f' });
+  fairyLights(document.getElementById('lights'), 'M-20 30 Q 270 100 540 46 T 1100 40');
+  bokeh(document.getElementById('bokeh'), 22, ['rgba(141,198,63,.45)', 'rgba(244,213,141,.45)', 'rgba(247,147,30,.4)', 'rgba(255,110,100,.35)']);
+  snow(document.getElementById('snow'), 110, [0, 0, 1080, 1150]);
+</script>
+</body></html>

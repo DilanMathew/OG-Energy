@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>OG Winter Sale Snow Globe</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared/common.css" />
+<style>
+  .poster{background:
+    radial-gradient(700px 600px at 50% 36%, #124532 0%, rgba(0,0,0,0) 70%),
+    radial-gradient(600px 400px at 0% 100%, rgba(247,147,30,.14), rgba(0,0,0,0) 70%),
+    linear-gradient(180deg,#021510 0%,#03190f 60%,#020e09 100%)}
+  .poster::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,rgba(0,0,0,0) 55%,rgba(0,0,0,.6))}
+  .top{position:absolute;top:100px;left:64px;right:64px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+  .top img{height:48px}
+  .top p{font-weight:700;font-size:14px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+
+  .head{position:absolute;top:168px;left:0;right:0;text-align:center;z-index:5}
+  .head h1{font-size:64px;line-height:1}
+  .head h1 .serif{font-size:72px}
+  .head p{margin-top:8px;font-size:18px;color:rgba(238,246,239,.75)}
+
+  /* globe */
+  .globe{position:absolute;left:50%;top:300px;width:470px;height:470px;margin-left:-235px;border-radius:50%;overflow:hidden;z-index:4;
+    background:radial-gradient(circle at 50% 70%, #1f6b47 0%, #0d3b28 55%, #072319 100%);
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25), inset -30px -40px 80px rgba(0,0,0,.45), inset 20px 20px 60px rgba(180,255,210,.12), 0 0 80px rgba(141,198,63,.25)}
+  .globe .ground{position:absolute;left:-10%;right:-10%;bottom:-30px;height:120px;border-radius:50%;background:radial-gradient(ellipse at 50% 30%,#ffffff,#dfe9e3 60%,#b7c7bd)}
+  .globe .tree{position:absolute;bottom:70px;width:70px}
+  .globe .hero{position:absolute;left:50%;bottom:52px;transform:translateX(-50%) rotate(-3deg)}
+  .globe .gsnow{position:absolute;inset:0}
+  .globe .gsnow i{position:absolute;border-radius:50%;background:#fff}
+  .glass{position:absolute;left:50%;top:300px;width:470px;height:470px;margin-left:-235px;border-radius:50%;z-index:6;pointer-events:none;
+    background:
+      radial-gradient(ellipse 120px 70px at 30% 18%, rgba(255,255,255,.45), rgba(255,255,255,0) 70%),
+      radial-gradient(ellipse 40px 120px at 85% 55%, rgba(255,255,255,.14), rgba(255,255,255,0) 70%)}
+  .base{position:absolute;left:50%;top:738px;width:440px;height:96px;margin-left:-220px;z-index:7;
+    clip-path:polygon(9% 0,91% 0,100% 100%,0 100%);
+    background:linear-gradient(180deg,#3b1a08 0%,#2a1206 100%);display:flex;align-items:center;justify-content:center}
+  .base::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.4),rgba(255,255,255,.08) 40%,rgba(0,0,0,.4))}
+  .base .rim{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(180deg,#FFE3A8,#c9913b)}
+  .base span{position:relative;font-family:Anton,Impact,sans-serif;font-size:40px;letter-spacing:.16em;margin-top:10px}
+  .base-shadow{position:absolute;left:50%;top:818px;width:560px;height:40px;margin-left:-280px;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0));z-index:3}
+
+  /* price list */
+  .menu{position:absolute;top:900px;left:64px;right:64px;display:grid;grid-template-columns:1fr 1fr;gap:0 56px;z-index:5}
+  .col h3{display:flex;align-items:baseline;gap:12px;font-family:Anton,Impact,sans-serif;font-weight:400;font-size:28px;letter-spacing:.08em;color:var(--gold);
+    padding-bottom:12px;border-bottom:1px solid rgba(244,213,141,.35);margin-bottom:6px}
+  .col h3 small{font-family:Inter;font-size:13px;font-weight:700;letter-spacing:.2em;color:rgba(238,246,239,.55)}
+  .li{display:flex;align-items:baseline;gap:10px;padding:16px 0}
+  .li .nm{font-size:20px;font-weight:600;color:#fff;white-space:nowrap}
+  .li .nm small{display:block;font-size:13px;font-weight:500;color:rgba(238,246,239,.55);margin-top:3px}
+  .li .dots{flex:1;border-bottom:2px dotted rgba(244,213,141,.35);transform:translateY(-6px)}
+  .li .pr{font-family:Anton,Impact,sans-serif;font-size:42px;line-height:1;color:#fff}
+  .li .pr sup{font-family:Inter;font-weight:700;font-size:18px;vertical-align:top;position:relative;top:4px;color:var(--gold)}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--a);margin-right:8px;box-shadow:0 0 10px var(--a)}
+
+  .foot{position:absolute;left:64px;right:64px;bottom:44px;z-index:5;display:flex;justify-content:space-between;align-items:center}
+  .foot .l{font-size:18px;font-weight:600}.foot .l span{color:var(--lime)}
+  .fine{position:absolute;left:0;right:0;bottom:16px;text-align:center;color:rgba(238,246,239,.45);z-index:5}
+</style></head>
+<body><div class="poster">
+  <div class="layer bokeh" id="bokeh"></div>
+  <svg class="layer" id="lights" viewBox="0 0 1080 1350"></svg>
+  <div class="layer snow" id="snow"></div>
+
+  <div class="top"><img src="../public/img/logo-white.png" alt="OG" /><p>Winter Sale</p></div>
+  <div class="head">
+    <h1><span class="anton goldtext">SHAKE UP</span> <span class="serif glowlime">your winter.</span></h1>
+    <p>Tear. Shake. Keep moving — now for less.</p>
+  </div>
+
+  <div class="globe">
+    <div class="gsnow" id="gsnow"></div>
+    <svg class="tree" style="left:70px" viewBox="0 0 70 110"><path d="M35 0 L62 50 H48 L68 86 H2 L22 50 H8 Z" fill="#0a3b26"/><path d="M35 0 L62 50 H48 L68 86 H2 L22 50 H8 Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-dasharray="2 6"/><rect x="31" y="86" width="8" height="18" fill="#3b1a08"/></svg>
+    <svg class="tree" style="right:64px;width:56px" viewBox="0 0 70 110"><path d="M35 0 L62 50 H48 L68 86 H2 L22 50 H8 Z" fill="#0a3b26"/><path d="M35 0 L62 50 H48 L68 86 H2 L22 50 H8 Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-dasharray="2 6"/><rect x="31" y="86" width="8" height="18" fill="#3b1a08"/></svg>
+    <div class="ground"></div>
+    <div class="hero hatted" style="--w:122px"><img class="s" src="../public/img/sachet-whey-choco.webp" alt="" /><img class="hat" src="shared/santa-hat.svg" alt="" /></div>
+  </div>
+  <div class="glass"></div>
+  <div class="base-shadow"></div>
+  <div class="base"><div class="rim"></div><span class="goldtext">OG · 2026</span></div>
+
+  <div class="menu">
+    <div class="col">
+      <h3>DOUBLE UP <small>BUY 2</small></h3>
+      <div class="li"><span class="nm"><i class="sw" style="--a:var(--orange)"></i>Whey Protein<small>2 boxes · 56 sachets</small></span><span class="dots"></span><span class="pr"><sup>₹</sup>6,999</span></div>
+      <div class="li"><span class="nm"><i class="sw" style="--a:var(--lime)"></i>Yeast Protein<small>2 boxes · 56 sachets</small></span><span class="dots"></span><span class="pr"><sup>₹</sup>4,999</span></div>
+      <div class="li"><span class="nm"><i class="sw" style="--a:#FF6B5E"></i>Creatine + Taurine<small>2 tubs · 120g each</small></span><span class="dots"></span><span class="pr"><sup>₹</sup>1,399</span></div>
+    </div>
+    <div class="col">
+      <h3>COMBOS <small>1 + 1</small></h3>
+      <div class="li"><span class="nm"><i class="sw" style="--a:var(--orange)"></i>Whey + Creatine<small>1 box + 1 tub</small></span><span class="dots"></span><span class="pr"><sup>₹</sup>3,999</span></div>
+      <div class="li"><span class="nm"><i class="sw" style="--a:var(--lime)"></i>Yeast + Creatine<small>1 box + 1 tub</small></span><span class="dots"></span><span class="pr"><sup>₹</sup>2,999</span></div>
+      <div class="li" style="padding-top:22px"><span class="cta" style="width:100%;text-align:center">Shop the sale →</span></div>
+    </div>
+  </div>
+
+  <div class="foot"><div class="l">onlygodsnutrition.com &nbsp;·&nbsp; <span>@og__energy</span></div><div class="l" style="font-size:14px;color:rgba(238,246,239,.6)">24g protein · 28 sachets a box</div></div>
+  <p class="fine">100% prepaid · Delivered across India · Offers valid while stocks last</p>
+</div>
+<script src="shared/common.js"></script>
+<script>
+  fairyLights(document.getElementById('lights'), 'M-20 20 Q 200 70 400 30', { count: 9 });
+  fairyLights(document.getElementById('lights'), 'M680 30 Q 880 70 1100 20', { count: 9 });
+  bokeh(document.getElementById('bokeh'), 22, ['rgba(141,198,63,.5)', 'rgba(86,227,159,.4)', 'rgba(244,213,141,.45)', 'rgba(247,147,30,.4)'], [0, 0, 1080, 860]);
+  snow(document.getElementById('snow'), 70, [0, 0, 1080, 820]);
+  snow(document.getElementById('gsnow'), 90, [20, 20, 430, 380]);
+</script>
+</body></html>

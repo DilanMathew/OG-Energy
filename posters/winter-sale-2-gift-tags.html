@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<title>OG Winter Sale Gift Tags</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="shared/common.css" />
+<style>
+  .poster{background:
+    radial-gradient(800px 500px at 50% 30%, #17553a 0%, rgba(0,0,0,0) 70%),
+    radial-gradient(900px 500px at 50% 100%, rgba(247,147,30,.18), rgba(0,0,0,0) 70%),
+    linear-gradient(180deg,#05211a,#041810)}
+  .poster::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 55%,rgba(0,0,0,.55))}
+  .logo{position:absolute;top:92px;left:50%;transform:translateX(-50%);height:52px;z-index:5}
+  .head{position:absolute;top:172px;left:0;right:0;text-align:center;z-index:5}
+  .head .k{font-weight:700;font-size:16px;letter-spacing:.42em;text-transform:uppercase;color:var(--lime)}
+  .head h1{font-size:124px;line-height:.92;margin-top:10px;letter-spacing:.01em}
+  .head h1 em{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-weight:700;font-size:84px;display:block;letter-spacing:0}
+
+  /* ribbon */
+  .ribbon{position:absolute;top:440px;left:-20px;right:-20px;height:50px;z-index:4;
+    background:linear-gradient(180deg,#e2343c 0%,#b5161e 45%,#7d0d13 100%);
+    box-shadow:0 10px 24px rgba(0,0,0,.45);border-top:2px solid #F4D58D;border-bottom:2px solid #F4D58D}
+  .ribbon::after{content:"";position:absolute;inset:8px 0;border-top:1px dashed rgba(244,213,141,.55);border-bottom:1px dashed rgba(244,213,141,.55)}
+  .bow{position:absolute;top:402px;left:50%;transform:translateX(-50%);width:200px;z-index:6;filter:drop-shadow(0 10px 14px rgba(0,0,0,.45))}
+
+  /* tags */
+  .tags{position:absolute;top:490px;left:40px;right:40px;height:330px;display:flex;justify-content:space-between;z-index:5}
+  .tagw{position:relative;width:184px;display:flex;flex-direction:column;align-items:center;transform-origin:top center}
+  .string{width:2px;background:linear-gradient(#F4D58D,#c9a95c)}
+  .tag{position:relative;width:184px;padding:34px 14px 18px;text-align:center;color:#1d0b05;
+    background:linear-gradient(170deg,#fffaf0,#f3e6cc);
+    clip-path:polygon(22% 0,78% 0,100% 13%,100% 100%,0 100%,0 13%);
+    box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+  .tagw .shadow{filter:drop-shadow(0 16px 20px rgba(0,0,0,.45))}
+  .tag::before{content:"";position:absolute;top:11px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#06251a;box-shadow:inset 0 0 0 3px #c9a95c}
+  .tag .t{font-size:11.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--a)}
+  .tag .n{margin-top:6px;font-size:17px;font-weight:700;line-height:1.15}
+  .tag .p{margin-top:10px;font-family:Anton,Impact,sans-serif;font-size:46px;line-height:1;color:#1d0b05}
+  .tag .p sup{font-family:Inter;font-weight:700;font-size:18px;vertical-align:top;position:relative;top:4px}
+  .tag .rule{height:1px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.25) 0 4px,transparent 4px 8px);margin:12px 6px 10px}
+  .tag .f{font-size:12px;font-weight:700;color:var(--a)}
+  .tag.combo{background:linear-gradient(170deg,#1b5a3d,#0b3a29);color:#fff}
+  .tag.combo .p{color:#FFD58A}
+  .tag.combo .rule{background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 4px,transparent 4px 8px)}
+
+  /* products */
+  .stage{position:absolute;left:0;right:0;top:880px;height:290px;z-index:4}
+  .floor{position:absolute;left:50%;bottom:-10px;width:820px;height:80px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(255,255,255,.35),rgba(255,255,255,0));filter:blur(6px)}
+  .glow{position:absolute;left:50%;top:50%;width:640px;height:320px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(141,198,63,.45),rgba(0,0,0,0));filter:blur(10px)}
+  .stage .prod{position:absolute;bottom:0}
+  .b1{left:120px;height:210px;transform:rotate(-8deg)}
+  .b2{right:120px;height:210px;transform:rotate(8deg)}
+  .t1{left:300px;height:150px;transform:rotate(-4deg)}
+  .t2{right:300px;height:150px;transform:rotate(5deg)}
+  .hero{position:absolute;left:50%;bottom:0;transform:translateX(-50%) rotate(-3deg)}
+
+  .foot{position:absolute;left:56px;right:56px;bottom:36px;z-index:5;display:flex;justify-content:space-between;align-items:center}
+  .foot .l{font-size:18px;font-weight:600}.foot .l span{color:var(--lime)}
+  .fine{position:absolute;left:0;right:0;bottom:12px;text-align:center;color:rgba(238,246,239,.5);z-index:5}
+</style></head>
+<body><div class="poster">
+  <div class="layer bokeh" id="bokeh"></div>
+  <svg class="layer" id="lights" viewBox="0 0 1080 1350"></svg>
+  <div class="layer snow" id="snow" style="z-index:3"></div>
+
+  <img class="logo" src="../public/img/logo-white.png" alt="OG" />
+  <div class="head">
+    <p class="k">Winter Sale</p>
+    <h1 class="anton goldtext">UNWRAP THE GODS<em class="glowlime">this season</em></h1>
+  </div>
+
+  <div class="ribbon"></div>
+  <svg class="bow" viewBox="0 0 200 110">
+    <defs><linearGradient id="bw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ef4a50"/><stop offset="1" stop-color="#8a0f16"/></linearGradient></defs>
+    <path d="M100 55 C 60 10, 10 10, 14 48 C 18 82, 70 76, 100 55 Z" fill="url(#bw)" stroke="#F4D58D" stroke-width="2"/>
+    <path d="M100 55 C 140 10, 190 10, 186 48 C 182 82, 130 76, 100 55 Z" fill="url(#bw)" stroke="#F4D58D" stroke-width="2"/>
+    <path d="M92 62 L 62 108 L 80 104 L 88 92 Z M108 62 L 138 108 L 120 104 L 112 92 Z" fill="#9c1219" stroke="#F4D58D" stroke-width="1.5"/>
+    <circle cx="100" cy="56" r="15" fill="#c81d25" stroke="#F4D58D" stroke-width="2"/>
+  </svg>
+
+  <div class="tags">
+    <div class="tagw" style="transform:rotate(3deg)"><div class="string" style="height:24px"></div><div class="shadow"><div class="tag" style="--a:#d9740b">
+      <div class="t">Buy 2 · Whey</div><div class="n">2 Boxes<br/>56 sachets</div><div class="p"><sup>₹</sup>6,999</div><div class="rule"></div><div class="f">Save ₹599</div></div></div></div>
+    <div class="tagw" style="transform:rotate(-2deg)"><div class="string" style="height:62px"></div><div class="shadow"><div class="tag" style="--a:#5b9a1f">
+      <div class="t">Buy 2 · Yeast</div><div class="n">2 Boxes<br/>56 sachets</div><div class="p"><sup>₹</sup>4,999</div><div class="rule"></div><div class="f">Save ₹599</div></div></div></div>
+    <div class="tagw" style="transform:rotate(1deg)"><div class="string" style="height:12px"></div><div class="shadow"><div class="tag" style="--a:#c81d25">
+      <div class="t">Buy 2 · Creatine</div><div class="n">2 Tubs<br/>120g each</div><div class="p"><sup>₹</sup>1,399</div><div class="rule"></div><div class="f">Save ₹199</div></div></div></div>
+    <div class="tagw" style="transform:rotate(-3deg)"><div class="string" style="height:52px"></div><div class="shadow"><div class="tag combo" style="--a:#FFD58A">
+      <div class="t">Combo</div><div class="n">1 Whey<br/>+ 1 Creatine</div><div class="p"><sup>₹</sup>3,999</div><div class="rule"></div><div class="f">The power pair</div></div></div></div>
+    <div class="tagw" style="transform:rotate(2deg)"><div class="string" style="height:20px"></div><div class="shadow"><div class="tag combo" style="--a:#FFD58A">
+      <div class="t">Combo</div><div class="n">1 Yeast<br/>+ 1 Creatine</div><div class="p"><sup>₹</sup>2,999</div><div class="rule"></div><div class="f">Stack &amp; save</div></div></div></div>
+  </div>
+
+  <div class="stage">
+    <div class="glow"></div><div class="floor"></div>
+    <img class="prod b1" src="../public/img/whey-box.webp" alt="" />
+    <img class="prod b2" src="../public/img/yeast-box.webp" alt="" />
+    <img class="prod t1" src="../public/img/creatine-fruit-fusion.webp" alt="" />
+    <img class="prod t2" src="../public/img/creatine.webp" alt="" />
+    <div class="hero hatted" style="--w:140px"><img class="s" src="../public/img/sachet-whey-choco.webp" alt="" /><img class="hat" src="shared/santa-hat.svg" alt="" /></div>
+  </div>
+
+  <div class="foot">
+    <div class="l">onlygodsnutrition.com &nbsp;·&nbsp; <span>@og__energy</span></div>
+    <span class="cta">Shop the sale →</span>
+  </div>
+  <p class="fine">24g protein per sachet · 28 sachets a box · 100% prepaid · Delivered across India · Offers valid while stocks last</p>
+</div>
+<script src="shared/common.js"></script>
+<script>
+  fairyLights(document.getElementById('lights'), 'M-20 30 Q 270 110 540 46 T 1100 40');
+  bokeh(document.getElementById('bokeh'), 24, ['rgba(141,198,63,.5)', 'rgba(86,227,159,.4)', 'rgba(244,213,141,.45)', 'rgba(247,147,30,.4)']);
+  snow(document.getElementById('snow'), 110, [0, 0, 1080, 440]);
+</script>
+</body></html>
