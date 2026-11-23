@@ -1,4 +1,4 @@
-// OG — storefront + order API + admin dashboard. Zero external dependencies.
+// OG — storefront + order API + admin dashboard. Data lives in PostgreSQL (lib/db.js).
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -14,7 +14,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString("hex");
 if (!process.env.SESSION_SECRET) console.warn("[og] SESSION_SECRET not set — admin sessions reset on every restart.");
 if (!ADMIN_PASSWORD) console.warn("[og] ADMIN_PASSWORD not set — admin login is disabled.");
-console.log(`[og] payment mode: ${pay.mode} · database: ${db.DB_PATH}`);
+console.log(`[og] payment mode: ${pay.mode} · database: ${db.DB_LABEL}`);
 
 // ---------------- Delivery rules ----------------
 // Priority states (2–3 days), identified by pincode prefix: Tamil Nadu 60–66, Karnataka 56–59, Kerala 67–69.
@@ -167,12 +167,12 @@ function validateCustomer(c = {}) {
   return { customer: out, errors };
 }
 
-function priceCart(rawItems) {
+async function priceCart(rawItems) {
   if (!Array.isArray(rawItems) || !rawItems.length) throw Object.assign(new Error("Your cart is empty"), { status: 400 });
   if (rawItems.length > 20) throw Object.assign(new Error("Too many items"), { status: 400 });
   const merged = new Map();
   for (const it of rawItems) {
-    const product = db.getProduct(String(it.productId || ""));
+    const product = await db.getProduct(String(it.productId || ""));
     if (!product || !product.active) throw Object.assign(new Error("A product in your cart is no longer available"), { status: 400 });
     const flavor = product.flavors.find((f) => f.name === it.flavor);
     if (!flavor) throw Object.assign(new Error(`Choose a valid flavour for ${product.name}`), { status: 400 });
@@ -191,7 +191,7 @@ function priceCart(rawItems) {
     if (p.stock !== null && perProduct[p.id] > p.stock) throw Object.assign(new Error(`Only ${p.stock} left of ${p.name}`), { status: 409 });
   }
   const subtotal = items.reduce((a, i) => a + i.price * i.qty, 0);
-  const shipping = Math.max(0, parseInt(db.getSetting("shipping_fee", "0"), 10) || 0);
+  const shipping = Math.max(0, parseInt(await db.getSetting("shipping_fee", "0"), 10) || 0);
   return { items: items.map(({ product, ...rest }) => rest), subtotal, shipping, total: subtotal + shipping };
 }
 
@@ -224,11 +224,11 @@ async function handleApi(req, res, url) {
       states: ALL_STATES,
       priorityStates: Object.keys(PRIORITY),
       eta: { priority: ETA_FAST, standard: ETA_STD },
-      shippingFee: parseInt(db.getSetting("shipping_fee", "0"), 10) || 0,
+      shippingFee: parseInt(await db.getSetting("shipping_fee", "0"), 10) || 0,
     });
   }
   if (m === "GET" && p === "/api/products") {
-    return json(res, 200, { products: db.listProducts().map(({ inStockFlag, active, stock, ...rest }) => ({ ...rest, lowStock: stock !== null && stock > 0 && stock <= 10 ? stock : null })) });
+    return json(res, 200, { products: (await db.listProducts()).map(({ inStockFlag, active, stock, ...rest }) => ({ ...rest, lowStock: stock !== null && stock > 0 && stock <= 10 ? stock : null })) });
   }
   if (m === "GET" && p.startsWith("/api/pincode/")) {
     const pin = p.split("/").pop();
@@ -239,7 +239,7 @@ async function handleApi(req, res, url) {
   if (m === "POST" && p === "/api/track") {
     const b = await readJson(req);
     if (!rateLimit("track:" + clientIp(req), 60, 60000)) return json(res, 200, { ok: true });
-    if (/^[a-z0-9]{8,40}$/.test(b.sid || "") && ["visit", "add_to_cart", "checkout_start"].includes(b.type)) db.trackEvent(b.sid, b.type);
+    if (/^[a-z0-9]{8,40}$/.test(b.sid || "") && ["visit", "add_to_cart", "checkout_start"].includes(b.type)) await db.trackEvent(b.sid, b.type);
     return json(res, 200, { ok: true });
   }
 
@@ -250,15 +250,15 @@ async function handleApi(req, res, url) {
     const { customer, errors } = validateCustomer(b.customer);
     if (Object.keys(errors).length) return json(res, 400, { error: "Please check your details", fields: errors });
     let priced;
-    try { priced = priceCart(b.items); } catch (e) { return fail(res, e.status || 400, e.message); }
+    try { priced = await priceCart(b.items); } catch (e) { return fail(res, e.status || 400, e.message); }
 
-    const order = db.createOrder({ id: newOrderId(), customer, ...priced, paymentProvider: pay.mode });
-    if (/^[a-z0-9]{8,40}$/.test(b.sid || "")) db.trackEvent(b.sid, "checkout_start");
+    const order = await db.createOrder({ id: newOrderId(), customer, ...priced, paymentProvider: pay.mode });
+    if (/^[a-z0-9]{8,40}$/.test(b.sid || "")) db.trackEvent(b.sid, "checkout_start").catch((e) => console.error("[og] track failed:", e.message));
 
     if (pay.mode === "razorpay") {
       try {
         const g = await pay.createGatewayOrder(order);
-        db.setGatewayOrderId(order.id, g.id);
+        await db.setGatewayOrderId(order.id, g.id);
         return json(res, 201, {
           order: publicOrder(order),
           payment: { provider: "razorpay", key: pay.keyId, gatewayOrderId: g.id, amount: g.amount, currency: g.currency,
@@ -266,7 +266,7 @@ async function handleApi(req, res, url) {
         });
       } catch (e) {
         console.error("[og] razorpay order failed:", e.message);
-        db.updateOrderAdmin(order.id, { status: "cancelled", adminNote: "Gateway error: " + e.message });
+        await db.updateOrderAdmin(order.id, { status: "cancelled", adminNote: "Gateway error: " + e.message });
         return fail(res, 502, "Payment gateway is unavailable right now. Please try again.");
       }
     }
@@ -277,25 +277,25 @@ async function handleApi(req, res, url) {
   if (m === "POST" && (mm = p.match(/^\/api\/orders\/([A-Z0-9-]{6,30})\/verify$/))) {
     if (pay.mode !== "razorpay") return fail(res, 400, "Not available");
     const b = await readJson(req);
-    const order = db.getOrder(mm[1]);
+    const order = await db.getOrder(mm[1]);
     if (!order || order.gatewayOrderId !== b.razorpay_order_id) return fail(res, 404, "Order not found");
     if (!pay.verifyCheckoutSignature(b.razorpay_order_id, b.razorpay_payment_id, b.razorpay_signature)) {
       return fail(res, 400, "Payment could not be verified. If money was debited, it will be confirmed automatically or refunded.");
     }
-    const updated = db.markPaid(order.id, String(b.razorpay_payment_id).slice(0, 64));
+    const updated = await db.markPaid(order.id, String(b.razorpay_payment_id).slice(0, 64));
     return json(res, 200, { order: publicOrder(updated) });
   }
   if (m === "POST" && (mm = p.match(/^\/api\/orders\/([A-Z0-9-]{6,30})\/demo-pay$/))) {
     if (pay.mode !== "demo") return fail(res, 400, "Not available");
-    const order = db.getOrder(mm[1]);
+    const order = await db.getOrder(mm[1]);
     if (!order) return fail(res, 404, "Order not found");
-    const updated = db.markPaid(order.id, "demo_" + crypto.randomBytes(6).toString("hex"));
+    const updated = await db.markPaid(order.id, "demo_" + crypto.randomBytes(6).toString("hex"));
     return json(res, 200, { order: publicOrder(updated) });
   }
   if (m === "POST" && p === "/api/orders/lookup") {
     if (!rateLimit("lookup:" + clientIp(req), 20, 10 * 60000)) return fail(res, 429, "Too many attempts. Please wait a few minutes.");
     const b = await readJson(req);
-    const order = db.getOrder(clean(b.id, 30).toUpperCase());
+    const order = await db.getOrder(clean(b.id, 30).toUpperCase());
     const phone = clean(b.phone, 15).replace(/\D/g, "").slice(-10);
     if (!order || order.customer.phone !== phone) return fail(res, 404, "No order found with that ID and phone number");
     return json(res, 200, { order: publicOrder(order) });
@@ -308,8 +308,8 @@ async function handleApi(req, res, url) {
     try { evt = JSON.parse(raw); } catch { return fail(res, 400, "Invalid JSON"); }
     const payment = evt.payload && evt.payload.payment && evt.payload.payment.entity;
     if ((evt.event === "payment.captured" || evt.event === "order.paid") && payment && payment.order_id) {
-      const order = db.getOrderByGatewayId(payment.order_id);
-      if (order && payment.amount === order.total * 100) db.markPaid(order.id, payment.id);
+      const order = await db.getOrderByGatewayId(payment.order_id);
+      if (order && payment.amount === order.total * 100) await db.markPaid(order.id, payment.id);
     }
     return json(res, 200, { ok: true });
   }
@@ -334,13 +334,13 @@ async function handleApi(req, res, url) {
     if (m === "GET" && p === "/api/admin/me") return json(res, 200, { ok: true, paymentMode: pay.mode, webhook: pay.hasWebhookSecret });
     if (m === "GET" && p === "/api/admin/stats") {
       const days = parseInt(url.searchParams.get("days"), 10);
-      return json(res, 200, db.stats([7, 30, 90, 365].includes(days) ? days : 0));
+      return json(res, 200, await db.stats([7, 30, 90, 365].includes(days) ? days : 0));
     }
     if (m === "GET" && p === "/api/admin/orders") {
-      return json(res, 200, { orders: db.listOrders({ status: url.searchParams.get("status"), q: clean(url.searchParams.get("q"), 60) }) });
+      return json(res, 200, { orders: await db.listOrders({ status: url.searchParams.get("status"), q: clean(url.searchParams.get("q"), 60) }) });
     }
     if (m === "GET" && p === "/api/admin/orders.csv") {
-      const rows = db.listOrders({ status: url.searchParams.get("status"), limit: 100000 });
+      const rows = await db.listOrders({ status: url.searchParams.get("status"), limit: 100000 });
       const esc = (v) => {
         let s = String(v == null ? "" : v);
         if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // guard against spreadsheet formula injection
@@ -354,17 +354,17 @@ async function handleApi(req, res, url) {
       return res.end("﻿" + [head.join(","), ...lines].join("\n"));
     }
     if ((mm = p.match(/^\/api\/admin\/orders\/([A-Z0-9-]{6,30})$/))) {
-      if (m === "GET") { const o = db.getOrder(mm[1]); return o ? json(res, 200, { order: o }) : fail(res, 404, "Not found"); }
+      if (m === "GET") { const o = await db.getOrder(mm[1]); return o ? json(res, 200, { order: o }) : fail(res, 404, "Not found"); }
       if (m === "PATCH") {
         const b = await readJson(req);
-        const o = db.getOrder(mm[1]);
+        const o = await db.getOrder(mm[1]);
         if (!o) return fail(res, 404, "Not found");
         if (b.status !== undefined) {
           if (!ORDER_STATUSES.includes(b.status)) return fail(res, 400, "Invalid status");
           if (b.status === "paid" && o.status === "pending_payment") return fail(res, 400, "Orders become paid only through the payment gateway");
           if (b.status === "pending_payment" && o.status !== "pending_payment") return fail(res, 400, "Cannot move a paid order back to pending");
         }
-        const updated = db.updateOrderAdmin(o.id, {
+        const updated = await db.updateOrderAdmin(o.id, {
           status: b.status,
           tracking: b.tracking !== undefined ? clean(b.tracking, 120) : undefined,
           adminNote: b.adminNote !== undefined ? clean(b.adminNote, 500) : undefined,
@@ -372,9 +372,9 @@ async function handleApi(req, res, url) {
         return json(res, 200, { order: updated });
       }
     }
-    if (m === "GET" && p === "/api/admin/products") return json(res, 200, { products: db.listProducts({ includeInactive: true }) });
+    if (m === "GET" && p === "/api/admin/products") return json(res, 200, { products: await db.listProducts({ includeInactive: true }) });
     if (m === "PATCH" && (mm = p.match(/^\/api\/admin\/products\/([a-z0-9-]{2,40})$/))) {
-      const prod = db.getProduct(mm[1]);
+      const prod = await db.getProduct(mm[1]);
       if (!prod) return fail(res, 404, "Not found");
       const b = await readJson(req);
       const price = Math.round(Number(b.price));
@@ -385,22 +385,22 @@ async function handleApi(req, res, url) {
       if (stock !== null && !(stock >= 0)) return fail(res, 400, "Stock must be blank (untracked) or 0 or more");
       const supplyDays = b.supplyDays === undefined ? prod.supplyDays : b.supplyDays === null || b.supplyDays === "" ? null : Math.round(Number(b.supplyDays));
       if (supplyDays !== null && !(supplyDays >= 1 && supplyDays <= 365)) return fail(res, 400, "Days per unit must be blank or 1–365");
-      return json(res, 200, { product: db.updateProduct(prod.id, { price, mrp, stock, inStock: !!b.inStock, active: !!b.active, supplyDays }) });
+      return json(res, 200, { product: await db.updateProduct(prod.id, { price, mrp, stock, inStock: !!b.inStock, active: !!b.active, supplyDays }) });
     }
     if (m === "GET" && p === "/api/admin/reminders") {
-      return json(res, 200, { ...db.reorderReminders(), template: reminderTemplate() });
+      return json(res, 200, { ...(await db.reorderReminders()), template: await reminderTemplate() });
     }
     if (m === "POST" && (mm = p.match(/^\/api\/admin\/reminders\/([A-Z0-9-]{6,30})$/))) {
-      if (!db.getOrder(mm[1])) return fail(res, 404, "Not found");
+      if (!(await db.getOrder(mm[1]))) return fail(res, 404, "Not found");
       const b = await readJson(req);
       if (!["sent", "skipped", "reset"].includes(b.action)) return fail(res, 400, "Invalid action");
-      db.setReminder(mm[1], b.action, b.action === "sent" ? String(b.message || "").slice(0, 2000) : null);
+      await db.setReminder(mm[1], b.action, b.action === "sent" ? String(b.message || "").slice(0, 2000) : null);
       return json(res, 200, { ok: true });
     }
     if (p === "/api/admin/demo-orders") {
-      if (m === "POST") db.insertDemoOrders(buildDemoOrders(db.listProducts({ includeInactive: true })));
-      else if (m === "DELETE") db.clearDemoOrders();
-      return json(res, 200, { count: db.countDemoOrders() });
+      if (m === "POST") await db.insertDemoOrders(buildDemoOrders(await db.listProducts({ includeInactive: true })));
+      else if (m === "DELETE") await db.clearDemoOrders();
+      return json(res, 200, { count: await db.countDemoOrders() });
     }
     if (p === "/api/admin/settings") {
       if (m === "PATCH") {
@@ -408,15 +408,15 @@ async function handleApi(req, res, url) {
         if (b.shippingFee !== undefined) {
           const fee = Math.round(Number(b.shippingFee));
           if (!(fee >= 0 && fee <= 10000)) return fail(res, 400, "Enter a valid shipping fee");
-          db.setSetting("shipping_fee", fee);
+          await db.setSetting("shipping_fee", fee);
         }
         if (b.reminderTemplate !== undefined) {
           const t = String(b.reminderTemplate).replace(/\r/g, "").trim().slice(0, 1000);
           if (!t) return fail(res, 400, "The reminder message can't be empty");
-          db.setSetting("reminder_template", t);
+          await db.setSetting("reminder_template", t);
         }
       }
-      return json(res, 200, { shippingFee: parseInt(db.getSetting("shipping_fee", "0"), 10) || 0, reminderTemplate: reminderTemplate() });
+      return json(res, 200, { shippingFee: parseInt(await db.getSetting("shipping_fee", "0"), 10) || 0, reminderTemplate: await reminderTemplate() });
     }
   }
 
@@ -474,7 +474,10 @@ function serveStatic(req, res, url) {
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
-  if (url.pathname === "/health") { res.writeHead(200, { "Content-Type": "text/plain" }); return res.end("ok"); }
+  if (url.pathname === "/health") {
+    try { await db.ping(); res.writeHead(200, { "Content-Type": "text/plain" }); return res.end("ok"); }
+    catch { res.writeHead(503, { "Content-Type": "text/plain" }); return res.end("database unavailable"); }
+  }
   if (url.pathname.startsWith("/api/")) {
     try {
       await handleApi(req, res, url);
@@ -488,4 +491,14 @@ const server = http.createServer(async (req, res) => {
   serveStatic(req, res, url);
 });
 
-server.listen(PORT, "0.0.0.0", () => console.log(`[og] live on port ${PORT}`));
+db.ready.then(
+  () => server.listen(PORT, "0.0.0.0", () => console.log(`[og] live on port ${PORT}`)),
+  (e) => { console.error("[og] database startup failed:", e.message); process.exit(1); }
+);
+
+// Finish in-flight requests and close database connections cleanly on redeploy.
+process.on("SIGTERM", () => {
+  console.log("[og] shutting down");
+  server.close(() => db.pool.end().finally(() => process.exit(0)));
+  setTimeout(() => process.exit(0), 10000).unref();
+});
