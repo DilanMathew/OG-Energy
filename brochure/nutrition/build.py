@@ -85,7 +85,7 @@ page3 = f'''
     <div class="ing yeast"><div class="ingh"><span class="dot"></span><b>Fermented Yeast Protein</b></div>
       <p>Fermented Yeast Protein, Cocoa Solids, Sodium Chloride, Nature Identical Flavouring Substances, Stabilizer (INS 415), Sweetener (INS 955 &amp; 950), Anticaking Agent (INS 551), Digestive Enzyme (Papain).</p></div>
   </div>
-  <div class="flavs"><div class="dh">Creatine + Taurine <small>· by flavour — nutritional values are the same for both</small></div>{flav_html}</div>
+  <div class="certs"><div class="dh">Certified quality</div><div class="seals">{seals_html}</div></div>
   <p class="legal">Nutraceutical product. Not for medicinal use. Not intended to diagnose, treat, cure or prevent any disease. Use as part of a balanced diet and exercise routine. Keep out of reach of children. Values are approximate, as printed on the pack.</p>
   <div class="foot"><img src="../../public/img/logo-white.png" alt="OG" /><span>+91 98421 21163 · @og__energy · oonlygods@outlook.com</span><span class="pg">04/05</span></div>
 </section>'''
@@ -109,8 +109,8 @@ cover = """
   <div class="index">
     <div><span>02</span><b>Whey Protein</b><small>Nutrition &amp; amino acids</small></div>
     <div><span>03</span><b>Yeast Protein</b><small>Nutrition &amp; amino acids</small></div>
-    <div><span>04</span><b>Ingredients</b><small>Every product, in full</small></div>
-    <div><span>05</span><b>Creatine + Taurine</b><small>Nutrition &amp; certifications</small></div>
+    <div><span>04</span><b>Ingredients</b><small>&amp; certifications</small></div>
+    <div><span>05</span><b>Creatine + Taurine</b><small>Nutrition &amp; ingredients</small></div>
   </div>
   <div class="foot"><span>Nothing hidden · Swipe to open the box →</span><span class="pg">01/05</span></div>
 </section>"""
@@ -139,7 +139,7 @@ creatine = f"""
       <div class="howto"><b>How to use</b><span>Mix 1 serving (5g) in 200ml of water. Follow the directions on the label.</span></div>
     </div>
   </div>
-  <div class="certs panel"><div class="dh">Certified quality</div><div class="seals">{seals_html}</div></div>
+  <div class="flavs"><div class="dh">Ingredients by flavour <small>· nutritional values are the same for both</small></div>{flav_html}</div>
   <p class="fn">*%RDA values based on ICMR 2020 guidelines for men, sedentary work. **RDA values not established.</p>
   <div class="foot"><img src="../../public/img/logo-dark.png" alt="OG" /><span class="pg">05/05</span></div>
 </section>"""
