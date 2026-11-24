@@ -70,9 +70,13 @@ seals_html = "".join(f'<div class="seal"><div class="in">{"<small>"+t+"</small>"
 lic = FSSAI_LIC or "Licence no. to be added"
 ins_html = "".join(f'<div class="ins"><b>{a}</b><span>{b}</span><small>{c}</small></div>' for a,b,c in INS)
 
+FLAV = [("Orange","creatine.webp","orange","Creatine Monohydrate, L-Taurine, Nature Identical Flavouring Substance – Orange Flavour, Sweetener (INS 955), Anticaking Agent (INS 551), Acidity Regulator (INS 330), Permitted Food Colour (INS 110)."),
+        ("Fruit Fusion","creatine-fruit-fusion.webp","fruit","Creatine Monohydrate, L-Taurine, Nature Identical Flavouring Substance – Mix Fruit Flavour, Sweetener (INS 955), Anticaking Agent (INS 551), Acidity Regulator (INS 330), Permitted Food Colour (INS 124).")]
+flav_html = "".join(f'<div class="flav {c}"><img src="../../public/img/{i}" alt="" /><div><div class="fh"><b>{n}</b><em>Flavour</em></div><p>{t}</p></div></div>' for n,i,c,t in FLAV)
+
 page3 = f'''
-<section class="page ingr" id="p5">
-  <span class="tag"><span class="bolt"></span> What's inside · 05</span>
+<section class="page ingr" id="p4">
+  <span class="tag"><span class="bolt"></span> What's inside · 04</span>
   <h2 class="d">Ingredients<span class="o">.</span></h2>
   <p class="sub">Nothing hidden. Here's every ingredient, straight from the pack.</p>
   <div class="ingcards">
@@ -81,19 +85,15 @@ page3 = f'''
     <div class="ing yeast"><div class="ingh"><span class="dot"></span><b>Fermented Yeast Protein</b></div>
       <p>Fermented Yeast Protein, Cocoa Solids, Sodium Chloride, Nature Identical Flavouring Substances, Stabilizer (INS 415), Sweetener (INS 955 &amp; 950), Anticaking Agent (INS 551), Digestive Enzyme (Papain).</p></div>
   </div>
-  <div class="certs"><div class="dh">Certified quality</div><div class="seals">{seals_html}</div></div>
-  <div class="zero"><span>0g added sugar</span><span>0g trans fat</span><span>Papain in every sachet</span></div>
+  <div class="flavs"><div class="dh">Creatine + Taurine <small>· by flavour — nutritional values are the same for both</small></div>{flav_html}</div>
   <p class="legal">Nutraceutical product. Not for medicinal use. Not intended to diagnose, treat, cure or prevent any disease. Use as part of a balanced diet and exercise routine. Keep out of reach of children. Values are approximate, as printed on the pack.</p>
-  <div class="foot"><img src="../../public/img/logo-white.png" alt="OG" /><span>+91 98421 21163 · @og__energy · oonlygods@outlook.com</span><span class="pg">05/05</span></div>
+  <div class="foot"><img src="../../public/img/logo-white.png" alt="OG" /><span>+91 98421 21163 · @og__energy · oonlygods@outlook.com</span><span class="pg">04/05</span></div>
 </section>'''
 
 
 CREA_NUT = [("Energy (kcal)","0","0"),("Protein (g)","0","0"),("Carbohydrate (g)","0","**"),("Total Sugars (g)","0","**"),
             ("Added Sugars (g)","0","**"),("Total Fat (g)","0","0"),("Sodium (mg)","0","0.00")]
 crea_rows = "".join(f'<tr{" class=sub" if n.startswith(("Total Sugars","Added")) else ""}><td>{n}</td><td>{q}</td><td>{r}</td></tr>' for n,q,r in CREA_NUT)
-FLAV = [("Orange","creatine.webp","orange","Creatine Monohydrate, L-Taurine, Nature Identical Flavouring Substance – Orange Flavour, Sweetener (INS 955), Anticaking Agent (INS 551), Acidity Regulator (INS 330), Permitted Food Colour (INS 110)."),
-        ("Fruit Fusion","creatine-fruit-fusion.webp","fruit","Creatine Monohydrate, L-Taurine, Nature Identical Flavouring Substance – Mix Fruit Flavour, Sweetener (INS 955), Anticaking Agent (INS 551), Acidity Regulator (INS 330), Permitted Food Colour (INS 124).")]
-flav_html = "".join(f'<div class="flav {c}"><img src="../../public/img/{i}" alt="" /><div><div class="fh"><b>{n}</b><em>Flavour</em></div><p>{t}</p></div></div>' for n,i,c,t in FLAV)
 
 cover = """
 <section class="page cover" id="p1">
@@ -109,14 +109,14 @@ cover = """
   <div class="index">
     <div><span>02</span><b>Whey Protein</b><small>Nutrition &amp; amino acids</small></div>
     <div><span>03</span><b>Yeast Protein</b><small>Nutrition &amp; amino acids</small></div>
-    <div><span>04</span><b>Creatine + Taurine</b><small>Nutrition &amp; ingredients</small></div>
-    <div><span>05</span><b>Ingredients</b><small>&amp; certifications</small></div>
+    <div><span>04</span><b>Ingredients</b><small>Every product, in full</small></div>
+    <div><span>05</span><b>Creatine + Taurine</b><small>Nutrition &amp; certifications</small></div>
   </div>
   <div class="foot"><span>Nothing hidden · Swipe to open the box →</span><span class="pg">01/05</span></div>
 </section>"""
 
 creatine = f"""
-<section class="page crea" id="p4">
+<section class="page crea" id="p5">
   <div class="head">
     <span class="tag"><span class="bolt"></span> Nutrition facts · Creatine</span>
     <h2 class="d">Creatine<br/>Monohydrate<br/><span class="t">+ Taurine</span></h2>
@@ -139,15 +139,15 @@ creatine = f"""
       <div class="howto"><b>How to use</b><span>Mix 1 serving (5g) in 200ml of water. Follow the directions on the label.</span></div>
     </div>
   </div>
-  <div class="flavs"><div class="dh">Ingredients by flavour <small>· nutritional values are the same for both</small></div>{flav_html}</div>
+  <div class="certs panel"><div class="dh">Certified quality</div><div class="seals">{seals_html}</div></div>
   <p class="fn">*%RDA values based on ICMR 2020 guidelines for men, sedentary work. **RDA values not established.</p>
-  <div class="foot"><img src="../../public/img/logo-dark.png" alt="OG" /><span class="pg">04/05</span></div>
+  <div class="foot"><img src="../../public/img/logo-dark.png" alt="OG" /><span class="pg">05/05</span></div>
 </section>"""
 
 html = open("template.html").read()
 html = html.replace("<!--PAGES-->",
   cover + product_page("whey","whey","Whey","Whey Protein<br/>Concentrate","Classic dairy protein · imported from Europe","whey-box.webp",WHEY,2)
   + product_page("yeast","yeast","Yeast","Fermented<br/>Yeast Protein","Dairy-free protein · made by fermentation","yeast-box.webp",YEAST,3)
-  + creatine + page3)
+  + page3 + creatine)
 open("nutrition.html","w").write(html)
 print("ok")

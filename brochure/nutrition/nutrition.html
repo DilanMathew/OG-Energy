@@ -160,7 +160,21 @@
   .fh em { font:800 12px/1 var(--body); font-style:normal; letter-spacing:1.5px; text-transform:uppercase; padding:6px 9px; border-radius:999px; color:#fff; }
   .flav.orange .fh em { background:#e07a00; } .flav.fruit .fh em { background:#d6283a; }
   .flav p { margin-top:6px; font:500 15.5px/1.45 var(--body); color:#2e2b28; }
-  .crea .fn { margin-top:12px; }
+  .crea .fn { margin-top:14px; }
+  .certs.panel { margin-top:24px; background:var(--ink); border-radius:26px; padding:20px 16px 24px; }
+  .certs.panel .dh { color:rgba(255,255,255,.8); }
+  .certs.panel .seals { flex-wrap:nowrap; gap:10px; max-width:none; margin-top:16px; }
+  .certs.panel .seal { width:104px; height:104px; padding:5px; box-shadow:4px 5px 0 var(--fire); flex:none; }
+  .certs.panel .seal .in { border-width:3px; }
+  .certs.panel .seal b { font-size:30px; }
+  .certs.panel .seal span { font-size:9.5px; margin-top:3px; letter-spacing:0; }
+  .ingr .flavs { margin-top:34px; }
+  .ingr .flavs .dh { color:var(--fire); }
+  .ingr .flavs .dh small { color:rgba(255,255,255,.6); }
+  .ingr .flav { border:0; color:var(--ink); padding:16px 22px 16px 14px; }
+  .ingr .flav img { width:90px; }
+  .ingr .flav p { font-size:17px; }
+  .ingr .legal { margin-top:30px; }
 </style>
 </head>
 <body>
@@ -178,8 +192,8 @@
   <div class="index">
     <div><span>02</span><b>Whey Protein</b><small>Nutrition &amp; amino acids</small></div>
     <div><span>03</span><b>Yeast Protein</b><small>Nutrition &amp; amino acids</small></div>
-    <div><span>04</span><b>Creatine + Taurine</b><small>Nutrition &amp; ingredients</small></div>
-    <div><span>05</span><b>Ingredients</b><small>&amp; certifications</small></div>
+    <div><span>04</span><b>Ingredients</b><small>Every product, in full</small></div>
+    <div><span>05</span><b>Creatine + Taurine</b><small>Nutrition &amp; certifications</small></div>
   </div>
   <div class="foot"><span>Nothing hidden · Swipe to open the box →</span><span class="pg">01/05</span></div>
 </section>
@@ -227,7 +241,21 @@
   <p class="fn">*%RDA values per serve established as per ICMR 2020 guidelines for men, sedentary work. **RDA values not established. <span class="key"><i></i> Highlighted = BCAAs (leucine, isoleucine, valine)</span></p>
   <div class="foot"><img src="../../public/img/logo-dark.png" alt="OG" /><span class="pg">03/05</span></div>
 </section>
-<section class="page crea" id="p4">
+<section class="page ingr" id="p4">
+  <span class="tag"><span class="bolt"></span> What's inside · 04</span>
+  <h2 class="d">Ingredients<span class="o">.</span></h2>
+  <p class="sub">Nothing hidden. Here's every ingredient, straight from the pack.</p>
+  <div class="ingcards">
+    <div class="ing whey"><div class="ingh"><span class="dot"></span><b>Whey Protein Concentrate</b></div>
+      <p>Whey Protein Concentrate, Whey Powder, Nature Identical Flavouring Substances, Stabilizer (INS 415), Sweetener (INS 955 &amp; 950), Anticaking Agent (INS 551), Digestive Enzymes (Papain).</p></div>
+    <div class="ing yeast"><div class="ingh"><span class="dot"></span><b>Fermented Yeast Protein</b></div>
+      <p>Fermented Yeast Protein, Cocoa Solids, Sodium Chloride, Nature Identical Flavouring Substances, Stabilizer (INS 415), Sweetener (INS 955 &amp; 950), Anticaking Agent (INS 551), Digestive Enzyme (Papain).</p></div>
+  </div>
+  <div class="flavs"><div class="dh">Creatine + Taurine <small>· by flavour — nutritional values are the same for both</small></div><div class="flav orange"><img src="../../public/img/creatine.webp" alt="" /><div><div class="fh"><b>Orange</b><em>Flavour</em></div><p>Creatine Monohydrate, L-Taurine, Nature Identical Flavouring Substance – Orange Flavour, Sweetener (INS 955), Anticaking Agent (INS 551), Acidity Regulator (INS 330), Permitted Food Colour (INS 110).</p></div></div><div class="flav fruit"><img src="../../public/img/creatine-fruit-fusion.webp" alt="" /><div><div class="fh"><b>Fruit Fusion</b><em>Flavour</em></div><p>Creatine Monohydrate, L-Taurine, Nature Identical Flavouring Substance – Mix Fruit Flavour, Sweetener (INS 955), Anticaking Agent (INS 551), Acidity Regulator (INS 330), Permitted Food Colour (INS 124).</p></div></div></div>
+  <p class="legal">Nutraceutical product. Not for medicinal use. Not intended to diagnose, treat, cure or prevent any disease. Use as part of a balanced diet and exercise routine. Keep out of reach of children. Values are approximate, as printed on the pack.</p>
+  <div class="foot"><img src="../../public/img/logo-white.png" alt="OG" /><span>+91 98421 21163 · @og__energy · oonlygods@outlook.com</span><span class="pg">04/05</span></div>
+</section>
+<section class="page crea" id="p5">
   <div class="head">
     <span class="tag"><span class="bolt"></span> Nutrition facts · Creatine</span>
     <h2 class="d">Creatine<br/>Monohydrate<br/><span class="t">+ Taurine</span></h2>
@@ -250,24 +278,9 @@
       <div class="howto"><b>How to use</b><span>Mix 1 serving (5g) in 200ml of water. Follow the directions on the label.</span></div>
     </div>
   </div>
-  <div class="flavs"><div class="dh">Ingredients by flavour <small>· nutritional values are the same for both</small></div><div class="flav orange"><img src="../../public/img/creatine.webp" alt="" /><div><div class="fh"><b>Orange</b><em>Flavour</em></div><p>Creatine Monohydrate, L-Taurine, Nature Identical Flavouring Substance – Orange Flavour, Sweetener (INS 955), Anticaking Agent (INS 551), Acidity Regulator (INS 330), Permitted Food Colour (INS 110).</p></div></div><div class="flav fruit"><img src="../../public/img/creatine-fruit-fusion.webp" alt="" /><div><div class="fh"><b>Fruit Fusion</b><em>Flavour</em></div><p>Creatine Monohydrate, L-Taurine, Nature Identical Flavouring Substance – Mix Fruit Flavour, Sweetener (INS 955), Anticaking Agent (INS 551), Acidity Regulator (INS 330), Permitted Food Colour (INS 124).</p></div></div></div>
+  <div class="certs panel"><div class="dh">Certified quality</div><div class="seals"><div class="seal"><div class="in"><b>FDA</b><span>Food &amp; Drug<br/>Admin.</span></div></div><div class="seal"><div class="in"><b>GMP</b><span>Certified</span></div></div><div class="seal"><div class="in"><b>HACCP</b><span>Certified</span></div></div><div class="seal"><div class="in"><b>WHO</b><span>GMP</span></div></div><div class="seal"><div class="in"><b>ISO</b><span>22000:2018</span></div></div><div class="seal"><div class="in"><b>ISO</b><span>9001:2015</span></div></div><div class="seal"><div class="in"><b>ISO</b><span>45001:2018</span></div></div><div class="seal"><div class="in"><b>ISO</b><span>14001:2015</span></div></div></div></div>
   <p class="fn">*%RDA values based on ICMR 2020 guidelines for men, sedentary work. **RDA values not established.</p>
-  <div class="foot"><img src="../../public/img/logo-dark.png" alt="OG" /><span class="pg">04/05</span></div>
-</section>
-<section class="page ingr" id="p5">
-  <span class="tag"><span class="bolt"></span> What's inside · 05</span>
-  <h2 class="d">Ingredients<span class="o">.</span></h2>
-  <p class="sub">Nothing hidden. Here's every ingredient, straight from the pack.</p>
-  <div class="ingcards">
-    <div class="ing whey"><div class="ingh"><span class="dot"></span><b>Whey Protein Concentrate</b></div>
-      <p>Whey Protein Concentrate, Whey Powder, Nature Identical Flavouring Substances, Stabilizer (INS 415), Sweetener (INS 955 &amp; 950), Anticaking Agent (INS 551), Digestive Enzymes (Papain).</p></div>
-    <div class="ing yeast"><div class="ingh"><span class="dot"></span><b>Fermented Yeast Protein</b></div>
-      <p>Fermented Yeast Protein, Cocoa Solids, Sodium Chloride, Nature Identical Flavouring Substances, Stabilizer (INS 415), Sweetener (INS 955 &amp; 950), Anticaking Agent (INS 551), Digestive Enzyme (Papain).</p></div>
-  </div>
-  <div class="certs"><div class="dh">Certified quality</div><div class="seals"><div class="seal"><div class="in"><b>FDA</b><span>Food &amp; Drug<br/>Admin.</span></div></div><div class="seal"><div class="in"><b>GMP</b><span>Certified</span></div></div><div class="seal"><div class="in"><b>HACCP</b><span>Certified</span></div></div><div class="seal"><div class="in"><b>WHO</b><span>GMP</span></div></div><div class="seal"><div class="in"><b>ISO</b><span>22000:2018</span></div></div><div class="seal"><div class="in"><b>ISO</b><span>9001:2015</span></div></div><div class="seal"><div class="in"><b>ISO</b><span>45001:2018</span></div></div><div class="seal"><div class="in"><b>ISO</b><span>14001:2015</span></div></div></div></div>
-  <div class="zero"><span>0g added sugar</span><span>0g trans fat</span><span>Papain in every sachet</span></div>
-  <p class="legal">Nutraceutical product. Not for medicinal use. Not intended to diagnose, treat, cure or prevent any disease. Use as part of a balanced diet and exercise routine. Keep out of reach of children. Values are approximate, as printed on the pack.</p>
-  <div class="foot"><img src="../../public/img/logo-white.png" alt="OG" /><span>+91 98421 21163 · @og__energy · oonlygods@outlook.com</span><span class="pg">05/05</span></div>
+  <div class="foot"><img src="../../public/img/logo-dark.png" alt="OG" /><span class="pg">05/05</span></div>
 </section>
 </body>
 </html>
