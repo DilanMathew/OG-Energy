@@ -64,6 +64,9 @@ def product_page(pid, cls, label, title, sub, img, d, n):
 INS = [("INS 415","Xanthan gum","Stabilizer — keeps the shake smooth"),("INS 955","Sucralose","Zero-calorie sweetener"),
        ("INS 950","Acesulfame-K","Zero-calorie sweetener"),("INS 551","Silicon dioxide","Anticaking — stops clumping"),
        ("Papain","From papaya","Digestive enzyme")]
+SEALS = [("", "FDA", "Food &amp; Drug<br/>Admin."), ("", "GMP", "Certified"), ("", "HACCP", "Certified"), ("", "WHO", "GMP"),
+         ("", "ISO", "22000:2018"), ("", "ISO", "9001:2015"), ("", "ISO", "45001:2018"), ("", "ISO", "14001:2015"), ("Made from", "Cow's", "Milk")]
+seals_html = "".join(f'<div class="seal"><div class="in">{"<small>"+t+"</small>" if t else ""}<b>{m}</b><span>{s}</span></div></div>' for t,m,s in SEALS)
 lic = FSSAI_LIC or "Licence no. to be added"
 ins_html = "".join(f'<div class="ins"><b>{a}</b><span>{b}</span><small>{c}</small></div>' for a,b,c in INS)
 
@@ -78,13 +81,7 @@ page3 = f'''
     <div class="ing yeast"><div class="ingh"><span class="dot"></span><b>Fermented Yeast Protein</b><em>Choco Berry</em></div>
       <p>Fermented Yeast Protein, Cocoa Solids, Sodium Chloride, Nature Identical Flavouring Substances – Chocolate Berry Flavour, Stabilizer (INS 415), Sweetener (INS 955 &amp; 950), Anticaking Agent (INS 551), Digestive Enzyme (Papain).</p></div>
   </div>
-  <div class="decoder"><div class="dh">Label decoder</div><div class="insgrid">{ins_html}</div></div>
-  <div class="trust">
-    <div class="badge fssai"><div class="fs">fssai</div><div><small>FSSAI licensed</small><b class="{"" if FSSAI_LIC else "todo"}">{lic}</b></div></div>
-    <div class="badge"><div class="veg"><i></i></div><div><small>Vegetarian</small><b>Green dot mark</b></div></div>
-    <div class="badge"><div class="nb">N</div><div><small>Category</small><b>Nutraceutical</b></div></div>
-    <div class="badge"><div class="eu">🇪🇺</div><div><small>Protein source</small><b>Imported from Europe</b></div></div>
-  </div>
+  <div class="certs"><div class="dh">Certified quality</div><div class="seals">{seals_html}</div></div>
   <div class="zero"><span>0g added sugar</span><span>0g trans fat</span><span>Papain in every sachet</span></div>
   <p class="legal">Nutraceutical product. Not for medicinal use. Not intended to diagnose, treat, cure or prevent any disease. Use as part of a balanced diet and exercise routine. Keep out of reach of children. Values are approximate, as printed on the pack.</p>
   <div class="foot"><img src="../../public/img/logo-white.png" alt="OG" /><span>+91 98421 21163 · @og__energy · oonlygods@outlook.com</span><span class="pg">03/03</span></div>
