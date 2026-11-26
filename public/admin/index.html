@@ -92,6 +92,7 @@
         <div class="filters">
           <div class="chips" id="statusChips">
             <button data-status="open" class="on">Open</button>
+            <button data-status="verifying">Verify payment</button>
             <button data-status="paid">To pack</button>
             <button data-status="packed">To ship</button>
             <button data-status="shipped">Shipped</button>
@@ -141,6 +142,14 @@
             <button class="btn primary">Save</button>
           </form>
           <div class="panel" id="payInfo"></div>
+          <form class="panel upi-set" id="upiForm">
+            <h3>UPI payments</h3>
+            <p class="muted">Customers scan your QR (or pay your UPI ID), then enter the 12-digit UPI reference. You confirm each payment under <b>Orders → Verify payment</b>.</p>
+            <div class="qr-prev"><img id="upiQrPrev" alt="Current UPI QR" /><small id="upiModeText"></small></div>
+            <label class="fld"><span>UPI ID (VPA)</span><input id="upiId" placeholder="e.g. yourname@okaxis (optional)" autocomplete="off" spellcheck="false" /></label>
+            <label class="fld"><span>Account holder name (shown to customers)</span><input id="upiPayee" maxlength="60" /></label>
+            <button class="btn primary">Save</button>
+          </form>
           <form class="panel" id="remForm">
             <h3>WhatsApp reminder message</h3>
             <p class="muted">Used for every reorder reminder; you can still edit each one before sending. Placeholders: <code>{name}</code> first name, <code>{product}</code> what they bought, <code>{date}</code> run-out date, <code>{link}</code> your store.</p>

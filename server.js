@@ -51,7 +51,7 @@ const TYPES = {
 // Version tag for CSS/JS URLs, derived from their contents at startup.
 const ASSET_VERSION = (() => {
   const h = crypto.createHash("sha1");
-  for (const f of ["styles.css", "app.js", "admin/admin.css", "admin/admin.js"]) {
+  for (const f of ["styles.css", "app.js", "upi.js", "admin/admin.css", "admin/admin.js"]) {
     try { h.update(fs.readFileSync(path.join(ROOT, f))); } catch {}
   }
   return h.digest("hex").slice(0, 10);
@@ -138,6 +138,14 @@ const DEFAULT_REMINDER =
   "Reorder now so you don't miss a day: {link}\n\n— Team OG";
 const reminderTemplate = () => db.getSetting("reminder_template", DEFAULT_REMINDER);
 
+// ---------------- Direct UPI ----------------
+const DEFAULT_UPI_PAYEE = "Hirthik Jebasekaran J"; // name on the UPI QR
+async function upiConfig() {
+  const vpa = (await db.getSetting("upi_id", "")) || pay.UPI_ID_ENV;
+  const payee = (await db.getSetting("upi_payee", "")) || pay.UPI_PAYEE_ENV || DEFAULT_UPI_PAYEE;
+  return { vpa: pay.isValidVpa(vpa) ? vpa : "", payee };
+}
+
 // ---------------- Validation ----------------
 const clean = (v, max) => String(v == null ? "" : v).replace(/[\u0000-\u001f\u007f]/g, " ").trim().slice(0, max);
 function validateCustomer(c = {}) {
@@ -207,10 +215,12 @@ const publicOrder = (o) => ({
   id: o.id, status: o.status, createdAt: o.createdAt, paidAt: o.paidAt, items: o.items,
   subtotal: o.subtotal, shipping: o.shipping, total: o.total, tracking: o.tracking,
   city: o.customer.city, state: o.customer.state, eta: etaFor(o.customer.state),
+  paymentProvider: o.paymentProvider,
+  paymentRef: o.paymentProvider === "upi" && o.paymentId ? "••••" + String(o.paymentId).slice(-4) : null,
 });
 
 // ---------------- API routes ----------------
-const ORDER_STATUSES = ["pending_payment", "paid", "packed", "shipped", "delivered", "cancelled", "refunded"];
+const ORDER_STATUSES = ["pending_payment", "verifying", "paid", "packed", "shipped", "delivered", "cancelled", "refunded"];
 
 async function handleApi(req, res, url) {
   const p = url.pathname;
@@ -270,6 +280,9 @@ async function handleApi(req, res, url) {
         return fail(res, 502, "Payment gateway is unavailable right now. Please try again.");
       }
     }
+    if (pay.mode === "upi") {
+      return json(res, 201, { order: publicOrder(order), payment: await pay.upiPayment(order, await upiConfig()) });
+    }
     return json(res, 201, { order: publicOrder(order), payment: { provider: "demo" } });
   }
 
@@ -284,6 +297,30 @@ async function handleApi(req, res, url) {
     }
     const updated = await db.markPaid(order.id, String(b.razorpay_payment_id).slice(0, 64));
     return json(res, 200, { order: publicOrder(updated) });
+  }
+  // Direct UPI: re-open payment instructions for an unpaid order (e.g. "Complete payment" on the track page).
+  if (m === "POST" && (mm = p.match(/^\/api\/orders\/([A-Z0-9-]{6,30})\/upi$/))) {
+    if (!rateLimit("upi:" + clientIp(req), 30, 10 * 60000)) return fail(res, 429, "Too many attempts. Please wait a few minutes.");
+    const b = await readJson(req);
+    const order = await db.getOrder(mm[1]);
+    const phone = clean(b.phone, 15).replace(/\D/g, "").slice(-10);
+    if (!order || order.customer.phone !== phone || order.paymentProvider !== "upi") return fail(res, 404, "Order not found");
+    if (order.status !== "pending_payment") return fail(res, 409, "This order doesn't need a payment");
+    return json(res, 200, { order: publicOrder(order), payment: await pay.upiPayment(order, await upiConfig()) });
+  }
+  // Direct UPI: customer submits the 12-digit UPI reference (UTR) after paying; the admin then confirms it.
+  if (m === "POST" && (mm = p.match(/^\/api\/orders\/([A-Z0-9-]{6,30})\/upi-submit$/))) {
+    if (!rateLimit("utr:" + clientIp(req), 15, 10 * 60000)) return fail(res, 429, "Too many attempts. Please wait a few minutes.");
+    const b = await readJson(req);
+    const order = await db.getOrder(mm[1]);
+    if (!order || order.paymentProvider !== "upi") return fail(res, 404, "Order not found");
+    const utr = pay.normaliseUtr(b.utr);
+    if (!pay.isValidUtr(utr)) return json(res, 400, { error: "Enter the 12-digit UPI reference number", fields: { utr: "Enter the 12-digit UPI reference number" } });
+    const r = await db.submitUpiPayment(order.id, utr);
+    if (r.error === "duplicate") return json(res, 409, { error: "This UPI reference is already linked to another order. Please check the number.", fields: { utr: "Already used for another order" } });
+    if (r.error === "state") return fail(res, 409, r.status === "cancelled" ? "This order was cancelled. Please place a new order." : "This order is already confirmed.");
+    if (r.error) return fail(res, 404, "Order not found");
+    return json(res, 200, { order: publicOrder(r.order) });
   }
   if (m === "POST" && (mm = p.match(/^\/api\/orders\/([A-Z0-9-]{6,30})\/demo-pay$/))) {
     if (pay.mode !== "demo") return fail(res, 400, "Not available");
@@ -331,7 +368,10 @@ async function handleApi(req, res, url) {
     }
     if (!isAdmin(req)) return fail(res, 401, "Not signed in");
 
-    if (m === "GET" && p === "/api/admin/me") return json(res, 200, { ok: true, paymentMode: pay.mode, webhook: pay.hasWebhookSecret });
+    if (m === "GET" && p === "/api/admin/me") {
+      const u = await upiConfig();
+      return json(res, 200, { ok: true, paymentMode: pay.mode, webhook: pay.hasWebhookSecret, upi: { vpa: u.vpa, payee: u.payee, qrImage: pay.UPI_QR_IMAGE } });
+    }
     if (m === "GET" && p === "/api/admin/stats") {
       const days = parseInt(url.searchParams.get("days"), 10);
       return json(res, 200, await db.stats([7, 30, 90, 365].includes(days) ? days : 0));
@@ -361,8 +401,11 @@ async function handleApi(req, res, url) {
         if (!o) return fail(res, 404, "Not found");
         if (b.status !== undefined) {
           if (!ORDER_STATUSES.includes(b.status)) return fail(res, 400, "Invalid status");
-          if (b.status === "paid" && o.status === "pending_payment") return fail(res, 400, "Orders become paid only through the payment gateway");
-          if (b.status === "pending_payment" && o.status !== "pending_payment") return fail(res, 400, "Cannot move a paid order back to pending");
+          if (b.status === "paid" && (o.status === "pending_payment" || o.status === "verifying")) {
+            return fail(res, 400, o.paymentProvider === "upi" ? "Use “Confirm payment received” to mark a UPI order paid" : "Orders become paid only through the payment gateway");
+          }
+          if (b.status === "verifying" && o.status !== "verifying") return fail(res, 400, "Only the customer can submit a UPI payment for verification");
+          if (b.status === "pending_payment" && o.status !== "pending_payment" && o.status !== "verifying") return fail(res, 400, "Cannot move a paid order back to pending");
         }
         const updated = await db.updateOrderAdmin(o.id, {
           status: b.status,
@@ -371,6 +414,20 @@ async function handleApi(req, res, url) {
         });
         return json(res, 200, { order: updated });
       }
+    }
+    // Direct UPI: admin confirms the money arrived (checked in their UPI / bank app) → order becomes paid.
+    if (m === "POST" && (mm = p.match(/^\/api\/admin\/orders\/([A-Z0-9-]{6,30})\/confirm-payment$/))) {
+      const o = await db.getOrder(mm[1]);
+      if (!o) return fail(res, 404, "Not found");
+      if (o.paymentProvider !== "upi") return fail(res, 400, "Only UPI orders are confirmed manually");
+      if (o.status !== "pending_payment" && o.status !== "verifying") return fail(res, 409, "This order is not awaiting payment");
+      const b = await readJson(req);
+      const utr = b.utr ? pay.normaliseUtr(b.utr) : o.paymentId || "";
+      if (!pay.isValidUtr(utr)) return fail(res, 400, "Enter the 12-digit UPI reference (UTR) from the payment you received");
+      const r = await db.submitUpiPayment(o.id, utr); // records the reference + duplicate check
+      if (r.error === "duplicate") return fail(res, 409, "That UPI reference is already used on another order");
+      if (r.error) return fail(res, 409, "This order is not awaiting payment");
+      return json(res, 200, { order: await db.markPaid(o.id, utr, "admin (UPI verified)") });
     }
     if (m === "GET" && p === "/api/admin/products") return json(res, 200, { products: await db.listProducts({ includeInactive: true }) });
     if (m === "PATCH" && (mm = p.match(/^\/api\/admin\/products\/([a-z0-9-]{2,40})$/))) {
@@ -410,13 +467,27 @@ async function handleApi(req, res, url) {
           if (!(fee >= 0 && fee <= 10000)) return fail(res, 400, "Enter a valid shipping fee");
           await db.setSetting("shipping_fee", fee);
         }
+        if (b.upiId !== undefined) {
+          const v = String(b.upiId).trim();
+          if (v && !pay.isValidVpa(v)) return fail(res, 400, "Enter a valid UPI ID, e.g. name@okaxis");
+          await db.setSetting("upi_id", v);
+        }
+        if (b.upiPayee !== undefined) {
+          const v = clean(b.upiPayee, 60);
+          if (v.length < 2) return fail(res, 400, "Enter the account holder name shown in UPI apps");
+          await db.setSetting("upi_payee", v);
+        }
         if (b.reminderTemplate !== undefined) {
           const t = String(b.reminderTemplate).replace(/\r/g, "").trim().slice(0, 1000);
           if (!t) return fail(res, 400, "The reminder message can't be empty");
           await db.setSetting("reminder_template", t);
         }
       }
-      return json(res, 200, { shippingFee: parseInt(await db.getSetting("shipping_fee", "0"), 10) || 0, reminderTemplate: await reminderTemplate() });
+      const u = await upiConfig();
+      return json(res, 200, {
+        shippingFee: parseInt(await db.getSetting("shipping_fee", "0"), 10) || 0, reminderTemplate: await reminderTemplate(),
+        upiId: u.vpa, upiPayee: u.payee, upiQrImage: pay.UPI_QR_IMAGE,
+      });
     }
   }
 

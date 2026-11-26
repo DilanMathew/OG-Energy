@@ -24,6 +24,12 @@
     .timeline li.done::after { background: var(--fire); }
     .timeline small { display: block; color: var(--muted); font-size: 12px; }
     .status-x { padding: 12px 16px; border-radius: 14px; background: #fdecec; border: 1px solid #f3b9b9; color: #8a1f1f; margin-top: 16px; }
+    .status-i { padding: 12px 16px; border-radius: 14px; background: var(--fire-soft); border: 1px solid rgba(247,147,30,.45); color: #5c3800; margin-top: 16px; font-size: 14.5px; }
+    .timeline li.now::before { background: #fff; border-color: var(--fire); box-shadow: 0 0 0 4px rgba(247,147,30,.2); animation: pulse 1.6s ease-in-out infinite; }
+    .timeline li.now { color: var(--text); }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(247,147,30,.08); } }
+    #payNow { margin-top: 14px; }
+    .upi-inline { margin-top: 22px; padding-top: 22px; border-top: 1.5px dashed var(--line-2); }
   </style>
 </head>
 <body>
@@ -44,6 +50,7 @@
       <div id="result"></div>
     </div>
   </main>
+  <script src="/upi.js?v=__V__"></script>
   <script>
   (() => {
     const $ = (s) => document.querySelector(s);
@@ -65,8 +72,13 @@
         if (!res.ok) throw new Error(data.error || "Not found");
         const o = data.order;
         const idx = STEPS.findIndex((s) => s[0] === o.status);
+        const isUpi = o.paymentProvider === "upi";
         let body = "";
-        if (o.status === "pending_payment") body = `<div class="status-x">Payment for this order was not completed, so it has not been confirmed. Please place the order again from the shop.</div>`;
+        if (o.status === "pending_payment" && isUpi) body = `<div class="status-i"><b>Awaiting payment.</b> This order is saved but not yet paid. Complete the UPI payment to confirm it.</div>
+          <button class="btn btn-fire btn-block" id="payNow" type="button">Complete payment · ${inr(o.total)}</button><div id="upiPanel"></div>`;
+        else if (o.status === "pending_payment") body = `<div class="status-x">Payment for this order was not completed, so it has not been confirmed. Please place the order again from the shop.</div>`;
+        else if (o.status === "verifying") body = `<ol class="timeline"><li class="now">Payment submitted — verifying${o.paymentRef ? `<small>UPI reference ${esc(o.paymentRef)}</small>` : ""}</li>${STEPS.map((s) => `<li>${s[1]}</li>`).join("")}</ol>
+          <div class="status-i">We're matching your UPI payment with our account. Your order is confirmed as soon as it's verified — usually within a few hours. Delivery to ${esc(o.city)}, ${esc(o.state)} takes ${esc(o.eta)} from confirmation, subject to availability.</div>`;
         else if (o.status === "cancelled" || o.status === "refunded") body = `<div class="status-x">This order was ${esc(o.status)}. ${o.status === "refunded" ? "The refund goes back to your original payment method." : ""}</div>`;
         else body = `<ol class="timeline">${STEPS.map((s, i) => `<li class="${i <= idx ? "done" : ""}">${s[1]}${i === 0 ? `<small>${fmt(o.paidAt)}</small>` : ""}${s[0] === "shipped" && o.tracking && idx >= 2 ? `<small>Tracking: ${esc(o.tracking)}</small>` : ""}</li>`).join("")}</ol>
           ${o.status !== "delivered" ? `<p style="color:var(--muted);font-size:14px">Expected delivery to ${esc(o.city)}, ${esc(o.state)} within ${esc(o.eta)} of payment, subject to availability.</p>` : ""}`;
@@ -76,9 +88,26 @@
             ${o.items.map((i) => `<div><span>${i.qty} × ${esc(i.name)} (${esc(i.flavor)})</span><b>${inr(i.qty * i.price)}</b></div>`).join("")}
             <div><span>Total</span><b>${inr(o.total)}</b></div>
           </div>${body}`;
+        const payNow = $("#payNow");
+        if (payNow) payNow.addEventListener("click", () => openUpi(o.id, payNow));
       } catch (err) { $("#err").textContent = err.message; }
       finally { btn.classList.remove("loading"); }
     });
+    async function openUpi(id, btn) {
+      $("#err").textContent = "";
+      btn.classList.add("loading");
+      try {
+        const res = await fetch(`/api/orders/${encodeURIComponent(id)}/upi`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone: $("#t-phone").value }) });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "Couldn't load payment details. Please try again.");
+        btn.hidden = true;
+        const panel = $("#upiPanel");
+        panel.className = "upi-inline";
+        window.OGUPI.render(panel, data, { onSubmitted: () => $("#trackForm").requestSubmit() });
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (err) { $("#err").textContent = err.message; }
+      finally { btn.classList.remove("loading"); }
+    }
     if (q.get("id") && $("#t-phone").value) $("#trackForm").requestSubmit();
   })();
   </script>

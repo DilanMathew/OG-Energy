@@ -552,7 +552,10 @@
     $("#summary").innerHTML =
       lines.map((l) => `<div><span>${l.qty} × ${esc(l.product.name.replace(/^OG\s+/, ""))} (${esc(l.flavor)})</span><b>${inr(l.product.price * l.qty)}</b></div>`).join("") +
       `<div><span>Shipping</span><b>${shipping ? inr(shipping) : "Free"}</b></div><div class="tot"><span>Total to pay</span><b>${inr(total)}</b></div>`;
-    $("#payBtn").textContent = pending ? `Retry payment · ${inr(total)}` : `Pay ${inr(total)} securely`;
+    const upi = config.paymentMode === "upi";
+    $("#payBtn").textContent = pending
+      ? (upi ? `Complete UPI payment · ${inr(total)}` : `Retry payment · ${inr(total)}`)
+      : (upi ? `Continue to pay ${inr(total)} via UPI` : `Pay ${inr(total)} securely`);
   }
 
   let pinTimer;
@@ -627,6 +630,7 @@
   async function startPayment(r) {
     renderSummary();
     if (r.payment.provider === "demo") return demoPayment(r);
+    if (r.payment.provider === "upi") return upiPayment(r);
     try {
       await loadRazorpay();
     } catch (e) { $("#formError").textContent = e.message; return; }
@@ -669,6 +673,36 @@
     });
   }
 
+  // Direct UPI: show QR / UPI ID, collect the UTR, then wait for the admin to verify.
+  function upiPayment(r) {
+    openModal(`<div id="upiMount"></div>`);
+    $("#modalCard").classList.add("wide");
+    window.OGUPI.render($("#upiMount"), r, {
+      onSubmitted: submitted,
+      onLater: () => { closeModal(); $("#formError").textContent = "Your order is saved. Tap below whenever you're ready to complete the UPI payment."; },
+    });
+    $("#modalCard").scrollTop = 0;
+  }
+
+  function submitted(order) {
+    pending = null; cart = []; saveCart(); renderCart(); openCart(false); setStep(1);
+    openModal(`
+      <div class="modal-icon wait"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <h3 id="modalTitle">Payment submitted</h3>
+      <p>Thanks! We're verifying your UPI payment of <b>${inr(order.total)}</b>. Once it's confirmed — usually within a few hours — your order ships to ${esc(order.city)}, ${esc(order.state)} ${esc(etaText(order.eta))}*.</p>
+      <div class="order-box">
+        <div><span>Order ID</span><b class="order-id">${esc(order.id)}</b></div>
+        ${order.items.map((i) => `<div><span>${i.qty} × ${esc(i.name.replace(/^OG\s+/, ""))} (${esc(i.flavor)})</span><b>${inr(i.qty * i.price)}</b></div>`).join("")}
+        <div><span>Amount</span><b>${inr(order.total)}</b></div>
+        ${order.paymentRef ? `<div><span>UPI reference</span><b>${esc(order.paymentRef)}</b></div>` : ""}
+        <div><span>Status</span><b>Verifying payment</b></div>
+      </div>
+      <p style="font-size:13px">Save your order ID. Track it any time with your mobile number.</p>
+      <a class="btn btn-ghost btn-block" href="/track?id=${encodeURIComponent(order.id)}">Track order</a>
+      <button class="btn btn-fire btn-block" id="doneBtn">Done</button>`);
+    $("#doneBtn").addEventListener("click", closeModal);
+  }
+
   function paid(order) {
     pending = null; cart = []; saveCart(); renderCart(); openCart(false); setStep(1);
     openModal(`
@@ -689,7 +723,7 @@
 
   // ---------- Modal ----------
   const modal = $("#modal");
-  function openModal(html) { $("#modalCard").innerHTML = html; modal.hidden = false; document.body.classList.add("modal-open"); }
+  function openModal(html) { const c = $("#modalCard"); c.classList.remove("wide"); c.innerHTML = html; modal.hidden = false; document.body.classList.add("modal-open"); }
   function closeModal() { modal.hidden = true; document.body.classList.remove("modal-open"); }
   modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 
@@ -722,9 +756,15 @@
     } catch { out.textContent = "Couldn't check right now. Please try again."; out.classList.add("no"); }
   });
 
+  // Payment wording follows the live payment mode (elements carry the UPI-only text in data-upi).
+  function applyPaymentCopy() {
+    if (config.paymentMode !== "upi") return;
+    $$("[data-upi]").forEach((el) => { el.innerHTML = el.dataset.upi; });
+  }
+
   // ---------- Boot ----------
   renderCart();
   Promise.all([api("/api/config"), api("/api/products")])
-    .then(([c, p]) => { config = c; products = p.products; renderProducts(); renderCart(); })
+    .then(([c, p]) => { config = c; products = p.products; applyPaymentCopy(); renderProducts(); renderCart(); })
     .catch(() => { $("#products").innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--muted)">Couldn't load products. Please refresh the page.</p>`; });
 })();
