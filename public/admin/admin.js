@@ -8,7 +8,7 @@
   const pct = (a, b) => (b ? ((a / b) * 100).toFixed(a / b < 0.1 ? 1 : 0) + "%" : "—");
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const dt = (iso) => iso ? new Date(iso).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "";
-  const STATUS = { pending_payment: "Unpaid", paid: "To pack", packed: "To ship", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled", refunded: "Refunded" };
+  const STATUS = { pending_payment: "Unpaid", verifying: "Verify payment", paid: "To pack", packed: "To ship", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled", refunded: "Refunded" };
   const pill = (s) => `<span class="st ${esc(s)}">${STATUS[s] || esc(s)}</span>`;
 
   async function api(path, opts = {}) {
@@ -46,7 +46,13 @@
   function paymentBanner(info) {
     me = info;
     const b = $("#payBanner");
-    if (info.paymentMode === "demo") { b.className = "banner demo"; b.innerHTML = "<b>Test mode:</b> payments are simulated — no real money is collected. Add your Razorpay keys on the server to go live."; b.hidden = false; }
+    if (info.paymentMode === "upi") {
+      b.className = "banner upi";
+      b.innerHTML = "<b>UPI payments on.</b> Customers pay to your UPI QR and submit their UPI reference. Check each one in your UPI / bank app, then confirm it under <button class=\"link-btn\" data-verify-jump>Verify payment</button>.";
+      b.hidden = false;
+      $("[data-verify-jump]", b).addEventListener("click", () => { status = "verifying"; showTab("orders"); });
+    }
+    else if (info.paymentMode === "demo") { b.className = "banner demo"; b.innerHTML = "<b>Test mode:</b> payments are simulated — no real money is collected. Add your Razorpay keys on the server to go live."; b.hidden = false; }
     else if (info.paymentMode === "off") { b.className = "banner off"; b.innerHTML = "<b>Checkout is disabled:</b> no payment gateway is configured, so customers cannot place orders."; b.hidden = false; }
     else if (!info.webhook) { b.className = "banner demo"; b.innerHTML = "<b>Live payments on.</b> Tip: also set <b>RAZORPAY_WEBHOOK_SECRET</b> so payments are confirmed even if a customer closes the browser mid-payment."; b.hidden = false; }
     else b.hidden = true;
@@ -79,19 +85,20 @@
       { l: "Avg. order value", v: inr(s.aov), c: "per paid order" },
       { l: "Store conversion", v: pct(f.paid, f.visitors), c: `${f.visitors} visitors → ${f.paid} paid` },
       { l: "Checkout conversion", v: pct(s.paidOrders, s.ordersCreated), c: "placed → paid" },
-      { l: "Unpaid / abandoned", v: s.pendingPayments, c: `${s.cancelled} cancelled or refunded` },
+      { l: "Unpaid / abandoned", v: s.pendingPayments, c: `${s.verifyingPayments ? s.verifyingPayments + " awaiting verification · " : ""}${s.cancelled} cancelled or refunded` },
     ].map((k) => `<div class="kpi${k.hero ? " hero" : ""}"><div class="lbl">${k.l}</div><div class="val" title="${esc(k.v)}">${k.v}</div><div class="ctx">${k.c}</div></div>`).join("");
 
     const q = s.queue;
     const qi = (d) => `<svg viewBox="0 0 24 24"><path d="${d}"/></svg>`;
     $("#queue").innerHTML = [
+      ...(me.paymentMode === "upi" || q.verifying ? [{ st: "verifying", t: "Verify", n: q.verifying || 0, s: "UPI payments to confirm", i: qi("M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6zM9 12l2 2 4-4") }] : []),
       { st: "paid", t: "To pack", n: q.paid || 0, s: "paid, not packed", i: qi("M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9") },
       { st: "packed", t: "To ship", n: q.packed || 0, s: "packed, awaiting pickup", i: qi("M3 7h11v10H3zM14 10h4l3 3v4h-7M7 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z") },
       { st: "shipped", t: "In transit", n: q.shipped || 0, s: "with courier", i: qi("M5 12h14M13 6l6 6-6 6") },
-      { st: "open", t: "Open total", n: (q.paid || 0) + (q.packed || 0) + (q.shipped || 0), s: "not yet delivered", i: qi("M4 6h16M4 12h16M4 18h10") },
-    ].map((x) => `<button class="q${x.n && x.st !== "shipped" && x.st !== "open" ? " attn" : ""}" data-status-jump="${x.st}"><span class="ico">${x.i}</span><span><span class="n">${x.n}</span><span class="t"> ${x.t}</span><small>${x.s}</small></span></button>`).join("");
+      { st: "open", t: "Open total", n: (q.verifying || 0) + (q.paid || 0) + (q.packed || 0) + (q.shipped || 0), s: "not yet delivered", i: qi("M4 6h16M4 12h16M4 18h10") },
+    ].slice(0, 4).map((x) => `<button class="q${x.n && x.st !== "shipped" && x.st !== "open" ? " attn" : ""}" data-status-jump="${x.st}"><span class="ico">${x.i}</span><span><span class="n">${x.n}</span><span class="t"> ${x.t}</span><small>${x.s}</small></span></button>`).join("");
     $$("[data-status-jump]").forEach((b) => b.addEventListener("click", () => { status = b.dataset.statusJump; showTab("orders"); }));
-    const open = (q.paid || 0) + (q.packed || 0);
+    const open = (q.verifying || 0) + (q.paid || 0) + (q.packed || 0);
     $("#openBadge").hidden = !open; $("#openBadge").textContent = open;
 
     revenueChart(s);
@@ -204,6 +211,7 @@
     delivered: [["refunded", "Mark refunded", "danger"]],
     cancelled: [["refunded", "Mark refunded", ""]],
     pending_payment: [["cancelled", "Cancel (unpaid)", "danger"]],
+    verifying: [["cancelled", "Cancel order", "danger"]],
     refunded: [],
   };
   async function openOrder(id) {
@@ -213,6 +221,7 @@
     const d = $("#drawer");
     d.innerHTML = `
       <div class="d-top"><div><h2>${esc(o.id)}</h2><div style="margin-top:8px">${pill(o.status)} <span class="muted" style="margin-left:6px">${dt(o.createdAt)}</span></div></div><button class="x" id="dClose" aria-label="Close">✕</button></div>
+      ${upiVerifyBlock(o)}
       <div class="d-sec"><h4>Update</h4>
         <div class="actions">${(NEXT[o.status] || []).map(([s, l, cls]) => `<button class="btn ${cls}" data-set="${s}">${l}</button>`).join("") || `<span class="muted">No further actions.</span>`}</div>
         <label class="fld"><span>Courier / tracking number</span><input id="dTracking" value="${esc(o.tracking || "")}" placeholder="e.g. DTDC Z12345678" /></label>
@@ -226,11 +235,11 @@
         <div class="d-row" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px"><span>Total</span><b>${inr(o.total)}</b></div>
       </div>
       <div class="d-sec"><h4>Payment</h4>
-        <div class="d-row"><span>Method</span><b>${o.paymentProvider === "demo" ? "Test payment" : "Razorpay"}</b></div>
-        <div class="d-row"><span>Payment ID</span><b style="font-family:ui-monospace,monospace;font-size:12px">${esc(o.paymentId || "—")}</b></div>
+        <div class="d-row"><span>Method</span><b>${{ demo: "Test payment", upi: "UPI (direct)" }[o.paymentProvider] || "Razorpay"}</b></div>
+        <div class="d-row"><span>${o.paymentProvider === "upi" ? "UPI reference (UTR)" : "Payment ID"}</span><b style="font-family:ui-monospace,monospace;font-size:12px">${esc(o.paymentId || "—")}</b></div>
         <div class="d-row"><span>Paid at</span><b>${o.paidAt ? dt(o.paidAt) : "Not paid"}</b></div>
       </div>
-      <div class="d-sec"><h4>History</h4><ul class="hist">${o.history.slice().reverse().map((h) => `<li><span>${STATUS[h.status] || esc(h.status)} · ${esc(h.by)}</span><span>${dt(h.at)}</span></li>`).join("")}</ul></div>`;
+      <div class="d-sec"><h4>History</h4><ul class="hist">${o.history.slice().reverse().map((h) => `<li><span>${h.status === "verifying" ? "Payment submitted" : STATUS[h.status] || esc(h.status)} · ${esc(h.by)}${h.ref ? ` · UTR ${esc(h.ref)}` : ""}${h.note ? ` · ${esc(h.note)}` : ""}</span><span>${dt(h.at)}</span></li>`).join("")}</ul></div>`;
     d.classList.add("open"); d.setAttribute("aria-hidden", "false"); $("#scrim").hidden = false;
     $("#dClose").addEventListener("click", closeDrawer);
     $("#dCopy").addEventListener("click", () => { navigator.clipboard && navigator.clipboard.writeText(addr).then(() => toast("Address copied")); });
@@ -248,6 +257,54 @@
       save({ status: s });
     }));
     $("#dSave").addEventListener("click", () => save({}));
+
+    // UPI verification
+    const refresh = () => { openOrder(o.id); if (!$("#view-orders").hidden) loadOrders(); else if (!$("#view-overview").hidden) loadOverview(); };
+    const conf = $("#vConfirm", d);
+    if (conf) conf.addEventListener("click", async () => {
+      const input = $("#vUtr", d);
+      const utr = input ? input.value.replace(/\D/g, "") : "";
+      if (input && utr.length !== 12) { toast("Enter the 12-digit UPI reference from the payment you received"); input.focus(); return; }
+      if (!confirm(`Confirm you received ${inr(o.total)} for ${o.id}? The order moves to “To pack”.`)) return;
+      conf.disabled = true;
+      try {
+        await api(`/api/admin/orders/${encodeURIComponent(o.id)}/confirm-payment`, { method: "POST", body: JSON.stringify(utr ? { utr } : {}) });
+        toast("Payment confirmed — order moved to To pack");
+        refresh();
+      } catch (err) { toast(err.message); conf.disabled = false; }
+    });
+    const rej = $("#vReject", d);
+    if (rej) rej.addEventListener("click", async () => {
+      if (!confirm("Mark this payment as not received? The order goes back to Unpaid and the customer can submit the correct UPI reference from the Track page.")) return;
+      try {
+        await api("/api/admin/orders/" + encodeURIComponent(o.id), { method: "PATCH", body: JSON.stringify({ status: "pending_payment" }) });
+        toast("Moved back to Unpaid");
+        refresh();
+      } catch (err) { toast(err.message); }
+    });
+    const cp = $("#vCopy", d);
+    if (cp) cp.addEventListener("click", () => { navigator.clipboard && navigator.clipboard.writeText(o.paymentId).then(() => toast("UTR copied")); });
+  }
+
+  function upiVerifyBlock(o) {
+    if (o.paymentProvider !== "upi") return "";
+    const wa = `https://wa.me/91${o.customer.phone}?text=${encodeURIComponent(`Hi ${o.customer.name.split(" ")[0]}, this is Team OG about your order ${o.id} (${inr(o.total)}). `)}`;
+    if (o.status === "verifying") return `
+      <div class="verify"><h4>Verify UPI payment</h4>
+        <p>The customer says they paid <b>${inr(o.total)}</b>. Open your UPI / bank app and look for a credit of exactly this amount with the reference below.</p>
+        <div class="d-row" style="align-items:baseline;margin-bottom:10px"><span>Amount</span><span class="amt">${inr(o.total)}</span></div>
+        <div class="utr"><span>${esc(String(o.paymentId || "").replace(/(\d{4})(?=\d)/g, "$1 "))}</span><button class="copy" id="vCopy" type="button">Copy</button></div>
+        <div class="actions"><button class="btn primary" id="vConfirm">Confirm payment received</button><button class="btn" id="vReject">Not received</button></div>
+        <p style="margin:12px 0 0;font-size:12.5px">Need to check something? <a href="${wa}" target="_blank" rel="noopener" style="color:var(--accent-2)">WhatsApp the customer</a></p>
+      </div>`;
+    if (o.status === "pending_payment") return `
+      <div class="verify"><h4>Awaiting UPI payment</h4>
+        <p>No UPI reference submitted yet. If you've received <b>${inr(o.total)}</b> for this order, enter the 12-digit UPI reference from your UPI app to confirm it.</p>
+        <label class="fld" style="margin-top:0"><span>UPI reference (UTR)</span><input id="vUtr" inputmode="numeric" maxlength="15" placeholder="12-digit number" /></label>
+        <div class="actions"><button class="btn primary" id="vConfirm">Confirm payment received</button></div>
+        <p style="margin:12px 0 0;font-size:12.5px"><a href="${wa}" target="_blank" rel="noopener" style="color:var(--accent-2)">WhatsApp the customer</a> to remind them to pay.</p>
+      </div>`;
+    return "";
   }
   function closeDrawer() { const d = $("#drawer"); d.classList.remove("open"); d.setAttribute("aria-hidden", "true"); $("#scrim").hidden = true; }
   $("#scrim").addEventListener("click", closeDrawer);
@@ -350,17 +407,36 @@
     const s = await api("/api/admin/settings");
     $("#shipFee").value = s.shippingFee;
     $("#remTemplate").value = s.reminderTemplate;
+    renderUpiSettings(s);
     api("/api/admin/demo-orders").then((r) => { $("#demoCount").textContent = r.count ? `${r.count} orders` : "None"; }).catch(() => {});
-    const mode = { razorpay: "Live — Razorpay", demo: "Test mode (simulated)", off: "Not configured" }[me.paymentMode] || "—";
+    const mode = { razorpay: "Live — Razorpay", upi: "Live — UPI (direct, verified by you)", demo: "Test mode (simulated)", off: "Not configured" }[me.paymentMode] || "—";
     $("#payInfo").innerHTML = `<h3>Payments</h3><p class="muted">Prepaid only — cash on delivery is not offered.</p>
       <div class="kv"><span class="muted">Gateway</span><b>${mode}</b></div>
-      <div class="kv"><span class="muted">Webhook</span><b>${me.webhook ? "Configured" : "Not set"}</b></div>
+      ${me.paymentMode === "razorpay" ? `<div class="kv"><span class="muted">Webhook</span><b>${me.webhook ? "Configured" : "Not set"}</b></div>` : ""}
       <div class="kv"><span class="muted">Delivery</span><b>TN · KA · KL 2–3 days · rest of India 7 days</b></div>`;
   }
   $("#shipForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     try { await api("/api/admin/settings", { method: "PATCH", body: JSON.stringify({ shippingFee: $("#shipFee").value }) }); toast("Shipping fee saved"); }
     catch (err) { toast(err.message); }
+  });
+
+  function renderUpiSettings(s) {
+    $("#upiId").value = s.upiId || "";
+    $("#upiPayee").value = s.upiPayee || "";
+    $("#upiQrPrev").src = s.upiQrImage;
+    $("#upiQrPrev").hidden = !!s.upiId;
+    $("#upiModeText").innerHTML = s.upiId
+      ? `<span class="mode-tag">Smart QR</span><br>Each order gets its own QR with the exact amount and order ID pre-filled, plus a one-tap “Pay with UPI app” button on phones.`
+      : `<span class="mode-tag static">QR image</span><br>Customers scan this QR and type the amount themselves. Add your UPI ID to switch to a per-order QR with the amount pre-filled.`;
+  }
+  $("#upiForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const s = await api("/api/admin/settings", { method: "PATCH", body: JSON.stringify({ upiId: $("#upiId").value.trim(), upiPayee: $("#upiPayee").value.trim() }) });
+      renderUpiSettings(s);
+      toast("UPI details saved");
+    } catch (err) { toast(err.message); }
   });
 
   $("#remForm").addEventListener("submit", async (e) => {
