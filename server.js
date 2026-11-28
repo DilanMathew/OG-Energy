@@ -260,7 +260,10 @@ async function handleApi(req, res, url) {
     const { customer, errors } = validateCustomer(b.customer);
     if (Object.keys(errors).length) return json(res, 400, { error: "Please check your details", fields: errors });
     let priced;
-    try { priced = await priceCart(b.items); } catch (e) { return fail(res, e.status || 400, e.message); }
+    try { priced = await priceCart(b.items); } catch (e) {
+      if (!e.status) throw e; // database/internal errors → generic 500, never leak details to customers
+      return fail(res, e.status, e.message);
+    }
 
     const order = await db.createOrder({ id: newOrderId(), customer, ...priced, paymentProvider: pay.mode });
     if (/^[a-z0-9]{8,40}$/.test(b.sid || "")) db.trackEvent(b.sid, "checkout_start").catch((e) => console.error("[og] track failed:", e.message));
@@ -424,10 +427,10 @@ async function handleApi(req, res, url) {
       const b = await readJson(req);
       const utr = b.utr ? pay.normaliseUtr(b.utr) : o.paymentId || "";
       if (!pay.isValidUtr(utr)) return fail(res, 400, "Enter the 12-digit UPI reference (UTR) from the payment you received");
-      const r = await db.submitUpiPayment(o.id, utr); // records the reference + duplicate check
+      const r = await db.confirmUpiPayment(o.id, utr, "admin (UPI verified)"); // atomic: duplicate check + paid + stock
       if (r.error === "duplicate") return fail(res, 409, "That UPI reference is already used on another order");
       if (r.error) return fail(res, 409, "This order is not awaiting payment");
-      return json(res, 200, { order: await db.markPaid(o.id, utr, "admin (UPI verified)") });
+      return json(res, 200, { order: r.order });
     }
     if (m === "GET" && p === "/api/admin/products") return json(res, 200, { products: await db.listProducts({ includeInactive: true }) });
     if (m === "PATCH" && (mm = p.match(/^\/api\/admin\/products\/([a-z0-9-]{2,40})$/))) {
@@ -462,26 +465,29 @@ async function handleApi(req, res, url) {
     if (p === "/api/admin/settings") {
       if (m === "PATCH") {
         const b = await readJson(req);
+        // Validate everything first so a partly invalid save changes nothing.
+        const updates = [];
         if (b.shippingFee !== undefined) {
           const fee = Math.round(Number(b.shippingFee));
           if (!(fee >= 0 && fee <= 10000)) return fail(res, 400, "Enter a valid shipping fee");
-          await db.setSetting("shipping_fee", fee);
+          updates.push(["shipping_fee", fee]);
         }
         if (b.upiId !== undefined) {
           const v = String(b.upiId).trim();
           if (v && !pay.isValidVpa(v)) return fail(res, 400, "Enter a valid UPI ID, e.g. name@okaxis");
-          await db.setSetting("upi_id", v);
+          updates.push(["upi_id", v]);
         }
         if (b.upiPayee !== undefined) {
           const v = clean(b.upiPayee, 60);
           if (v.length < 2) return fail(res, 400, "Enter the account holder name shown in UPI apps");
-          await db.setSetting("upi_payee", v);
+          updates.push(["upi_payee", v]);
         }
         if (b.reminderTemplate !== undefined) {
           const t = String(b.reminderTemplate).replace(/\r/g, "").trim().slice(0, 1000);
           if (!t) return fail(res, 400, "The reminder message can't be empty");
-          await db.setSetting("reminder_template", t);
+          updates.push(["reminder_template", t]);
         }
+        for (const [k, v] of updates) await db.setSetting(k, v);
       }
       const u = await upiConfig();
       return json(res, 200, {
@@ -495,6 +501,26 @@ async function handleApi(req, res, url) {
 }
 
 // ---------------- Static files ----------------
+// Processed files (version-stamped HTML, pre-gzipped text) are cached in memory and rebuilt only when
+// the file changes, so a traffic burst never re-reads or re-compresses the same file per request.
+const staticCache = new Map(); // path -> { mtimeMs, size, data, gz, etag }
+function loadStatic(file, ext, cb) {
+  fs.stat(file, (err, st) => {
+    if (err) return cb(err);
+    const hit = staticCache.get(file);
+    if (hit && hit.mtimeMs === st.mtimeMs && hit.size === st.size) return cb(null, hit);
+    fs.readFile(file, (readErr, raw) => {
+      if (readErr) return cb(readErr);
+      // Stamp asset URLs in HTML with the build version so browsers never mix old CSS/JS with new pages.
+      const data = ext === ".html" ? Buffer.from(raw.toString("utf8").replace(/__V__/g, ASSET_VERSION)) : raw;
+      const etag = '"' + crypto.createHash("sha1").update(data).digest("base64url").slice(0, 20) + '"';
+      const done = (gz) => { const e = { mtimeMs: st.mtimeMs, size: st.size, data, gz, etag }; staticCache.set(file, e); cb(null, e); };
+      if (COMPRESSIBLE.has(ext)) zlib.gzip(data, { level: 9 }, (zErr, gz) => done(zErr ? null : gz));
+      else done(null);
+    });
+  });
+}
+
 function serveStatic(req, res, url) {
   let urlPath;
   try { urlPath = decodeURIComponent(url.pathname); } catch { res.writeHead(400); return res.end("Bad Request"); }
@@ -514,11 +540,10 @@ function serveStatic(req, res, url) {
       target = path.join(ROOT, "index.html");
     }
     const ext = path.extname(target).toLowerCase();
-    fs.readFile(target, (readErr, data) => {
+    loadStatic(target, ext, (readErr, entry) => {
       if (readErr) { res.writeHead(500); return res.end("Server Error"); }
-      // Stamp asset URLs in HTML with the build version so browsers never mix old CSS/JS with new pages.
-      if (ext === ".html") data = Buffer.from(data.toString("utf8").replace(/__V__/g, ASSET_VERSION));
-      const etag = '"' + crypto.createHash("sha1").update(data).digest("base64url").slice(0, 20) + '"';
+      const { etag } = entry;
+      let data = entry.data;
       const headers = {
         ...BASE_HEADERS,
         "Content-Type": TYPES[ext] || "application/octet-stream",
@@ -531,10 +556,9 @@ function serveStatic(req, res, url) {
         headers["X-Robots-Tag"] = "noindex, nofollow";
       }
       if (req.headers["if-none-match"] === etag) { res.writeHead(304, headers); return res.end(); }
-      if (COMPRESSIBLE.has(ext) && /\bgzip\b/.test(req.headers["accept-encoding"] || "")) {
-        headers["Content-Encoding"] = "gzip";
+      if (entry.gz) {
         headers["Vary"] = "Accept-Encoding";
-        data = zlib.gzipSync(data);
+        if (/\bgzip\b/.test(req.headers["accept-encoding"] || "")) { headers["Content-Encoding"] = "gzip"; data = entry.gz; }
       }
       headers["Content-Length"] = data.length;
       res.writeHead(status, headers);
@@ -543,7 +567,9 @@ function serveStatic(req, res, url) {
   });
 }
 
+let draining = false;
 const server = http.createServer(async (req, res) => {
+  if (draining) res.setHeader("Connection", "close"); // don't let clients reuse sockets we're about to close
   const url = new URL(req.url, "http://localhost");
   if (url.pathname === "/health") {
     try { await db.ping(); res.writeHead(200, { "Content-Type": "text/plain" }); return res.end("ok"); }
@@ -568,8 +594,16 @@ db.ready.then(
 );
 
 // Finish in-flight requests and close database connections cleanly on redeploy.
+// On redeploy: keep answering for a short drain window so requests already on their way are served,
+// then stop accepting connections, close the database pool and exit.
+const DRAIN_MS = Math.max(0, Number(process.env.SHUTDOWN_DRAIN_MS) || 2000);
 process.on("SIGTERM", () => {
-  console.log("[og] shutting down");
-  server.close(() => db.pool.end().finally(() => process.exit(0)));
-  setTimeout(() => process.exit(0), 10000).unref();
+  if (draining) return;
+  draining = true;
+  console.log(`[og] shutting down (draining ${DRAIN_MS} ms)`);
+  setTimeout(() => {
+    server.close(() => db.pool.end().finally(() => process.exit(0)));
+    server.closeIdleConnections();
+  }, DRAIN_MS);
+  setTimeout(() => process.exit(0), DRAIN_MS + 10000).unref();
 });
